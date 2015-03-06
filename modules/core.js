@@ -1,4 +1,5 @@
-stories.define('navButtons', ['background--slide'], function() {
+stories.define('navButtons',
+  ['background--slide', 'progressBar--thin'], function() {
   var module = this;
 
   return {
@@ -24,6 +25,24 @@ stories.define('background--slide', function() {
       this.$ui.prepend('<div class="background"></div>');
       this.$background = this.$ui.find('> .background');
       this.on("slide.change", module.newSlide.bind(this));
+    },
+  };
+});
+
+
+// Bottom blue bar
+stories.define('progressBar--thin', function() {
+  var module = this;
+  module.calcProgressBar = function(e, targetSlide) {
+    var percentage = (this.currentSlideIndex) / (this.$slides.length - 1) * 100;
+    this.$progressBar.css('width', percentage + '%');
+  };
+
+  return {
+    entry: function() {
+      this.$ui.append('<div class="progress-bar"></div>');
+      this.$progressBar = this.$ui.find('.progress-bar');
+      this.on("slide.change", module.calcProgressBar.bind(this));
     },
   };
 });
