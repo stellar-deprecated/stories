@@ -1,0 +1,21 @@
+{
+  "folders":
+  [
+    {
+      "follow_symlinks": true,
+      "path": ".",
+      "folder_exclude_patterns": [
+        "styles/css",
+        "styles/.sass-cache",
+      ],
+      "file_exclude_patterns": [
+        ".DS_Store",
+        "stories.sublime-workspace"
+      ],
+    }
+  ],
+  "settings": {
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true
+  },
+}
