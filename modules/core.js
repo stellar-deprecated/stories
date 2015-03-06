@@ -29,7 +29,6 @@ stories.define('background--slide', function() {
   };
 });
 
-
 // Bottom blue bar
 stories.define('progressBar--thin', function() {
   var module = this;
@@ -43,6 +42,43 @@ stories.define('progressBar--thin', function() {
       this.$ui.append('<div class="progress-bar"></div>');
       this.$progressBar = this.$ui.find('.progress-bar');
       this.on("slide.change", module.calcProgressBar.bind(this));
+    },
+  };
+});
+
+// Zooming of the slideshow
+stories.define('zoom', function() {
+  var module = this;
+  module.resizeZoom = function() {
+    // Get viewport width and height
+    var viewportWRaw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var viewportHRaw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    var viewportWPadded = (viewportWRaw - this.options.zoomPadding * 2);
+    var viewportHPadded = (viewportHRaw - this.options.zoomPadding * 2);
+
+    var slidesAspectRatio = this.width / this.height;
+    var viewportAspectRatio = viewportWPadded / viewportHPadded;
+
+    if (slidesAspectRatio >= viewportAspectRatio) {
+      // constrained by viewport width
+      console.info('constrained by viewport width');
+      this.$slidesContainer.css('zoom', viewportWPadded / this.width);
+    } else {
+      // constrained by viewport height
+      console.info('constrained by viewport height');
+      this.$slidesContainer.css('zoom', viewportHPadded / this.height);
+    }
+  };
+
+  module.bindResizeZoom = function() {
+    module.resizeZoom.call(this);
+    $(window).on('resize orientationChanged', module.resizeZoom.bind(this));
+  };
+
+  return {
+    entry: function() {
+      module.bindResizeZoom.call(this);
     },
   };
 });

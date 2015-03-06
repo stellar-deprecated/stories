@@ -1,6 +1,7 @@
 {
   "modules": [
-    "navButtons"
+    "navButtons",
+    "zoom"
   ],
   "options": {
     "debug": true
