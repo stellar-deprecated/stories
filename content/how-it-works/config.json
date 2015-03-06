@@ -1,0 +1,8 @@
+{
+  "modules": [
+    "navButtons"
+  ],
+  "options": {
+    "debug": true
+  }
+}

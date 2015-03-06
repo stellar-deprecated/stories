@@ -1,0 +1,194 @@
+/*!
+ * Clear Sans Webfont 1.00
+ *
+ * Webfont conversion of the Clear Sans typeface, designed by the
+ * Intel Open Source Technology Center <https://01.org/clear-sans>
+ *
+ * Original font file released under the Apache 2.0 License
+ * <http://www.apache.org/licenses/LICENSE-2.0.html>
+ *
+ * Webfont version by Resi Respati <resir014@gmail.com>
+ * Released under the MIT License.
+ *
+ * https://github.com/resir014/Clear-Sans-Webfont
+ */
+
+@font-face {
+    font-family: 'Clear Sans';
+    font-style: normal;
+    font-weight: 100;
+    src: local('ClearSans-Thin'), local('Clear Sans Thin'),
+         url('../../fonts/ClearSans-Thin.eot'),
+         url('../../fonts/ClearSans-Thin.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/ClearSans-Thin.woff') format('woff'),
+         url('../../fonts/ClearSans-Thin.ttf') format('truetype'),
+         url('../../fonts/ClearSans-Thin.svg') format('svg');
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('ClearSans-Light'), local('Clear Sans Light'),
+         url('../../fonts/ClearSans-Light.eot'),
+         url('../../fonts/ClearSans-Light.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/ClearSans-Light.woff') format('woff'),
+         url('../../fonts/ClearSans-Light.ttf') format('truetype'),
+         url('../../fonts/ClearSans-Light.svg') format('svg');
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('ClearSans-Bold'), local('Clear Sans Bold'),
+         url('../../fonts/ClearSans-Bold.eot'),
+         url('../../fonts/ClearSans-Bold.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/ClearSans-Bold.woff') format('woff'),
+         url('../../fonts/ClearSans-Bold.ttf') format('truetype'),
+         url('../../fonts/ClearSans-Bold.svg') format('svg');
+}
+
+/**
+    Variables
+**/
+$primary: #08b5e5; // Blue
+$green: #64D7B2;
+$dark: #5b6a72; // Dark grey
+$light: #eceff0; // Light grey
+
+/**
+    Global styles
+**/
+::selection {
+    color: white;
+    background: $primary;
+    opacity: 0.5;
+    text-shadow: none;
+}
+
+/**
+    Typography styles
+**/
+body {
+    font-family: 'Clear Sans', sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.65;
+    color: $dark;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+// http://modularscale.com/scale/?px1=32&px2=54&ra1=1.5&ra2=0
+h1 {font-size: 108px;}
+h2 {font-size: 81px;}
+h3 {font-size: 72px;}
+h4 {font-size: 54px;}
+h5 {font-size: 48px;}
+h6 {font-size: 36px;}
+
+
+/**
+    General styling
+**/
+
+.stories {
+    .background {
+        // Background transitions
+        transition: background 0.3s ease-in-out;
+    }
+
+    > .slides > section {
+        // Slide content transition
+        // Keep browser prefixes at a minimal
+        -webkit-transform: none;
+        transform: none;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .progress-bar {
+        height: 4px;
+        width: 30%;
+        background: $primary;
+        transition: width 0.3s ease-out;
+    }
+
+    .navigation-buttons {
+        // // Vertically center
+        // margin: auto;
+        // position: absolute;
+        // top: 0; left: 0; bottom: 0; right: 0;
+
+        .nav-prev, .nav-next {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40%;
+            height: 100%;
+
+            z-index: 200; // navigation layer appears above everything
+            line-height: 0;
+
+            opacity: 0.5;
+            transition: opacity 0.3s ease-in-out;
+
+            &:before {
+                content: '';
+                width: 50px;
+                height: 50px;
+
+                top: 50%;
+                -webkit-transform: translateY(-50%);
+                        transform: translateY(-50%);
+
+                position: absolute;
+                border-radius: 50%;
+            }
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        .nav-prev {
+            left: 0;
+            &:before {
+                left: 25px;
+                background: rgba(0,0,0,0.10) url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGhlaWdodD0iNTEycHgiIGlkPSJMYXllcl8xIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB4IiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBwb2ludHM9IjM1MiwxMjguNCAzMTkuNyw5NiAxNjAsMjU2IDE2MCwyNTYgMTYwLDI1NiAzMTkuNyw0MTYgMzUyLDM4My42IDIyNC43LDI1NiAiLz48L3N2Zz4=) no-repeat;
+                background-position: 3px center;
+                background-size: 80%;
+            }
+        }
+        .nav-next {
+            right: 0;
+            &:before {
+                right: 25px;
+                background: rgba(0,0,0,0.10) url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGhlaWdodD0iNTEycHgiIGlkPSJMYXllcl8xIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB4IiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBwb2ludHM9IjE2MCwxMjguNCAxOTIuMyw5NiAzNTIsMjU2IDM1MiwyNTYgMzUyLDI1NiAxOTIuMyw0MTYgMTYwLDM4My42IDI4Ny4zLDI1NiAiLz48L3N2Zz4=) no-repeat left;
+                background-position: 6px center;
+                background-size: 80%;
+            }
+        }
+    }
+
+    &.first-slide .nav-prev {
+        opacity: 0;
+        &:hover {
+            cursor: default;
+        }
+    }
+
+    &.last-slide .nav-next  {
+        opacity: 0;
+        &:hover {
+            cursor: default;
+        }
+    }
+}
+
+
+
+
+/**
+    Specific slide templates
+**/
+@import "_templates.scss";

@@ -1,0 +1,48 @@
+/**
+    Contains templates for individual slides
+**/
+
+section[template*="title"] {
+    h1 {
+        width: 50%;
+
+        // Vertically center block
+        position: relative;
+        top: 45%;
+        transform: translateY(-50%);
+        left: 1em;
+    }
+}
+
+section[template*="light-blue"] {
+    h1 {
+        color: $primary;
+    }
+}
+.background[template*="light-blue"] {
+    background: lighten($primary, 47);
+}
+
+
+// Fullscreen image. Caption taking up bottom 20%
+section[template="fullscreen-caption"] {
+    img {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 1920px;
+        height: 1080px;
+        top: 0;
+    }
+    p {
+        width: 80%;
+        position: absolute;
+        top: 80%; // 75% + 1%
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        text-align: center;
+    }
+}
