@@ -3,6 +3,7 @@
     "navButtons"
     ,"zoom"
     ,"simpleSwipe"
+    ,"arrowKeyNavigation"
   ],
   "options": {
     "debug": true

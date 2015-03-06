@@ -104,3 +104,29 @@ stories.define('simpleSwipe', function() {
     },
   };
 });
+
+// Left right arrow key navigation
+stories.define('arrowKeyNavigation', function() {
+  return {
+    entry: function() {
+      $(document).keydown(function(e) {
+        switch(e.which) {
+          case 32: // spacebar
+          this.nextSlide();
+          break;
+
+          case 37: // left
+          this.prevSlide();
+          break;
+
+          case 39: // right
+          this.nextSlide();
+          break;
+
+          default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+      }.bind(this));
+    },
+  };
+});
