@@ -82,3 +82,25 @@ stories.define('zoom', function() {
     },
   };
 });
+
+// Single page advancement swipe
+stories.define('simpleSwipe', function() {
+  return {
+    entry: function() {
+      if (typeof $.fn.swipe === 'undefined') {
+        console.error("touchswipe plugin missing")
+        return;
+      }
+
+      this.$slidesContainer.swipe({
+        swipe: function(event, direction, distance, duration, fingerCount) {
+          if (direction === "left") {
+            this.nextSlide();
+          } else if (direction === "right") {
+            this.prevSlide();
+          }
+        }.bind(this)
+      });
+    },
+  };
+});

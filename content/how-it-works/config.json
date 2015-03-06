@@ -1,7 +1,8 @@
 {
   "modules": [
-    "navButtons",
-    "zoom"
+    "navButtons"
+    ,"zoom"
+    ,"simpleSwipe"
   ],
   "options": {
     "debug": true
