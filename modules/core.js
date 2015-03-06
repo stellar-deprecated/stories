@@ -13,7 +13,7 @@ stories.define('navButtons', ['background--slide'], function() {
 });
 
 // Background based on the current slide
-stories.define('background--slide', [], function() {
+stories.define('background--slide', function() {
   var module = this;
   module.newSlide = function(e, targetSlide) {
     this.$background.attr({'template': $(targetSlide).attr('template')});
