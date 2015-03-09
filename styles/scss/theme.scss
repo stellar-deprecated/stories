@@ -97,20 +97,26 @@ h6 {font-size: 36px;}
 .stories {
     .background {
         // Background transitions
-        transition: background 0.3s ease-in-out;
+        // transition: background 0.3s ease-in-out;
     }
 
     > .slides > section {
-        // Enable graphics acceleration on Safari (due to opacity transition)
-        -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
-        -webkit-perspective: 1000;
-                perspective: 1000;
+        // Enabling graphics acceleration causes iOs to crash every time
+        // Disabling graphics acceleration causes Desktop Safari to be unusably slow
+        // Disabling slide fade opacity solves all our problems for now
 
-        // Slide content transition
-        transition: opacity 0.3s ease-in-out;
+        // // Enable graphics acceleration on Safari (due to opacity transition)
+        // -webkit-transform: rotate(0deg);
+        //         transform: rotate(0deg);
+        // // -webkit-transform: translateZ(0);
+        // //         transform: translateZ(0);
+        // -webkit-backface-visibility: hidden;
+        //         backface-visibility: hidden;
+        // -webkit-perspective: 1000;
+        //         perspective: 1000;
+
+        // // Slide content transition
+        // transition: opacity 0.3s ease-in-out;
     }
 
     .progress-bar {
