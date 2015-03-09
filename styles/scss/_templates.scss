@@ -9,7 +9,8 @@ section[template*="title"] {
         // Vertically center block
         position: relative;
         top: 45%;
-        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+                transform: translateY(-50%);
         left: 1em;
     }
 }
