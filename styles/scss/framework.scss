@@ -21,10 +21,10 @@ html, body {
     width: 100%;
 
     > .slides {
-        // Vertically center
         position: absolute;
         -webkit-transform-origin: 0 0;
                 transform-origin: 0 0;
+        -webkit-font-smoothing: antialiased;
 
         // Slides should appear above background
         z-index: 100;

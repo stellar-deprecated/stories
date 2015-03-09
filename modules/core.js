@@ -67,16 +67,24 @@ stories.define('zoom', function() {
       },
       transformScale: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
         if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
-          this.$slidesContainer.css('-webkit-transform', 'scale(' + viewportWPadded / this.width + ')');
-          this.$slidesContainer.css('transform', 'scale(' + viewportWPadded / this.width + ')');
-          this.$slidesContainer.css('margin-top', (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px');
-          this.$slidesContainer.css('margin-left', 0);
+          var scaleAmount = viewportWPadded / this.width;
+          var resizeTransform = 'scale(' + scaleAmount + ')';
+          var resizeTranslate = 'translate(' +
+            0 + ',' +
+            ((viewportHPadded - viewportWPadded/slidesAspectRatio) / 2) / scaleAmount + 'px' +
+          ')';
         } else { // constrained by viewport height; horizontally center
-          this.$slidesContainer.css('-webkit-transform', 'scale(' + viewportHPadded / this.height + ')');
-          this.$slidesContainer.css('transform', 'scale(' + viewportHPadded / this.height + ')');
-          this.$slidesContainer.css('margin-top', 0);
-          this.$slidesContainer.css('margin-left', ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px');
+          var scaleAmount = viewportHPadded / this.height;
+          var resizeTransform = 'scale(' + scaleAmount + ')';
+          var resizeTranslate = 'translate(' +
+            ((viewportWPadded - viewportHPadded*slidesAspectRatio) / 2) / scaleAmount + 'px' + ',' +
+            0 +
+          ')';
         }
+        this.$slidesContainer.css({
+          '-webkit-transform': resizeTransform + ' ' + resizeTranslate,
+          'transform': resizeTransform + ' ' + resizeTranslate
+        });
       }
     };
 
