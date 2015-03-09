@@ -101,10 +101,14 @@ h6 {font-size: 36px;}
     }
 
     > .slides > section {
+        // Enable graphics acceleration on Safari
+        -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+        -webkit-perspective: 1000;
+                perspective: 1000;
         // Slide content transition
-        // Keep browser prefixes at a minimal
-        -webkit-transform: none;
-        transform: none;
         transition: opacity 0.3s ease-in-out;
     }
 
