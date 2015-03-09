@@ -67,10 +67,12 @@ stories.define('zoom', function() {
       },
       transformScale: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
         if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
+          this.$slidesContainer.css('-webkit-transform', 'scale(' + viewportWPadded / this.width + ')');
           this.$slidesContainer.css('transform', 'scale(' + viewportWPadded / this.width + ')');
           this.$slidesContainer.css('margin-top', (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px');
           this.$slidesContainer.css('margin-left', 0);
         } else { // constrained by viewport height; horizontally center
+          this.$slidesContainer.css('-webkit-transform', 'scale(' + viewportHPadded / this.height + ')');
           this.$slidesContainer.css('transform', 'scale(' + viewportHPadded / this.height + ')');
           this.$slidesContainer.css('margin-top', 0);
           this.$slidesContainer.css('margin-left', ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px');

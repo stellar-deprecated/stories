@@ -23,7 +23,8 @@ html, body {
     > .slides {
         // Vertically center
         position: absolute;
-        transform-origin: 0 0;
+        -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
 
         // Slides should appear above background
         z-index: 100;
