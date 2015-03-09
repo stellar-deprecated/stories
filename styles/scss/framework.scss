@@ -18,12 +18,12 @@ html, body {
         // Make sure it is behind slides
         z-index: 50;
     }
+    width: 100%;
 
     > .slides {
         // Vertically center
-        margin: auto;
         position: absolute;
-        top: 0; left: 0; bottom: 0; right: 0;
+        transform-origin: 0 0;
 
         // Slides should appear above background
         z-index: 100;
@@ -60,17 +60,6 @@ html, body {
     &.debug > .slides {
         outline: 1px solid red;
         overflow: visible;
-
-    }
-    &.debug > .slides:after {
-        height: 50%;
-        width: 100%;
-        position:absolute;
-        outline:1px solid red;
-        top: 25%;
-        content: '';
-        display: block;
-        z-index: 1000;
     }
 
     .progress-bar {

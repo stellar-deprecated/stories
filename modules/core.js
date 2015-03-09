@@ -49,35 +49,75 @@ stories.define('progressBar--thin', function() {
 // Zooming of the slideshow
 stories.define('zoom', function() {
   var module = this;
-  module.resizeZoom = function() {
-    // Get viewport width and height
-    var viewportWRaw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var viewportHRaw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  // The method we use for resizeZoom depends on which browser it is being
+  // displayed in. We will try to use css3 transforms and if it is not
+  // available, we will use zoom
+  module.resizeZoomFactory = function() {
+    var styleMethods = {
+      simpleZoom: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
+        if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
+          this.$slidesContainer.css('zoom', viewportWPadded / this.width);
+          this.$slidesContainer.css('margin-top', (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px');
+          this.$slidesContainer.css('margin-left', 0);
+        } else { // constrained by viewport height; horizontally center
+          this.$slidesContainer.css('zoom', viewportHPadded / this.height);
+          this.$slidesContainer.css('margin-top', 0);
+          this.$slidesContainer.css('margin-left', ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px');
+        }
+      },
+      transformScale: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
+        if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
+          this.$slidesContainer.css('transform', 'scale(' + viewportWPadded / this.width + ')');
+          this.$slidesContainer.css('margin-top', (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px');
+          this.$slidesContainer.css('margin-left', 0);
+        } else { // constrained by viewport height; horizontally center
+          this.$slidesContainer.css('transform', 'scale(' + viewportHPadded / this.height + ')');
+          this.$slidesContainer.css('margin-top', 0);
+          this.$slidesContainer.css('margin-left', ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px');
+        }
+      }
+    };
 
-    var viewportWPadded = (viewportWRaw - this.options.zoomPadding * 2);
-    var viewportHPadded = (viewportHRaw - this.options.zoomPadding * 2);
-
-    var slidesAspectRatio = this.width / this.height;
-    var viewportAspectRatio = viewportWPadded / viewportHPadded;
-
-    if (slidesAspectRatio >= viewportAspectRatio) {
-      // constrained by viewport width
-      console.info('constrained by viewport width');
-      this.$slidesContainer.css('zoom', viewportWPadded / this.width);
-    } else {
-      // constrained by viewport height
-      console.info('constrained by viewport height');
-      this.$slidesContainer.css('zoom', viewportHPadded / this.height);
+    // supportsTransforms is a snippet from zoom.js (http://lab.hakim.se/zoom-js); MIT licensed
+    var supportsTransforms =  'WebkitTransform' in document.body.style ||
+      'MozTransform' in document.body.style ||
+      'msTransform' in document.body.style ||
+      'OTransform' in document.body.style ||
+      'transform' in document.body.style;
+    var IE10 = false;
+    if (/*@cc_on!@*/false) {
+      IE10 = true;
     }
+
+    if (IE10 || !supportsTransforms) {
+      var preferredStyleMethod = styleMethods.simpleZoom.bind(this);
+    } else {
+      var preferredStyleMethod = styleMethods.transformScale.bind(this);
+    }
+
+    return function() {
+      // Get viewport width and height
+      var viewportWRaw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      var viewportHRaw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+      var viewportWPadded = (viewportWRaw - this.options.zoomPadding * 2);
+      var viewportHPadded = (viewportHRaw - this.options.zoomPadding * 2);
+
+      var slidesAspectRatio = this.width / this.height;
+      var viewportAspectRatio = viewportWPadded / viewportHPadded;
+
+      preferredStyleMethod(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio);
+    };
   };
 
   module.bindResizeZoom = function() {
-    module.resizeZoom.call(this);
     $(window).on('resize orientationChanged', module.resizeZoom.bind(this));
   };
 
   return {
     entry: function() {
+      module.resizeZoom = module.resizeZoomFactory.call(this);
+      module.resizeZoom.call(this);
       module.bindResizeZoom.call(this);
     },
   };
