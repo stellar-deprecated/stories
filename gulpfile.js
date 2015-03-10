@@ -13,7 +13,7 @@ gulp.task('default', function() {
   console.log('Use gulp build');
 });
 
-gulp.task('build', ['compile-stories', 'sass'], function() {
+gulp.task('build', ['compile-stories', 'story-app-sass'], function() {
 });
 
 gulp.task('develop', ['build', 'dev-server', 'watch']);
@@ -22,15 +22,14 @@ gulp.task('watch', function() {
   gulp.watch(['./content/**/slides.html'], ['compile-stories']);
 })
 
-gulp.task('sass', function() {
-  gulp.src('./styles/scss/*.scss')
+gulp.task('story-app-sass', function() {
+  gulp.src('./story-app/styles/scss/*.scss')
     .pipe(sass())
-    .pipe(gulp.dest('./styles/css'))
-    .pipe(gulp.dest('./dist/css'))
+    .pipe(gulp.dest('./dist/css'));
 });
 
 gulp.task('compile-stories', function() {
-  var template = fs.readFileSync('./story-app.html').toString(); // TODO: make this async
+  var template = fs.readFileSync('./story-app/index.html').toString(); // TODO: make this async
   var content = gulp.src('./content/**/config.json');
 
   var inlineConfig = map(function(content) {

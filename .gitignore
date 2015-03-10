@@ -3,6 +3,7 @@ dist/
 node_modules/
 
 ### Sass
+story-app/styles/.sass-cache/
 styles/.sass-cache/
 styles/css/
 
