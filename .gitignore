@@ -1,5 +1,6 @@
 ### Story app
 dist/
+node_modules/
 
 ### Sass
 styles/.sass-cache/
