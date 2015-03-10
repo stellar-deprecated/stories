@@ -4,6 +4,8 @@ var path = require('path');
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
+var connect = require('gulp-connect');
+
 var map = require('vinyl-map');
 
 
@@ -48,6 +50,16 @@ gulp.task('compile-stories', function() {
     .pipe(gulp.dest('./dist/'))
 });
 
+gulp.task('dev-server', function() {
+  connect.server({
+    root: 'dist',
+    livereload: true,
+    port: 8000
+  })
+});
+
 gulp.task('build', ['compile-stories', 'sass'], function() {
 
 });
+
+gulp.task('develop', ['build', 'dev-server' ]);

@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/stellar/stories",
   "devDependencies": {
+    "gulp-connect": "^2.2.0",
     "gulp-html-replace": "^1.4.4",
     "gulp-inject": "^1.2.0",
     "gulp-rename": "^1.2.0",
