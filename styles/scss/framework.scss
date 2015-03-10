@@ -1,75 +1,67 @@
-// @import "compass/reset";
 
-html, body {
-    overflow: hidden;
-    background: #fff;
-}
 
 /**
     Overall structure of the slideshow
 **/
 
 .stories {
-    .background {
-        // Stretch to whole viewport
-        position: absolute;
-        top: 0; left: 0; bottom: 0; right: 0;
+  .background {
+    // Stretch to whole viewport
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
 
-        // Make sure it is behind slides
-        z-index: 50;
+    // Make sure it is behind slides
+    z-index: 50;
+  }
+  width: 100%;
+
+  > .slides {
+    position: absolute;
+    -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+    -webkit-font-smoothing: antialiased;
+
+    // Slides should appear above background
+    z-index: 100;
+
+    overflow: hidden;
+
+    > section {
+      // Stack all slides on top of each other
+      position: absolute;
+
+      // Stretch the slides
+      width: 100%;
+      height: 100%;
+
+      opacity: 0;
+      pointer-events: none; // Prevent actions on hidden slides
+      &.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
     }
+  }
+
+  &.debug:before {
+    height: 0px;
     width: 100%;
+    position:absolute;
+    border-bottom:1px solid red;
+    top: 50%;
+    content: '';
+    display: block;
+    z-index: 1000;
+  }
+  &.debug > .slides {
+    outline: 1px solid red;
+    overflow: visible;
+  }
 
-    > .slides {
-        position: absolute;
-        -webkit-transform-origin: 0 0;
-                transform-origin: 0 0;
-        -webkit-font-smoothing: antialiased;
-
-        // Slides should appear above background
-        z-index: 100;
-
-        overflow: hidden;
-
-        > section {
-            // Stack all slides on top of each other
-            position: absolute;
-
-            // Stretch the slides
-            width: 100%;
-            height: 100%;
-
-            opacity: 0;
-            pointer-events: none; // Prevent actions on hidden slides
-            &.visible {
-                opacity: 1;
-                pointer-events: auto;
-            }
-        }
-    }
-
-    &.debug:before {
-        height: 0px;
-        width: 100%;
-        position:absolute;
-        border-bottom:1px solid red;
-        top: 50%;
-        content: '';
-        display: block;
-        z-index: 1000;
-    }
-    &.debug > .slides {
-        outline: 1px solid red;
-        overflow: visible;
-    }
-
-    .progress-bar {
-        // Appear above background and content
-        z-index: 200;
-        position: absolute;
-        bottom: 0;
-    }
+  .progress-bar {
+    // Appear above background and content
+    z-index: 200;
+    position: absolute;
+    bottom: 0;
+  }
 }
-// * {
-//     outline: 1px solid red;
-// }

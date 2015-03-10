@@ -60,6 +60,11 @@ $light: #eceff0; // Light grey
 /**
     Global styles
 **/
+html, body {
+    overflow: hidden;
+    background: #fff;
+}
+
 ::selection {
     color: white;
     background: $primary;
