@@ -8,18 +8,23 @@ var connect = require('gulp-connect');
 
 var map = require('vinyl-map');
 
-
 gulp.task('default', function() {
   console.log('Use gulp build');
 });
 
-gulp.task('build', ['compile-stories', 'story-app-sass'], function() {
+gulp.task('build', [
+  'compile-stories',
+  'story-app-sass',
+  'storyteller-sass',
+  'storyteller-js'], function() {
 });
 
 gulp.task('develop', ['build', 'dev-server', 'watch']);
 
 gulp.task('watch', function() {
   gulp.watch(['./content/**/slides.html'], ['compile-stories']);
+  gulp.watch(['./storyteller/scss/*', './storyteller/modules/**/scss/*'], ['storyteller-sass']);
+  gulp.watch(['./storyteller/storyteller.js', './storyteller/modules/*.js'], ['storyteller-js']);
 })
 
 gulp.task('story-app-sass', function() {
@@ -57,6 +62,19 @@ gulp.task('compile-stories', function() {
   gulp.src('./content/**/assets/*')
     .pipe(gulp.dest('./dist/'))
 });
+
+
+gulp.task('storyteller-sass', function() {
+  gulp.src(['./storyteller/scss/*.scss', './storyteller/modules/**/scss/*.scss'])
+    .pipe(sass())
+    .pipe(gulp.dest('./dist/css'));
+});
+
+gulp.task('storyteller-js', function() {
+  gulp.src(['./storyteller/modules/**/*.js', './storyteller/storyteller.js'])
+    .pipe(gulp.dest('./dist/js'));
+});
+
 
 gulp.task('dev-server', function() {
   connect.server({
