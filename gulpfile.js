@@ -98,8 +98,11 @@ gulp.task('storyteller-css', ['storyteller-gulp'], function() {
     .pipe(gulp.dest('./dist/css/storyteller'));
 });
 gulp.task('storyteller-js', function() {
-  gulp.src(['./storyteller/storyteller.js', './storyteller/modules'])
+  gulp.src(['./storyteller/storyteller.js'])
     .pipe(gulp.dest('./dist/js/storyteller'));
+
+  gulp.src(['./storyteller/modules/**/*.js']) // TODO: probably don't need 2 gulp.src's
+    .pipe(gulp.dest('./dist/js/storyteller/modules'));
 });
 gulp.task('storyteller', ['storyteller-js', 'storyteller-css'], function() {
 });
