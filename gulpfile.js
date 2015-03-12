@@ -25,7 +25,7 @@ gulp.task('build', [
 gulp.task('develop', ['build', 'dev-server', 'watch']);
 
 gulp.task('watch', function() {
-  gulp.watch(['./content/**/slides.html'], ['compile-stories']);
+  gulp.watch(['./story-app/index.html', './content/**/slides.html'], ['compile-stories']);
   gulp.watch(['./storyteller/styles/scss/*.scss'], ['storyteller-css']);
   gulp.watch(['./storyteller/*.js', './storyteller/modules/**/*.js'], ['storyteller-js']);
 });
