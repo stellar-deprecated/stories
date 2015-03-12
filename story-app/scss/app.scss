@@ -5,6 +5,8 @@ html {
   box-sizing: inherit;
 }
 
+@import "_normalize";
+
 
 /**
     Variables
@@ -21,6 +23,8 @@ $light: #eceff0; // Light grey
 **/
 html, body {
     overflow: hidden;
+    margin: 0;
+    padding: 0;
     background: #fff;
 }
 
@@ -104,4 +108,4 @@ h4 {font-size: 54px;}
 h5 {font-size: 48px;}
 h6 {font-size: 36px;}
 
-@import "_theme.scss";
+@import "_theme";
