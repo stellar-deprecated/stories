@@ -1,3 +1,9 @@
+.stories {
+  box-sizing: border-box; }
+
+.stories *, .stories *:before, .stories *:after {
+  box-sizing: inherit; }
+
 /**
     Overall structure of the slideshow
 **/

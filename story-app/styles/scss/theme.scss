@@ -50,53 +50,7 @@
 }
 
 /**
-    Variables
-**/
-$primary: #08b5e5; // Blue
-$green: #64D7B2;
-$dark: #5b6a72; // Dark grey
-$light: #eceff0; // Light grey
-
-/**
-    Global styles
-**/
-html, body {
-    overflow: hidden;
-    background: #fff;
-}
-
-::selection {
-    color: white;
-    background: $primary;
-    opacity: 0.5;
-    text-shadow: none;
-}
-
-/**
-    Typography styles
-**/
-body {
-    font-family: 'Clear Sans', sans-serif;
-    font-weight: 400;
-    font-size: 32px;
-    line-height: 1.65;
-    color: $dark;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
-}
-// http://modularscale.com/scale/?px1=32&px2=54&ra1=1.5&ra2=0
-h1 {font-size: 108px;}
-h2 {font-size: 81px;}
-h3 {font-size: 72px;}
-h4 {font-size: 54px;}
-h5 {font-size: 48px;}
-h6 {font-size: 36px;}
-
-
-/**
-    General styling
+    General theming
 **/
 
 .stories {

@@ -1,0 +1,105 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+
+/**
+    Variables
+**/
+$primary: #08b5e5; // Blue
+$green: #64D7B2;
+$dark: #5b6a72; // Dark grey
+$light: #eceff0; // Light grey
+
+
+
+/**
+    Global styles
+**/
+html, body {
+    overflow: hidden;
+    background: #fff;
+}
+
+::selection {
+    color: white;
+    background: $primary;
+    opacity: 0.5;
+    text-shadow: none;
+}
+
+/**
+    Typography styles
+**/
+/*!
+ * Clear Sans Webfont 1.00
+ *
+ * Webfont conversion of the Clear Sans typeface, designed by the
+ * Intel Open Source Technology Center <https://01.org/clear-sans>
+ *
+ * Original font file released under the Apache 2.0 License
+ * <http://www.apache.org/licenses/LICENSE-2.0.html>
+ *
+ * Webfont version by Resi Respati <resir014@gmail.com>
+ * Released under the MIT License.
+ *
+ * https://github.com/resir014/Clear-Sans-Webfont
+ */
+
+@font-face {
+    font-family: 'Clear Sans';
+    font-style: normal;
+    font-weight: 100;
+    src: local('ClearSans-Thin'), local('Clear Sans Thin'),
+         url('../../fonts/ClearSans-Thin.eot'),
+         url('../../fonts/ClearSans-Thin.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/ClearSans-Thin.woff') format('woff'),
+         url('../../fonts/ClearSans-Thin.ttf') format('truetype'),
+         url('../../fonts/ClearSans-Thin.svg') format('svg');
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('ClearSans-Light'), local('Clear Sans Light'),
+         url('../../fonts/ClearSans-Light.eot'),
+         url('../../fonts/ClearSans-Light.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/ClearSans-Light.woff') format('woff'),
+         url('../../fonts/ClearSans-Light.ttf') format('truetype'),
+         url('../../fonts/ClearSans-Light.svg') format('svg');
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('ClearSans-Bold'), local('Clear Sans Bold'),
+         url('../../fonts/ClearSans-Bold.eot'),
+         url('../../fonts/ClearSans-Bold.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/ClearSans-Bold.woff') format('woff'),
+         url('../../fonts/ClearSans-Bold.ttf') format('truetype'),
+         url('../../fonts/ClearSans-Bold.svg') format('svg');
+}
+
+body {
+    font-family: 'Clear Sans', sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.65;
+    color: $dark;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+// http://modularscale.com/scale/?px1=32&px2=54&ra1=1.5&ra2=0
+h1 {font-size: 108px;}
+h2 {font-size: 81px;}
+h3 {font-size: 72px;}
+h4 {font-size: 54px;}
+h5 {font-size: 48px;}
+h6 {font-size: 36px;}
