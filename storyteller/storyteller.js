@@ -131,12 +131,21 @@ var stories = (function() {
         }
 
         this.log(moduleName + ".entry()")
-        this.modules[moduleName].entry.call(this);
+        this.moduleStart.entry.call(this, moduleName, this.modules[moduleName]);
       },
 
       loadAllModules: function() {
         for (var i = 0; i < this.moduleList.length; i++) {
           this.loadModule(this.moduleList[i])
+        }
+      },
+
+      moduleStart: {
+        // generic entry
+        entry: function(moduleName, module) {
+          if (typeof module.entry === 'function') {
+            module.entry.call(this);
+          }
         }
       },
 
