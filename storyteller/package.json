@@ -1,0 +1,22 @@
+{
+  "name": "storyteller",
+  "version": "0.2.0",
+  "description": "A JavaScript library for telling stories through the web with interactive content",
+  "dependencies": {
+    "gulp": "^3.8.11",
+    "gulp-sass": "^1.3.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stellar/stories"
+  },
+  "author": "Stellar Development Foundation",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stellar/stories/issues"
+  },
+  "homepage": "https://github.com/stellar/stories/tree/master/storyteller"
+}
