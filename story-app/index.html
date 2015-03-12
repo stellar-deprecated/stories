@@ -30,10 +30,10 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js"></script>
   <!-- for now, this is a hardcoded include because in the future, it will be
     all combined into one file -->
-  <script src="../js/storyteller.js"></script>
+  <script src="../js/storyteller/storyteller.js"></script>
   <script src="../js/storyteller/modules/core/core.js"></script>
   <script>
-    $('.stories').stories();
+    $('.stories').stories(window.storyConfig.storyteller);
   </script>
 </body>
 </html>

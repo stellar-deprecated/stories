@@ -10,7 +10,7 @@
 var stories = (function() {
   var stories = {};
 
-  stories.newStory = function() {
+  stories.newStory = function(config) {
     return Object.create({
       /**
         Initialization family
@@ -26,6 +26,9 @@ var stories = (function() {
         };
 
         this.modules = {}; // container to hold modules
+        this.moduleList = config.modules;
+        this.options = $.extend(this.options, config.options);
+
         this.width = this.options.width;
         this.height = this.options.height;
 
@@ -34,13 +37,10 @@ var stories = (function() {
 
         // main dom elements
         this.$container = $(elem);
-        this.$ui = this.$container.find('> .ui');
+        this.$ui = $('<div class="ui"></div>').prependTo(this.$container);
         this.$slidesContainer = this.$container.find('> .slides');
-        this.$slides = undefined;
+        this.$slides = this.$container.find('> .slides > section');
         this.$currentSlide = undefined; // <section>
-
-        // load the slideshow based on what the parameter is
-        this.loadSlideshow();
 
         // load all dependencies from the slideshow config.json
         this.loadAllModules();
@@ -70,40 +70,6 @@ var stories = (function() {
         }
         this.trigger = function(a, b) {
           $(eventTarget).trigger(a, b)
-        }
-      },
-
-      // loadSlideshow makes requests to load the slideshow specified in
-      // url's GET param show. Looks for these 2 files:
-      //   slides.html
-      //   config.json
-      loadSlideshow: function() {
-        // Download the target slideshow
-        var urlParam = getParameterByName('show');
-        var slug = urlParam.replace(/[^\w-_]+/g,''); // Whitelist input url {}
-        if (slug === '') {
-          console.error("Missing 'show' GET parameter");
-        }
-        var targetContent = $.ajax('./content/' + slug + '/slides.html', {'async': false});
-        if (targetContent.status == 200) {
-          this.$slidesContainer.html(targetContent.responseText);
-          this.$slides = this.$container.find('> .slides > section');
-        } else {
-          console.error("Failed to load slides (file not found)");
-        }
-
-        var targetConfig = $.ajax('./content/' + slug + '/config.json', {'async': false});
-        if (targetConfig.status == 200) {
-          var responseConfig = JSON.parse(targetConfig.responseText);
-          if (typeof responseConfig.modules === "undefined" || responseConfig.modules.length === 0) {
-            console.error("Config missing modules");
-          } else {
-            this.moduleList = responseConfig.modules
-            if (typeof responseConfig.options !== undefined)
-            this.options = $.extend(this.options, responseConfig.options);
-          }
-        } else {
-          console.error("Failed to load slides (config not found)");
         }
       },
 
@@ -321,18 +287,10 @@ var stories = (function() {
 
 (function ($, window, document) {
   // Initialization
-  $.fn.stories = function() {
+  $.fn.stories = function(config) {
     this.each(function (k, v) {
-      var thisStory = stories.newStory();
+      var thisStory = stories.newStory(config);
       thisStory.init(v);
     });
   };
 }(jQuery, window, document));
-
-// Helper function for GET parameter
-function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(location.search);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
