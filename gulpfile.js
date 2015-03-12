@@ -6,7 +6,9 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var connect = require('gulp-connect');
-var chug = require('gulp-chug');
+var which = require('which').sync;
+var spawn = require('child_process').spawn;
+var gutil = require('gulp-util');
 
 var map = require('vinyl-map');
 
@@ -82,13 +84,16 @@ gulp.task('compile-stories', function() {
     .pipe(gulp.dest('./dist/'))
 });
 
-
-// Calls the default task in storyteller's gulp
-gulp.task('storyteller-chug', function() {
-  gulp.src('./storyteller/gulpfile.js')
-    .pipe(chug());
+gulp.task('storyteller-gulp', function(cb) {
+  gutil.log("Starting storyteller.js gulp")
+  spawn(which('gulp'), ['--cwd', 'storyteller'], {stdio: 'inherit'})
+    .on('exit', function() {
+      gutil.log("Finished storyteller.js gulp");
+      cb.call();
+    });
 });
-gulp.task('storyteller-css', ['storyteller-chug'], function() {
+
+gulp.task('storyteller-css', ['storyteller-gulp'], function() {
   gulp.src(['./storyteller/styles/css/*.css'])
     .pipe(gulp.dest('./dist/css/storyteller'));
 });

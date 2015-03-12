@@ -30,6 +30,8 @@
     "gulp-html-replace": "^1.4.4",
     "gulp-inject": "^1.2.0",
     "gulp-rename": "^1.2.0",
-    "vinyl-map": "^1.0.1"
+    "gulp-util": "^3.0.4",
+    "vinyl-map": "^1.0.1",
+    "which": "^1.0.9"
   }
 }
