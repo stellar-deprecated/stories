@@ -1,11 +1,18 @@
 {
-  "modules": [
-    "navButtons"
-    ,"zoom"
-    ,"simpleSwipe"
-    ,"arrowKeyNavigation"
-  ],
-  "options": {
-    "debug": true
+  "storyteller": {
+    "modules": [
+      "navButtons"
+      ,"zoom"
+      ,"simpleSwipe"
+      ,"arrowKeyNavigation"
+    ],
+    "options": {
+      "debug": true
+    }
+  },
+  "meta": {
+    "title": "How Stellar Works",
+    "description": "How do you send EUR to your friend using USD on the Stellar network? Let’s start by explaining what exactly is the Stellar network and how it works.",
+    "image": "./assets/thumbnail-1.png"
   }
 }

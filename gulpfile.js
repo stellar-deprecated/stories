@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var _ = require('lodash');
 
 var gulp = require('gulp');
 var sass = require('gulp-sass');
@@ -34,18 +35,36 @@ gulp.task('story-app-sass', function() {
 });
 
 gulp.task('compile-stories', function() {
-  var template = fs.readFileSync('./story-app/index.html').toString(); // TODO: make this async
+  // TODO: promisify the file reads in here for performance?
+  var indexTemplate = fs.readFileSync('./story-app/index.html').toString();
+  var defaultMeta = JSON.parse(fs.readFileSync('./story-app/default-meta.json').toString());
   var content = gulp.src('./content/**/config.json');
 
+  // Inlines the config file as a js declaration.
+  // Also inserts meta information
   var inlineConfig = map(function(content) {
+    var contentJSON = JSON.parse(content.toString());
+
     content = content.toString();
-    content = "<script>window.storyConfig = " + content + ";</script>"
-    return template.replace('<!-- config inserted here -->', content);
+    content = "<script>window.storyConfig = " + content + ";</script>";
+    var storyMeta = typeof contentJSON.meta === 'undefined' ? {} : contentJSON.meta;
+
+    // Missing fields will default to those in story-app/default-meta.json
+    var finalMeta = _.assign(_.clone(defaultMeta), storyMeta);
+    var newIndex = indexTemplate;
+    newIndex = newIndex.replace('<!-- config inserted here -->', content);
+    // TODO: Replace things the "correct" way (instead of copy and paste)
+    newIndex = newIndex.replace(/<!-- story-meta:title -->/g, finalMeta.title);
+    newIndex = newIndex.replace(/<!-- story-meta:description -->/g, finalMeta.description);
+    newIndex = newIndex.replace(/<!-- story-meta:image -->/g, finalMeta.image);
+    newIndex = newIndex.replace(/<!-- story-meta:author -->/g, finalMeta.author);
+
+    return newIndex;
   });
 
   var inlineSlide = map(function(content, filename) {
     var slidesPath = path.dirname(filename) + "/slides.html"
-    var slidesContent = fs.readFileSync(slidesPath, 'utf-8'); // TODO: make this async
+    var slidesContent = fs.readFileSync(slidesPath, 'utf-8');
     content = content.toString();
     return content.replace('<!-- slides inserted here -->', slidesContent);
   });
