@@ -12,9 +12,7 @@ var gutil = require('gulp-util');
 
 var map = require('vinyl-map');
 
-gulp.task('default', function() {
-  console.log('Use gulp build');
-});
+gulp.task('default', ['develop'], function() {});
 
 gulp.task('build', [
   'compile-stories',
