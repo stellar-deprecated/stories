@@ -24,12 +24,13 @@ gulp.task('develop', ['build', 'dev-server', 'watch']);
 
 gulp.task('watch', function() {
   gulp.watch(['./story-app/index.html', './content/**/slides.html'], ['compile-stories']);
+  gulp.watch(['./story-app/styles/scss/*.scss'], ['story-app-sass']);
   gulp.watch(['./storyteller/styles/scss/*.scss'], ['storyteller-css']);
   gulp.watch(['./storyteller/*.js', './storyteller/modules/**/*.js'], ['storyteller-js']);
 });
 
 gulp.task('story-app-sass', function() {
-  gulp.src('./story-app/styles/scss/*.scss')
+  gulp.src('./story-app/scss/*.scss')
     .pipe(sass())
     .pipe(gulp.dest('./dist/css'));
 });
