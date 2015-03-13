@@ -61,6 +61,14 @@ storyteller.define('transition-fade', function() {
   }
 });
 
+// Module exists just for the css
+storyteller.define('slide-full', function() {
+  return {
+    entry: function() {
+    }
+  }
+});
+
 // left right navigation buttons
 storyteller.define('control-navButtons', function() {
   return {

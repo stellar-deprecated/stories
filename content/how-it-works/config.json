@@ -4,6 +4,7 @@
       "storyline-linear"
       ,"transition-fade"
       ,"viewport-fixed"
+      ,"slide-full"
       ,"display-background-slide"
       ,"control-navButtons"
       ,"control-progressBar-thin"

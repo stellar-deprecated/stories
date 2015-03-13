@@ -120,6 +120,8 @@ var storyteller = (function() {
           }
         }
 
+        this.$container.addClass('stories--' + moduleName);
+
         this.log(moduleName + ".entry()")
         var tools = this.generateModuleTools(moduleName, this.modules[moduleName].tools);
         this.modules[moduleName].entry(tools);
@@ -162,10 +164,10 @@ var storyteller = (function() {
         "this": function() {
           return this;
         },
-        "log": function(moduleName) {
+        "log": function() {
           return this.log;
         },
-        "events": function(moduleName) {
+        "events": function() {
           return this.events;
         },
         "$slides": function() {
@@ -175,7 +177,7 @@ var storyteller = (function() {
           return this.$slidesContainer;
         },
         "uiLayer": function(moduleName) {
-          return $('<div class="ui-layer ' + this.getModuleFamily(moduleName) + ' ' + moduleName + '"></div>').prependTo(this.$ui);
+          return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$ui);
         }
       },
 
