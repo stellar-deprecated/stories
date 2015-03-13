@@ -3,6 +3,8 @@
     "modules": [
       "navButtons"
       ,"zoom"
+      ,"background--slide"
+      ,"progressBar--thin"
       ,"simpleSwipe"
       ,"arrowKeyNavigation"
     ],

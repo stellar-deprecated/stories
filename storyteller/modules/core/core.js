@@ -1,14 +1,12 @@
-stories.define('navButtons',
-  ['background--slide', 'progressBar--thin'], function() {
-  var module = this;
-
+stories.define('navButtons', function() {
   return {
-    entryOld: function() {
-      this.$ui.prepend('<div class="navigation-buttons"><a class="nav-prev"></a><a class="nav-next"></a></div>');
-      this.$navButtons = this.$ui.find('> .navigation-buttons');
+    tools: ['this', 'uiLayer'],
+    entry: function(t) {
+      var navPrev = $('<div class="nav-prev"></div>').prependTo(t.uiLayer);
+      var navNext = $('<div class="nav-next"></div>').prependTo(t.uiLayer);
 
-      this.$navButtons.find('.nav-prev').click(this.prevSlide.bind(this));
-      this.$navButtons.find('.nav-next').click(this.nextSlide.bind(this));
+      navPrev.click(t.this.prevSlide.bind(t.this));
+      navNext.click(t.this.nextSlide.bind(t.this));
     },
   };
 });
@@ -16,7 +14,7 @@ stories.define('navButtons',
 // Background based on the current slide
 stories.define('background--slide', function() {
   var module = this;
-  var t; // tools
+  var t;
   module.newSlide = function(e, targetSlide) {
     t.uiLayer.attr({'template': $(targetSlide).attr('template')});
   };
