@@ -3,7 +3,7 @@
     "modules": [
       "storyline-linear"
       ,"transition-fade"
-      ,"zoom"
+      ,"viewport-fixed"
       ,"display-background-slide"
       ,"control-navButtons"
       ,"control-progressBar-thin"

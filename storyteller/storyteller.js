@@ -16,21 +16,12 @@ var stories = (function() {
         Initialization family
       **/
       init: function(elem) {
-        // Default options
-        this.options = {
-          firstSlide: 0,
-          debug: false,
-          width: 1920,
-          height: 1080,
-          zoomPadding: 0
-        };
+        // Extend options from defaults
+        this.options = $.extend({
+          debug: false
+        }, config.options);
 
-        this.modules = {}; // container to hold modules
         this.moduleList = config.modules;
-        this.options = $.extend(this.options, config.options);
-
-        this.width = this.options.width;
-        this.height = this.options.height;
 
         // Create the event handling system
         this.initEvents();
@@ -38,19 +29,16 @@ var stories = (function() {
         // Create the debug logger
         this.createLogger();
 
-        // main dom elements
+        // Initialize and save main dom elements
         this.$container = $(elem);
-        this.initUILayers();
         this.$slidesContainer = this.$container.find('> .slides');
         this.$slides = this.$container.find('> .slides > section');
+        this.initUILayers();
 
         // load all dependencies from the slideshow config.json
         this.loadAllModules();
 
-        // Set viewport virtual resolution (1920x1080 and gets scaled/zoomed)
-        this.$slidesContainer.css({width: this.width + 'px', height: this.height + 'px'});
-
-        // Globally initialize
+        // Let modules know that they are ready
         this.events.trigger('init');
 
         // Enable debug mode
@@ -63,10 +51,9 @@ var stories = (function() {
         this.$ui = $('<div class="ui"></div>').prependTo(this.$container);
       },
 
-      events: {},
-
       initEvents: function() {
         var eventTarget = {};
+        this.events = {};
         this.events.on = function(a, b, c) {
           /**
             KLUDGE: I spent 60 minutes debugging this and why apply doesn't work
@@ -148,6 +135,7 @@ var stories = (function() {
       },
 
       loadAllModules: function() {
+        this.modules = {}; // container to hold modules
         for (var i = 0; i < this.moduleList.length; i++) {
           this.loadModule(this.moduleList[i])
         }
@@ -192,28 +180,8 @@ var stories = (function() {
       },
 
       createLogger: function() {
-        if (this.options.debug) {
-          this.log = function(logString) {
-            var stackTrace = (new Error()).stack; // Only tested in latest FF and Chrome
-            if (typeof stackTrace !== 'undefined') { // IE10 does not have stacktrace
-              var callerName = stackTrace.replace(/^Error\s+/, ''); // Sanitize Chrome
-              callerName = callerName.split("\n")[1]; // 1st item is this, 2nd item is caller
-              callerName = callerName.replace(/^\s+at Object./, ''); // Sanitize Chrome
-              callerName = callerName.replace(/ \(.+\)$/, ''); // Sanitize Chrome
-              callerName = callerName.replace(/\@.+/, ''); // Sanitize Firefox
-
-              var matchModule = callerName.match(/^\$\.fn\.stories\.modules\.((?:\w|-)+)/);
-              if (matchModule !== null) {
-                console.log("[" + matchModule[1] + "] " + logString);
-              } else if (callerName == "Home.loadModule") {
-                console.log("[loadModule] " + logString);
-              } else {
-                console.log(logString);
-              }
-            } else {
-              console.log(logString);
-            }
-          }
+        if (this.options.debug && typeof console.log !== 'undefined') {
+          this.log = console.log.bind(console);
         } else {
           this.log = function() {} // don't log
         }
@@ -225,7 +193,7 @@ var stories = (function() {
     var modules = {};
 
     return {
-      // similar to the AMD.js define except that the id field is required
+      // similar to the AMD api define except that the id field is required
       // all modules should be cleaned and have expected types
       define: function() {
         if (arguments.length === 2) {

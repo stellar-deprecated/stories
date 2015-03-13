@@ -126,7 +126,7 @@ stories.define('control-progressBar-thin', function() {
 });
 
 // Zooming of the slideshow
-stories.define('zoom', function() {
+stories.define('viewport-fixed', function() {
   var module = this;
   var t;
 
@@ -216,9 +216,13 @@ stories.define('zoom', function() {
   };
 
   return {
-    tools: ['$slidesContainer'],
+    tools: ['$slidesContainer' ,'events'],
     entry: function(tools) {
       t = tools;
+      t.events.on('init', function() {
+        t.$slidesContainer.css({width: module.width + 'px', height: module.height + 'px'});
+      });
+
       module.resizeZoom = module.resizeZoomFactory();
       module.resizeZoom();
       module.bindResizeZoom();
@@ -255,7 +259,7 @@ stories.define('control-arrowKeyNavigation', function() {
   return {
     tools: ['events'],
     entry: function(t) {
-      $(document).keydown(function(e) { // TODO: figure out how to have this not conflict with other
+      $(document).keydown(function(e) { // TODO: listen only when the key is for this story
         switch(e.which) {
           case 32: // spacebar
           t.events.trigger('control:advance', 1);
