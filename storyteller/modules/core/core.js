@@ -272,7 +272,7 @@ storyteller.define('control-simpleSwipe', function() {
 });
 
 // Left right keyboard arrow key navigation
-storyteller.define('control-arrowKeyNavigation', function() {
+storyteller.define('control-keyboardNavigation', function() {
   return {
     tools: ['events'],
     entry: function(t) {

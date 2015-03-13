@@ -9,7 +9,7 @@
       ,"control-navButtons"
       ,"control-progressBar-thin"
       ,"control-simpleSwipe"
-      ,"control-arrowKeyNavigation"
+      ,"control-keyboardNavigation"
     ],
     "options": {
       "debug": true
