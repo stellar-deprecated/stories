@@ -35,6 +35,9 @@ var stories = (function() {
         // Create the event handling system
         this.initEvents();
 
+        // Create the debug logger
+        this.createLogger();
+
         // main dom elements
         this.$container = $(elem);
         this.initUILayers();
@@ -48,8 +51,8 @@ var stories = (function() {
         // Set viewport virtual resolution (1920x1080 and gets scaled/zoomed)
         this.$slidesContainer.css({width: this.width + 'px', height: this.height + 'px'});
 
-        // Initialize first slide
-        this.initSlides();
+        // Globally initialize
+        this.events.trigger('init');
 
         // Enable debug mode
         if (this.options.debug) {
@@ -172,89 +175,45 @@ var stories = (function() {
         "this": function() {
           return this;
         },
+        "log": function(moduleName) {
+          return this.log;
+        },
         "events": function(moduleName) {
           return this.events;
+        },
+        "$slides": function() {
+          return this.$slides;
         },
         "uiLayer": function(moduleName) {
           return $('<div class="ui-layer ' + this.getModuleFamily(moduleName) + ' ' + moduleName + '"></div>').prependTo(this.$ui);
         }
       },
 
-      initSlides: function() {
-        this.currentSlideIndex = 0;
-        this.toSlide(this.currentSlideIndex);
-      },
-
-      /**
-        Runtime tools
-      **/
-      isIndexInBounds: function(targetSlideIndex) {
-        // Check bounds
-        if (targetSlideIndex < 0 || targetSlideIndex >= this.$slides.length) {
-          this.log('target slide out of bounds');
-          return false;
-        } else {
-          return true;
-        }
-      },
-
-      // Attempts to go to a target slide. Handles edgecases
-      toSlide: function(targetSlideIndex) {
-        if (!this.isIndexInBounds(targetSlideIndex)) {
-          return;
-        }
-
-        // Save target slide element
-        var $targetSlide = $(this.$slides[targetSlideIndex]);
-
-        // Set visibility
-        if (typeof this.$currentSlide !== 'undefined') {
-          this.$currentSlide.removeClass('visible');
-        }
-        $targetSlide.addClass('visible');
-
-        // Set internal state variables
-        this.$currentSlide = $targetSlide;
-        this.currentSlideIndex = targetSlideIndex;
-
-        // State css classes helpers
-        if (this.currentSlideIndex === 0) {
-          this.$container.addClass('first-slide');
-        } else {
-          this.$container.removeClass('first-slide');
-        }
-
-        if (this.currentSlideIndex === this.$slides.length - 1) {
-          this.$container.addClass('last-slide');
-        } else {
-          this.$container.removeClass('last-slide');
-        }
-
-        // Set background
-        this.events.trigger("slide.change", $targetSlide)
-      },
-
-      log: function(logString) {
+      createLogger: function() {
         if (this.options.debug) {
-          var stackTrace = (new Error()).stack; // Only tested in latest FF and Chrome
-          if (typeof stackTrace !== 'undefined') { // IE10 does not have stacktrace
-            var callerName = stackTrace.replace(/^Error\s+/, ''); // Sanitize Chrome
-            callerName = callerName.split("\n")[1]; // 1st item is this, 2nd item is caller
-            callerName = callerName.replace(/^\s+at Object./, ''); // Sanitize Chrome
-            callerName = callerName.replace(/ \(.+\)$/, ''); // Sanitize Chrome
-            callerName = callerName.replace(/\@.+/, ''); // Sanitize Firefox
+          this.log = function(logString) {
+            var stackTrace = (new Error()).stack; // Only tested in latest FF and Chrome
+            if (typeof stackTrace !== 'undefined') { // IE10 does not have stacktrace
+              var callerName = stackTrace.replace(/^Error\s+/, ''); // Sanitize Chrome
+              callerName = callerName.split("\n")[1]; // 1st item is this, 2nd item is caller
+              callerName = callerName.replace(/^\s+at Object./, ''); // Sanitize Chrome
+              callerName = callerName.replace(/ \(.+\)$/, ''); // Sanitize Chrome
+              callerName = callerName.replace(/\@.+/, ''); // Sanitize Firefox
 
-            var matchModule = callerName.match(/^\$\.fn\.stories\.modules\.((?:\w|-)+)/);
-            if (matchModule !== null) {
-              console.log("[" + matchModule[1] + "] " + logString);
-            } else if (callerName == "Home.loadModule") {
-              console.log("[loadModule] " + logString);
+              var matchModule = callerName.match(/^\$\.fn\.stories\.modules\.((?:\w|-)+)/);
+              if (matchModule !== null) {
+                console.log("[" + matchModule[1] + "] " + logString);
+              } else if (callerName == "Home.loadModule") {
+                console.log("[loadModule] " + logString);
+              } else {
+                console.log(logString);
+              }
             } else {
               console.log(logString);
             }
-          } else {
-            console.log(logString);
           }
+        } else {
+          this.log = function() {} // don't log
         }
       },
     });

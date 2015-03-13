@@ -1,24 +1,96 @@
 stories.define('storyline-linear', function() {
+  var module = this;
   var t;
+
+  module.currentSlideIndex = 0;
+  module.totalSlides = 0;
+  module.isIndexInBounds = function(targetSlideIndex) {
+    // Check bounds
+    if (targetSlideIndex < 0 || targetSlideIndex >= module.totalSlides) {
+      t.log('target slide out of bounds');
+      return false;
+    } else {
+      return true;
+    }
+  },
+
+  // Attempts to go to a target slide. Handles edgecases
+  module.toSlide = function(targetSlideIndex) {
+    if (!module.isIndexInBounds(targetSlideIndex)) {
+      return;
+    }
+
+    // Save target slide element
+    var oldSlideIndex = module.currentSlideIndex;
+    var $targetSlide = $(t.$slides[targetSlideIndex]);
+
+    // // Set visibility
+    // if (typeof this.$currentSlide !== 'undefined') {
+    //   this.$currentSlide.removeClass('visible');
+    // }
+    // $targetSlide.addClass('visible');
+    //
+    // Set internal state variables
+    this.$currentSlide = $targetSlide;
+    module.currentSlideIndex = targetSlideIndex;
+    //
+    // // State css classes helpers
+    // if (module.currentSlideIndex === 0) {
+    //   this.$container.addClass('first-slide');
+    // } else {
+    //   this.$container.removeClass('first-slide');
+    // }
+    //
+    // if (module.currentSlideIndex === t.$slides.length - 1) {
+    //   this.$container.addClass('last-slide');
+    // } else {
+    //   this.$container.removeClass('last-slide');
+    // }
+
+    this.events.trigger("storyline:change", {
+      fromIndex: oldSlideIndex,
+      toIndex: module.currentSlideIndex,
+      totalSlides: module.totalSlides,
+      $targetSlide: $targetSlide,
+    });
+  };
+
   return {
-    tools: ['this', 'events'],
+    tools: ['this', '$slides', 'events', 'log'],
     entry: function(tools) {
       t = tools;
+      t.events.on('init', function() {
+        module.totalSlides = t.$slides.length;
+        module.toSlide.call(t.this, module.currentSlideIndex);
+      });
       t.events.on('control:advance', function(e, amount) {
-        console.log(amount)
-        t.this.toSlide.call(t.this, t.this.currentSlideIndex + amount);
+        module.toSlide.call(t.this, module.currentSlideIndex + amount);
       });
     }
   }
 });
 
 stories.define('transition-fade', function() {
-  var t;
   return {
-    tools: [],
-    entry: function(tools) {
-      t = tools;
+    tools: ['this', 'events', '$slides'],
+    entry: function(t) {
+      t.events.on("storyline:change", function(e, change) {
+        t.$slides.removeClass('visible'); // TODO: see if performance is an issue; if so, improve
+        change.$targetSlide.addClass('visible');
 
+        // State css classes helpers
+        if (change.toIndex === 0) {
+          t.this.$container.addClass('first-slide');
+        } else {
+          t.this.$container.removeClass('first-slide');
+        }
+
+        if (change.toIndex === change.totalSlides - 1) {
+          t.this.$container.addClass('last-slide');
+        } else {
+          t.this.$container.removeClass('last-slide');
+        }
+      });
     }
   }
 });
@@ -30,9 +102,6 @@ stories.define('control-navButtons', function() {
     entry: function(t) {
       var navPrev = $('<div class="nav-prev"></div>').prependTo(t.uiLayer);
       var navNext = $('<div class="nav-next"></div>').prependTo(t.uiLayer);
-
-      // navPrev.click(t.this.prevSlide.bind(t.this));
-      // navNext.click(t.this.nextSlide.bind(t.this));
 
       navPrev.click(function() {
         t.events.trigger('control:advance', -1);
@@ -48,16 +117,15 @@ stories.define('control-navButtons', function() {
 stories.define('display-background-slide', function() {
   var module = this;
   var t;
-  module.newSlide = function(e, targetSlide) {
-    t.uiLayer.attr({'template': $(targetSlide).attr('template')});
+  module.updateBackground = function(e, change) {
+    t.uiLayer.attr({'template': change.$targetSlide.attr('template')});
   };
 
   return {
     tools: ['events', 'uiLayer'],
     entry: function(tools) {
       t = tools;
-      module.uiLayer = tools.uiLayer;
-      t.events.on("slide.change", module.newSlide.bind(this));
+      t.events.on("storyline:change", module.updateBackground);
     },
   };
 });
@@ -66,8 +134,8 @@ stories.define('display-background-slide', function() {
 stories.define('control-progressBar-thin', function() {
   var module = this;
   var t;
-  module.calcProgressBar = function(e, targetSlide) {
-    var percentage = (this.currentSlideIndex) / (this.$slides.length - 1) * 100;
+  module.calcProgressBar = function(e, change) {
+    var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
     t.uiLayer.css('width', percentage + '%');
   };
 
@@ -75,7 +143,7 @@ stories.define('control-progressBar-thin', function() {
     tools: ['this', 'uiLayer', 'events'],
     entry: function(tools) {
       t = tools;
-      t.events.on("slide.change", module.calcProgressBar.bind(t.this));
+      t.events.on("storyline:change", module.calcProgressBar);
     },
   };
 });
@@ -181,7 +249,7 @@ stories.define('control-simpleSwipe', function() {
     tools: ['this', 'events'],
     entry: function(tools) {
       var t = tools;
-      if (typeof $.fn.swipe === 'undefined') {
+      if (typeof $.fn.swipe === 'undefined') { // TODO: dependency injection (jspm?)
         console.error("touchswipe plugin missing")
         return;
       }
