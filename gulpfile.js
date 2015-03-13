@@ -21,6 +21,7 @@ gulp.task('build', [
 });
 
 gulp.task('develop', ['build', 'dev-server', 'watch']);
+gulp.task('production', ['build']);
 
 gulp.task('watch', function() {
   gulp.watch(['./story-app/index.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories']);
