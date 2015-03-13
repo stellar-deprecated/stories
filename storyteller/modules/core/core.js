@@ -78,6 +78,14 @@ storyteller.define('slide-full', function() {
   }
 });
 
+// Card shaped slides
+storyteller.define('slide-cards', function() {
+  return {
+    entry: function() {
+    }
+  }
+});
+
 // left right navigation buttons
 storyteller.define('control-navButtons', function() {
   return {

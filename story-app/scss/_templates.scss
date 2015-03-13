@@ -48,3 +48,13 @@ section[template="fullscreen-caption"] {
         text-align: center;
     }
 }
+
+section[template="card-image"] {
+  img {
+    width: 100%;
+    height: auto;
+  }
+  img, div {
+    position: absolute;
+  }
+}
