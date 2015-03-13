@@ -43,7 +43,6 @@ var stories = (function() {
         this.initUILayers();
         this.$slidesContainer = this.$container.find('> .slides');
         this.$slides = this.$container.find('> .slides > section');
-        this.$currentSlide = undefined; // <section>
 
         // load all dependencies from the slideshow config.json
         this.loadAllModules();
@@ -183,6 +182,9 @@ var stories = (function() {
         },
         "$slides": function() {
           return this.$slides;
+        },
+        "$slidesContainer": function() {
+          return this.$slidesContainer;
         },
         "uiLayer": function(moduleName) {
           return $('<div class="ui-layer ' + this.getModuleFamily(moduleName) + ' ' + moduleName + '"></div>').prependTo(this.$ui);

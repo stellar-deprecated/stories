@@ -24,10 +24,9 @@ stories.define('storyline-linear', function() {
     var oldSlideIndex = module.currentSlideIndex;
     var $targetSlide = $(t.$slides[targetSlideIndex]);
 
-    this.$currentSlide = $targetSlide;
     module.currentSlideIndex = targetSlideIndex;
 
-    this.events.trigger("storyline:change", {
+    t.events.trigger("storyline:change", {
       fromIndex: oldSlideIndex,
       toIndex: module.currentSlideIndex,
       totalSlides: module.totalSlides,
@@ -36,15 +35,15 @@ stories.define('storyline-linear', function() {
   };
 
   return {
-    tools: ['this', '$slides', 'events', 'log'],
+    tools: ['$slides', 'events', 'log'],
     entry: function(tools) {
       t = tools;
       t.events.on('init', function() {
         module.totalSlides = t.$slides.length;
-        module.toSlide.call(t.this, module.currentSlideIndex);
+        module.toSlide(module.currentSlideIndex);
       });
       t.events.on('control:advance', function(e, amount) {
-        module.toSlide.call(t.this, module.currentSlideIndex + amount);
+        module.toSlide(module.currentSlideIndex + amount);
       });
     }
   }
@@ -118,7 +117,7 @@ stories.define('control-progressBar-thin', function() {
   };
 
   return {
-    tools: ['this', 'uiLayer', 'events'],
+    tools: ['uiLayer', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.on("storyline:change", module.calcProgressBar);
@@ -130,6 +129,12 @@ stories.define('control-progressBar-thin', function() {
 stories.define('zoom', function() {
   var module = this;
   var t;
+
+  // TODO: make fixed viewport size and padding configurable
+  module.width = 1920;
+  module.height = 1080;
+  module.zoomPadding = 0;
+
   // The method we use for resizeZoom depends on which browser it is being
   // displayed in. We will try to use css3 transforms and if it is not
   // available, we will use zoom
@@ -137,15 +142,15 @@ stories.define('zoom', function() {
     var styleMethods = {
       simpleZoom: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
         if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
-          var zoom = viewportWPadded / this.width;
+          var zoom = viewportWPadded / module.width;
           var marginTop = (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px';
           var marginLeft = 0;
         } else { // constrained by viewport height; horizontally center
-          var zoom = viewportHPadded / this.height
+          var zoom = viewportHPadded / module.height
           var marginTop = 0;
           var marginLeft = ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px';
         }
-        this.$slidesContainer.css({
+        t.$slidesContainer.css({
           'zoom': zoom,
           'margin-top': marginTop,
           'margin-left': marginLeft
@@ -153,21 +158,21 @@ stories.define('zoom', function() {
       },
       transformScale: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
         if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
-          var scaleAmount = viewportWPadded / this.width;
+          var scaleAmount = viewportWPadded / module.width;
           var resizeTransform = 'scale(' + scaleAmount + ')';
           var resizeTranslate = 'translate(' +
             0 + ',' +
             ((viewportHPadded - viewportWPadded/slidesAspectRatio) / 2) / scaleAmount + 'px' +
           ')';
         } else { // constrained by viewport height; horizontally center
-          var scaleAmount = viewportHPadded / this.height;
+          var scaleAmount = viewportHPadded / module.height;
           var resizeTransform = 'scale(' + scaleAmount + ')';
           var resizeTranslate = 'translate(' +
             ((viewportWPadded - viewportHPadded*slidesAspectRatio) / 2) / scaleAmount + 'px' + ',' +
             0 +
           ')';
         }
-        this.$slidesContainer.css({
+        t.$slidesContainer.css({
           '-webkit-transform': resizeTransform + ' ' + resizeTranslate,
           'transform': resizeTransform + ' ' + resizeTranslate
         });
@@ -196,10 +201,10 @@ stories.define('zoom', function() {
       var viewportWRaw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       var viewportHRaw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-      var viewportWPadded = (viewportWRaw - this.options.zoomPadding * 2);
-      var viewportHPadded = (viewportHRaw - this.options.zoomPadding * 2);
+      var viewportWPadded = (viewportWRaw - module.zoomPadding * 2);
+      var viewportHPadded = (viewportHRaw - module.zoomPadding * 2);
 
-      var slidesAspectRatio = this.width / this.height;
+      var slidesAspectRatio = module.width / module.height;
       var viewportAspectRatio = viewportWPadded / viewportHPadded;
 
       preferredStyleMethod(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio);
@@ -207,16 +212,16 @@ stories.define('zoom', function() {
   };
 
   module.bindResizeZoom = function() {
-    $(window).on('resize orientationChanged', module.resizeZoom.bind(this));
+    $(window).on('resize orientationChanged', module.resizeZoom);
   };
 
   return {
-    tools: ['this'],
+    tools: ['$slidesContainer'],
     entry: function(tools) {
       t = tools;
-      module.resizeZoom = module.resizeZoomFactory.call(t.this);
-      module.resizeZoom.call(t.this);
-      module.bindResizeZoom.call(t.this);
+      module.resizeZoom = module.resizeZoomFactory();
+      module.resizeZoom();
+      module.bindResizeZoom();
     },
   };
 });
@@ -224,7 +229,7 @@ stories.define('zoom', function() {
 // Single page advancement swipe
 stories.define('control-simpleSwipe', function() {
   return {
-    tools: ['this', 'events'],
+    tools: ['events', '$slidesContainer'],
     entry: function(tools) {
       var t = tools;
       if (typeof $.fn.swipe === 'undefined') { // TODO: dependency injection (jspm?)
@@ -232,7 +237,7 @@ stories.define('control-simpleSwipe', function() {
         return;
       }
 
-      t.this.$slidesContainer.swipe({
+      t.$slidesContainer.swipe({
         swipe: function(event, direction, distance, duration, fingerCount) {
           if (direction === "right") {
             t.events.trigger('control:advance', -1);
