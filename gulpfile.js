@@ -17,6 +17,7 @@ gulp.task('default', ['develop'], function() {});
 gulp.task('build', [
   'compile-stories',
   'story-app-sass',
+  'fonts',
   'storyteller'], function() {
 });
 
@@ -34,6 +35,12 @@ gulp.task('story-app-sass', function() {
   gulp.src('./story-app/scss/*.scss')
     .pipe(sass())
     .pipe(gulp.dest('./dist/css'));
+});
+
+// we don't watch fonts since we don't expect it to frequently change
+gulp.task('fonts', function() {
+  gulp.src('./story-app/fonts/*')
+    .pipe(gulp.dest('./dist/fonts'));
 });
 
 gulp.task('compile-stories', function() {
