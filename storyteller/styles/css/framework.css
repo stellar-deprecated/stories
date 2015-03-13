@@ -44,7 +44,7 @@
   .stories.debug > .slides {
     outline: 1px solid red;
     overflow: visible; }
-  .stories .progress-bar {
+  .stories .progressBar {
     z-index: 200;
     position: absolute;
     bottom: 0; }

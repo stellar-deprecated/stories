@@ -25,7 +25,6 @@ stories.define('background--slide', function() {
     tools: ['events', 'uiLayer'],
     entry: function(tools) {
       t = tools;
-      console.log(tools)
       module.uiLayer = tools.uiLayer;
       t.events.on("slide.change", module.newSlide.bind(this));
     },
@@ -35,16 +34,17 @@ stories.define('background--slide', function() {
 // Bottom blue bar
 stories.define('progressBar--thin', function() {
   var module = this;
+  var t;
   module.calcProgressBar = function(e, targetSlide) {
     var percentage = (this.currentSlideIndex) / (this.$slides.length - 1) * 100;
-    this.$progressBar.css('width', percentage + '%');
+    t.uiLayer.css('width', percentage + '%');
   };
 
   return {
-    entryOld: function() {
-      this.$ui.append('<div class="progress-bar"></div>');
-      this.$progressBar = this.$ui.find('.progress-bar');
-      this.events.on("slide.change", module.calcProgressBar.bind(this));
+    tools: ['this', 'uiLayer', 'events'],
+    entry: function(tools) {
+      t = tools;
+      t.events.on("slide.change", module.calcProgressBar.bind(t.this));
     },
   };
 });
