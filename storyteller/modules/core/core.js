@@ -166,8 +166,9 @@ stories.define('simpleSwipe', function() {
 // Left right arrow key navigation
 stories.define('arrowKeyNavigation', function() {
   return {
-    entryOld: function() {
-      $(document).keydown(function(e) {
+    tools: ['this'],
+    entry: function(t) {
+      $(document).keydown(function(e) { // TODO: figure out how to have this not conflict with other
         switch(e.which) {
           case 32: // spacebar
           this.nextSlide();
@@ -184,7 +185,7 @@ stories.define('arrowKeyNavigation', function() {
           default: return; // exit this handler for other keys
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
-      }.bind(this));
+      }.bind(t.this));
     },
   };
 });
