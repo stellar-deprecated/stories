@@ -52,6 +52,7 @@ stories.define('progressBar--thin', function() {
 // Zooming of the slideshow
 stories.define('zoom', function() {
   var module = this;
+  var t;
   // The method we use for resizeZoom depends on which browser it is being
   // displayed in. We will try to use css3 transforms and if it is not
   // available, we will use zoom
@@ -128,10 +129,12 @@ stories.define('zoom', function() {
   };
 
   return {
-    entryOld: function() {
-      module.resizeZoom = module.resizeZoomFactory.call(this);
-      module.resizeZoom.call(this);
-      module.bindResizeZoom.call(this);
+    tools: ['this'],
+    entry: function(tools) {
+      t = tools;
+      module.resizeZoom = module.resizeZoomFactory.call(t.this);
+      module.resizeZoom.call(t.this);
+      module.bindResizeZoom.call(t.this);
     },
   };
 });
