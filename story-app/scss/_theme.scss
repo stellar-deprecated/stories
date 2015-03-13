@@ -133,19 +133,19 @@
                 background-size: 80%;
             }
         }
-    }
 
-    &.first-slide .nav-prev {
-        opacity: 0;
-        &:hover {
-            cursor: default;
+        &.first-slide .nav-prev {
+            opacity: 0;
+            &:hover {
+                cursor: default;
+            }
         }
-    }
 
-    &.last-slide .nav-next  {
-        opacity: 0;
-        &:hover {
-            cursor: default;
+        &.last-slide .nav-next  {
+            opacity: 0;
+            &:hover {
+                cursor: default;
+            }
         }
     }
 }

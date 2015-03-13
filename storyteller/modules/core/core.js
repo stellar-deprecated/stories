@@ -24,28 +24,8 @@ stories.define('storyline-linear', function() {
     var oldSlideIndex = module.currentSlideIndex;
     var $targetSlide = $(t.$slides[targetSlideIndex]);
 
-    // // Set visibility
-    // if (typeof this.$currentSlide !== 'undefined') {
-    //   this.$currentSlide.removeClass('visible');
-    // }
-    // $targetSlide.addClass('visible');
-    //
-    // Set internal state variables
     this.$currentSlide = $targetSlide;
     module.currentSlideIndex = targetSlideIndex;
-    //
-    // // State css classes helpers
-    // if (module.currentSlideIndex === 0) {
-    //   this.$container.addClass('first-slide');
-    // } else {
-    //   this.$container.removeClass('first-slide');
-    // }
-    //
-    // if (module.currentSlideIndex === t.$slides.length - 1) {
-    //   this.$container.addClass('last-slide');
-    // } else {
-    //   this.$container.removeClass('last-slide');
-    // }
 
     this.events.trigger("storyline:change", {
       fromIndex: oldSlideIndex,
@@ -72,24 +52,11 @@ stories.define('storyline-linear', function() {
 
 stories.define('transition-fade', function() {
   return {
-    tools: ['this', 'events', '$slides'],
+    tools: ['events', '$slides'],
     entry: function(t) {
       t.events.on("storyline:change", function(e, change) {
         t.$slides.removeClass('visible'); // TODO: see if performance is an issue; if so, improve
         change.$targetSlide.addClass('visible');
-
-        // State css classes helpers
-        if (change.toIndex === 0) {
-          t.this.$container.addClass('first-slide');
-        } else {
-          t.this.$container.removeClass('first-slide');
-        }
-
-        if (change.toIndex === change.totalSlides - 1) {
-          t.this.$container.addClass('last-slide');
-        } else {
-          t.this.$container.removeClass('last-slide');
-        }
       });
     }
   }
@@ -108,6 +75,17 @@ stories.define('control-navButtons', function() {
       });
       navNext.click(function() {
         t.events.trigger('control:advance', 1);
+      });
+
+      t.events.on("storyline:change", function(e, change) {
+        if (change.toIndex === 0) {
+          t.uiLayer.addClass('first-slide');
+        } else if (change.toIndex === change.totalSlides - 1) {
+          t.uiLayer.addClass('last-slide');
+        } else {
+          t.uiLayer.removeClass('first-slide');
+          t.uiLayer.removeClass('last-slide');
+        }
       });
     },
   };
