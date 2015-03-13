@@ -42,8 +42,17 @@ storyteller.define('storyline-linear', function() {
         module.totalSlides = t.$slides.length;
         module.toSlide(module.currentSlideIndex);
       });
-      t.events.on('control:advance', function(e, amount) {
-        module.toSlide(module.currentSlideIndex + amount);
+      t.events.on('control:jump', function(e, jump) {
+        module.toSlide(jump.index);
+      });
+      t.events.on('control:advance', function(e, advance) {
+        module.toSlide(module.currentSlideIndex + advance.amount);
+      });
+      t.events.on('control:next', function() {
+        module.toSlide(module.currentSlideIndex + 1);
+      });
+      t.events.on('control:prev', function() {
+        module.toSlide(module.currentSlideIndex - 1);
       });
     }
   }
@@ -78,10 +87,10 @@ storyteller.define('control-navButtons', function() {
       var navNext = $('<div class="nav-next"></div>').prependTo(t.uiOverlay);
 
       navPrev.click(function() {
-        t.events.trigger('control:advance', -1);
+        t.events.trigger('control:prev');
       });
       navNext.click(function() {
-        t.events.trigger('control:advance', 1);
+        t.events.trigger('control:next');
       });
 
       t.events.on("storyline:change", function(e, change) {
@@ -252,9 +261,9 @@ storyteller.define('control-simpleSwipe', function() {
       t.$slidesContainer.swipe({
         swipe: function(event, direction, distance, duration, fingerCount) {
           if (direction === "right") {
-            t.events.trigger('control:advance', -1);
+            t.events.trigger('control:prev');
           } else if (direction === "left") {
-            t.events.trigger('control:advance', 1);
+            t.events.trigger('control:next');
           }
         }.bind(t.this)
       });
@@ -270,15 +279,15 @@ storyteller.define('control-arrowKeyNavigation', function() {
       $(document).keydown(function(e) { // TODO: listen only when the key is for this story
         switch(e.which) {
           case 32: // spacebar
-          t.events.trigger('control:advance', 1);
+          t.events.trigger('control:next');
           break;
 
           case 37: // left
-          t.events.trigger('control:advance', -1);
+          t.events.trigger('control:prev');
           break;
 
           case 39: // right
-          t.events.trigger('control:advance', 1);
+          t.events.trigger('control:next');
           break;
 
           default: return; // exit this handler for other keys
