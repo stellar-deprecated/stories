@@ -58,14 +58,19 @@ stories.define('zoom', function() {
     var styleMethods = {
       simpleZoom: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
         if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
-          this.$slidesContainer.css('zoom', viewportWPadded / this.width);
-          this.$slidesContainer.css('margin-top', (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px');
-          this.$slidesContainer.css('margin-left', 0);
+          var zoom = viewportWPadded / this.width;
+          var marginTop = (viewportHPadded - (viewportWPadded/slidesAspectRatio)) / 2 + 'px';
+          var marginLeft = 0;
         } else { // constrained by viewport height; horizontally center
-          this.$slidesContainer.css('zoom', viewportHPadded / this.height);
-          this.$slidesContainer.css('margin-top', 0);
-          this.$slidesContainer.css('margin-left', ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px');
+          var zoom = viewportHPadded / this.height
+          var marginTop = 0;
+          var marginLeft = ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px';
         }
+        this.$slidesContainer.css({
+          'zoom': zoom,
+          'margin-top': marginTop,
+          'margin-left': marginLeft
+        });
       },
       transformScale: function(viewportWPadded, viewportHPadded, slidesAspectRatio, viewportAspectRatio) {
         if (slidesAspectRatio >= viewportAspectRatio) { // constrained by viewport width; vertically center
