@@ -48,7 +48,8 @@ var storyteller = (function() {
       },
 
       initUILayers: function() {
-        this.$ui = $('<div class="ui"></div>').prependTo(this.$container);
+        this.$uiOverlay = $('<div class="ui-overlay"></div>').appendTo(this.$container);
+        this.$uiUnderlay = $('<div class="ui-underlay"></div>').prependTo(this.$container);
       },
 
       initEvents: function() {
@@ -176,9 +177,12 @@ var storyteller = (function() {
         "$slidesContainer": function() {
           return this.$slidesContainer;
         },
-        "uiLayer": function(moduleName) {
-          return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$ui);
-        }
+        "uiOverlay": function(moduleName) {
+          return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$uiOverlay);
+        },
+        "uiUnderlay": function(moduleName) {
+          return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$uiUnderlay);
+        },
       },
 
       createLogger: function() {

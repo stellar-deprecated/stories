@@ -16,8 +16,6 @@
             transform-origin: 0 0;
     -webkit-font-smoothing: antialiased;
 
-    // Slides should appear above background
-    z-index: 100;
     overflow: hidden;
     > section {
       display: none; // Prevent FOUC
@@ -87,14 +85,9 @@
   // Stretch to whole viewport
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
-
-  // Make sure it is behind slides
-  z-index: 50;
 }
 
 .stories .ui-layer.control-progressBar-thin {
-  // Appear above background and content
-  z-index: 200;
   position: absolute;
   bottom: 0;
 }
@@ -114,7 +107,6 @@
     width: 40%;
     height: 100%;
 
-    z-index: 200; // navigation layer appears above everything
     line-height: 0;
 
     opacity: 0.5;

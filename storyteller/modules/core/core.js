@@ -72,10 +72,10 @@ storyteller.define('slide-full', function() {
 // left right navigation buttons
 storyteller.define('control-navButtons', function() {
   return {
-    tools: ['uiLayer', 'events'],
+    tools: ['uiOverlay', 'events'],
     entry: function(t) {
-      var navPrev = $('<div class="nav-prev"></div>').prependTo(t.uiLayer);
-      var navNext = $('<div class="nav-next"></div>').prependTo(t.uiLayer);
+      var navPrev = $('<div class="nav-prev"></div>').prependTo(t.uiOverlay);
+      var navNext = $('<div class="nav-next"></div>').prependTo(t.uiOverlay);
 
       navPrev.click(function() {
         t.events.trigger('control:advance', -1);
@@ -86,12 +86,12 @@ storyteller.define('control-navButtons', function() {
 
       t.events.on("storyline:change", function(e, change) {
         if (change.toIndex === 0) {
-          t.uiLayer.addClass('first-slide');
+          t.uiOverlay.addClass('first-slide');
         } else if (change.toIndex === change.totalSlides - 1) {
-          t.uiLayer.addClass('last-slide');
+          t.uiOverlay.addClass('last-slide');
         } else {
-          t.uiLayer.removeClass('first-slide');
-          t.uiLayer.removeClass('last-slide');
+          t.uiOverlay.removeClass('first-slide');
+          t.uiOverlay.removeClass('last-slide');
         }
       });
     },
@@ -103,11 +103,11 @@ storyteller.define('display-background-slide', function() {
   var module = this;
   var t;
   module.updateBackground = function(e, change) {
-    t.uiLayer.attr({'template': change.$targetSlide.attr('template')});
+    t.uiUnderlay.attr({'template': change.$targetSlide.attr('template')});
   };
 
   return {
-    tools: ['events', 'uiLayer'],
+    tools: ['events', 'uiUnderlay'],
     entry: function(tools) {
       t = tools;
       t.events.on("storyline:change", module.updateBackground);
@@ -121,11 +121,11 @@ storyteller.define('control-progressBar-thin', function() {
   var t;
   module.calcProgressBar = function(e, change) {
     var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
-    t.uiLayer.css('width', percentage + '%');
+    t.uiOverlay.css('width', percentage + '%');
   };
 
   return {
-    tools: ['uiLayer', 'events'],
+    tools: ['uiOverlay', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.on("storyline:change", module.calcProgressBar);
