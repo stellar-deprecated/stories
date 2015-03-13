@@ -133,11 +133,7 @@ var stories = (function() {
 
         this.log(moduleName + ".entry()")
         var tools = this.generateModuleTools(moduleName, this.modules[moduleName].tools);
-        if (typeof this.modules[moduleName].entry === "function") {
-          this.modules[moduleName].entry(tools);
-        } else if (typeof this.modules[moduleName].entryOld === "function") {
-          this.modules[moduleName].entryOld.call(this);
-        }
+        this.modules[moduleName].entry(tools);
       },
 
       getModuleFamily: function(moduleName) {
@@ -200,14 +196,6 @@ var stories = (function() {
         } else {
           return true;
         }
-      },
-
-      prevSlide: function() {
-        this.toSlide(this.currentSlideIndex - 1);
-      },
-
-      nextSlide: function() {
-        this.toSlide(this.currentSlideIndex + 1);
       },
 
       // Attempts to go to a target slide. Handles edgecases

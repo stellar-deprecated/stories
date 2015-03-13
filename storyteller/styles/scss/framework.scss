@@ -10,7 +10,7 @@
 **/
 
 .stories {
-  .background--slide {
+  .display-background-slide {
     // Stretch to whole viewport
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
@@ -63,7 +63,7 @@
     overflow: visible;
   }
 
-  .progressBar {
+  .control-progressBar-thin {
     // Appear above background and content
     z-index: 200;
     position: absolute;

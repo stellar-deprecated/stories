@@ -1,18 +1,51 @@
-stories.define('navButtons', function() {
+stories.define('storyline-linear', function() {
+  var t;
   return {
-    tools: ['this', 'uiLayer'],
+    tools: ['this', 'events'],
+    entry: function(tools) {
+      t = tools;
+      t.events.on('control:advance', function(e, amount) {
+        console.log(amount)
+        t.this.toSlide.call(t.this, t.this.currentSlideIndex + amount);
+      });
+    }
+  }
+});
+
+stories.define('transition-fade', function() {
+  var t;
+  return {
+    tools: [],
+    entry: function(tools) {
+      t = tools;
+
+    }
+  }
+});
+
+// left right navigation buttons
+stories.define('control-navButtons', function() {
+  return {
+    tools: ['uiLayer', 'events'],
     entry: function(t) {
       var navPrev = $('<div class="nav-prev"></div>').prependTo(t.uiLayer);
       var navNext = $('<div class="nav-next"></div>').prependTo(t.uiLayer);
 
-      navPrev.click(t.this.prevSlide.bind(t.this));
-      navNext.click(t.this.nextSlide.bind(t.this));
+      // navPrev.click(t.this.prevSlide.bind(t.this));
+      // navNext.click(t.this.nextSlide.bind(t.this));
+
+      navPrev.click(function() {
+        t.events.trigger('control:advance', -1);
+      });
+      navNext.click(function() {
+        t.events.trigger('control:advance', 1);
+      });
     },
   };
 });
 
 // Background based on the current slide
-stories.define('background--slide', function() {
+stories.define('display-background-slide', function() {
   var module = this;
   var t;
   module.newSlide = function(e, targetSlide) {
@@ -30,7 +63,7 @@ stories.define('background--slide', function() {
 });
 
 // Bottom blue bar
-stories.define('progressBar--thin', function() {
+stories.define('control-progressBar-thin', function() {
   var module = this;
   var t;
   module.calcProgressBar = function(e, targetSlide) {
@@ -143,9 +176,9 @@ stories.define('zoom', function() {
 });
 
 // Single page advancement swipe
-stories.define('simpleSwipe', function() {
+stories.define('control-simpleSwipe', function() {
   return {
-    tools: ['this'],
+    tools: ['this', 'events'],
     entry: function(tools) {
       var t = tools;
       if (typeof $.fn.swipe === 'undefined') {
@@ -155,10 +188,10 @@ stories.define('simpleSwipe', function() {
 
       t.this.$slidesContainer.swipe({
         swipe: function(event, direction, distance, duration, fingerCount) {
-          if (direction === "left") {
-            this.nextSlide();
-          } else if (direction === "right") {
-            this.prevSlide();
+          if (direction === "right") {
+            t.events.trigger('control:advance', -1);
+          } else if (direction === "left") {
+            t.events.trigger('control:advance', 1);
           }
         }.bind(t.this)
       });
@@ -166,29 +199,29 @@ stories.define('simpleSwipe', function() {
   };
 });
 
-// Left right arrow key navigation
-stories.define('arrowKeyNavigation', function() {
+// Left right keyboard arrow key navigation
+stories.define('control-arrowKeyNavigation', function() {
   return {
-    tools: ['this'],
+    tools: ['events'],
     entry: function(t) {
       $(document).keydown(function(e) { // TODO: figure out how to have this not conflict with other
         switch(e.which) {
           case 32: // spacebar
-          this.nextSlide();
+          t.events.trigger('control:advance', 1);
           break;
 
           case 37: // left
-          this.prevSlide();
+          t.events.trigger('control:advance', -1);
           break;
 
           case 39: // right
-          this.nextSlide();
+          t.events.trigger('control:advance', 1);
           break;
 
           default: return; // exit this handler for other keys
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
-      }.bind(t.this));
+      });
     },
   };
 });

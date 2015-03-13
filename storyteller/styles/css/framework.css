@@ -9,7 +9,7 @@
 **/
 .stories {
   width: 100%; }
-  .stories .background--slide {
+  .stories .display-background-slide {
     position: absolute;
     top: 0;
     left: 0;
@@ -44,7 +44,7 @@
   .stories.debug > .slides {
     outline: 1px solid red;
     overflow: visible; }
-  .stories .progressBar {
+  .stories .control-progressBar-thin {
     z-index: 200;
     position: absolute;
     bottom: 0; }

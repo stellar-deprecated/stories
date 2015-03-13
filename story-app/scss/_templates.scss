@@ -21,7 +21,7 @@ section[template*="light-blue"] {
         color: $primary;
     }
 }
-.background[template*="light-blue"] {
+.display-background-slide[template*="light-blue"] {
     background: lighten($primary, 47);
 }
 

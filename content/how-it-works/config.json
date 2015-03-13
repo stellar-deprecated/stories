@@ -1,12 +1,14 @@
 {
   "storyteller": {
     "modules": [
-      "navButtons"
+      "storyline-linear"
+      ,"transition-fade"
       ,"zoom"
-      ,"background--slide"
-      ,"progressBar--thin"
-      ,"simpleSwipe"
-      ,"arrowKeyNavigation"
+      ,"display-background-slide"
+      ,"control-navButtons"
+      ,"control-progressBar-thin"
+      ,"control-simpleSwipe"
+      ,"control-arrowKeyNavigation"
     ],
     "options": {
       "debug": true

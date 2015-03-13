@@ -54,11 +54,6 @@
 **/
 
 .stories {
-    .background {
-        // Background transitions
-        // transition: background 0.3s ease-in-out;
-    }
-
     > .slides > section {
         // Enabling graphics acceleration causes iOs to crash every time
         // Disabling graphics acceleration causes Desktop Safari to be unusably slow
@@ -78,14 +73,14 @@
         // transition: opacity 0.3s ease-in-out;
     }
 
-    .progressBar {
+    .control-progressBar-thin {
         height: 4px;
         width: 0%;
         background: $primary;
         transition: width 0.3s ease-out;
     }
 
-    .navButtons {
+    .control-navButtons {
         // // Vertically center
         // margin: auto;
         // position: absolute;
