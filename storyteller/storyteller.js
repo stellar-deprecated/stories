@@ -1,5 +1,5 @@
 /*
- * stories
+ * storyteller.js
  *
  * Copyright (c) 2014-2015 Stellar Development Foundation
  *
@@ -7,10 +7,10 @@
  */
 "use strict";
 
-var stories = (function() {
-  var stories = {};
+var storyteller = (function() {
+  var storyteller = {};
 
-  stories.newStory = function(config) {
+  storyteller.newStory = function(config) {
     return Object.create({
       /**
         Initialization family
@@ -79,7 +79,7 @@ var stories = (function() {
       //   2. Make a copy to the local
       //   3. Call the entry point (with access to this)
       loadModule: function(moduleName) {
-        var definedModule = stories.get(moduleName)
+        var definedModule = storyteller.get(moduleName)
         if (typeof definedModule === "undefined") {
           console.error('module "' + moduleName + '" not found');
           return
@@ -189,7 +189,7 @@ var stories = (function() {
     });
   };
 
-  stories.moduleManager = (function() {
+  storyteller.moduleManager = (function() {
     var modules = {};
 
     return {
@@ -239,19 +239,17 @@ var stories = (function() {
     }
   })()
 
-  stories.define = stories.moduleManager.define;
-  stories.get = stories.moduleManager.get;
-  delete stories.moduleManager;
+  storyteller.define = storyteller.moduleManager.define;
+  storyteller.get = storyteller.moduleManager.get;
+  delete storyteller.moduleManager;
 
-  return stories;
+  return storyteller;
 })();
 
 (function ($, window, document) {
-  // Initialization
-  $.fn.stories = function(config) {
+  $.fn.storyteller = function(config) {
     this.each(function (k, v) {
-      var thisStory = stories.newStory(config);
-      thisStory.init(v);
+      storyteller.newStory(config).init(v);
     });
   };
 }(jQuery, window, document));

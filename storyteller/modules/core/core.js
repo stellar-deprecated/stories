@@ -1,4 +1,4 @@
-stories.define('storyline-linear', function() {
+storyteller.define('storyline-linear', function() {
   var module = this;
   var t;
 
@@ -49,7 +49,7 @@ stories.define('storyline-linear', function() {
   }
 });
 
-stories.define('transition-fade', function() {
+storyteller.define('transition-fade', function() {
   return {
     tools: ['events', '$slides'],
     entry: function(t) {
@@ -62,7 +62,7 @@ stories.define('transition-fade', function() {
 });
 
 // left right navigation buttons
-stories.define('control-navButtons', function() {
+storyteller.define('control-navButtons', function() {
   return {
     tools: ['uiLayer', 'events'],
     entry: function(t) {
@@ -91,7 +91,7 @@ stories.define('control-navButtons', function() {
 });
 
 // Background based on the current slide
-stories.define('display-background-slide', function() {
+storyteller.define('display-background-slide', function() {
   var module = this;
   var t;
   module.updateBackground = function(e, change) {
@@ -108,7 +108,7 @@ stories.define('display-background-slide', function() {
 });
 
 // Bottom blue bar
-stories.define('control-progressBar-thin', function() {
+storyteller.define('control-progressBar-thin', function() {
   var module = this;
   var t;
   module.calcProgressBar = function(e, change) {
@@ -126,7 +126,7 @@ stories.define('control-progressBar-thin', function() {
 });
 
 // Zooming of the slideshow
-stories.define('viewport-fixed', function() {
+storyteller.define('viewport-fixed', function() {
   var module = this;
   var t;
 
@@ -231,7 +231,7 @@ stories.define('viewport-fixed', function() {
 });
 
 // Single page advancement swipe
-stories.define('control-simpleSwipe', function() {
+storyteller.define('control-simpleSwipe', function() {
   return {
     tools: ['events', '$slidesContainer'],
     entry: function(tools) {
@@ -255,7 +255,7 @@ stories.define('control-simpleSwipe', function() {
 });
 
 // Left right keyboard arrow key navigation
-stories.define('control-arrowKeyNavigation', function() {
+storyteller.define('control-arrowKeyNavigation', function() {
   return {
     tools: ['events'],
     entry: function(t) {
