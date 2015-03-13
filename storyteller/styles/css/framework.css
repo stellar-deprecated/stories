@@ -9,7 +9,7 @@
 **/
 .stories {
   width: 100%; }
-  .stories .background {
+  .stories .background--slide {
     position: absolute;
     top: 0;
     left: 0;

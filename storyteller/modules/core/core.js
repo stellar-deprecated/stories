@@ -3,7 +3,7 @@ stories.define('navButtons',
   var module = this;
 
   return {
-    entry: function() {
+    entryOld: function() {
       this.$ui.prepend('<div class="navigation-buttons"><a class="nav-prev"></a><a class="nav-next"></a></div>');
       this.$navButtons = this.$ui.find('> .navigation-buttons');
 
@@ -16,15 +16,18 @@ stories.define('navButtons',
 // Background based on the current slide
 stories.define('background--slide', function() {
   var module = this;
+  var t; // tools
   module.newSlide = function(e, targetSlide) {
-    this.$background.attr({'template': $(targetSlide).attr('template')});
+    t.uiLayer.attr({'template': $(targetSlide).attr('template')});
   };
 
   return {
-    entry: function() {
-      this.$ui.prepend('<div class="background"></div>');
-      this.$background = this.$ui.find('> .background');
-      this.on("slide.change", module.newSlide.bind(this));
+    tools: ['events', 'uiLayer'],
+    entry: function(tools) {
+      t = tools;
+      console.log(tools)
+      module.uiLayer = tools.uiLayer;
+      t.events.on("slide.change", module.newSlide.bind(this));
     },
   };
 });
@@ -38,10 +41,10 @@ stories.define('progressBar--thin', function() {
   };
 
   return {
-    entry: function() {
+    entryOld: function() {
       this.$ui.append('<div class="progress-bar"></div>');
       this.$progressBar = this.$ui.find('.progress-bar');
-      this.on("slide.change", module.calcProgressBar.bind(this));
+      this.events.on("slide.change", module.calcProgressBar.bind(this));
     },
   };
 });
@@ -125,7 +128,7 @@ stories.define('zoom', function() {
   };
 
   return {
-    entry: function() {
+    entryOld: function() {
       module.resizeZoom = module.resizeZoomFactory.call(this);
       module.resizeZoom.call(this);
       module.bindResizeZoom.call(this);
@@ -136,7 +139,7 @@ stories.define('zoom', function() {
 // Single page advancement swipe
 stories.define('simpleSwipe', function() {
   return {
-    entry: function() {
+    entryOld: function() {
       if (typeof $.fn.swipe === 'undefined') {
         console.error("touchswipe plugin missing")
         return;
@@ -158,7 +161,7 @@ stories.define('simpleSwipe', function() {
 // Left right arrow key navigation
 stories.define('arrowKeyNavigation', function() {
   return {
-    entry: function() {
+    entryOld: function() {
       $(document).keydown(function(e) {
         switch(e.which) {
           case 32: // spacebar

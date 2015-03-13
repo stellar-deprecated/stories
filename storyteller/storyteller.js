@@ -37,7 +37,7 @@ var stories = (function() {
 
         // main dom elements
         this.$container = $(elem);
-        this.$ui = $('<div class="ui"></div>').prependTo(this.$container);
+        this.initUILayers();
         this.$slidesContainer = this.$container.find('> .slides');
         this.$slides = this.$container.find('> .slides > section');
         this.$currentSlide = undefined; // <section>
@@ -57,9 +57,15 @@ var stories = (function() {
         }
       },
 
+      initUILayers: function() {
+        this.$ui = $('<div class="ui"></div>').prependTo(this.$container);
+      },
+
+      events: {},
+
       initEvents: function() {
         var eventTarget = {};
-        this.on = function(a, b, c) {
+        this.events.on = function(a, b, c) {
           /**
             KLUDGE: I spent 60 minutes debugging this and why apply doesn't work
             console.log(typeof $(eventTarget).on) // function
@@ -68,7 +74,7 @@ var stories = (function() {
           **/
           $(eventTarget).on(a, b, c);
         }
-        this.trigger = function(a, b) {
+        this.events.trigger = function(a, b) {
           $(eventTarget).trigger(a, b)
         }
       },
@@ -91,12 +97,7 @@ var stories = (function() {
         }
 
         // Parse the bit before the "--" (if it exists)
-        var moduleFamilyMatch = moduleName.match(/^(\w+)--/);
-        if (moduleFamilyMatch === null) {
-          var moduleFamily = moduleName;
-        } else {
-          var moduleFamily = moduleFamilyMatch[1];
-        }
+        var moduleFamily = this.getModuleFamily(moduleName);
 
         // Check if the module or family has been loaded already
         if (moduleFamily in this.loadedModules) {
@@ -131,7 +132,21 @@ var stories = (function() {
         }
 
         this.log(moduleName + ".entry()")
-        this.moduleStart.entry.call(this, moduleName, this.modules[moduleName]);
+        var tools = this.generateModuleTools(moduleName, this.modules[moduleName].tools);
+        if (typeof this.modules[moduleName].entry === "function") {
+          this.modules[moduleName].entry(tools);
+        } else if (typeof this.modules[moduleName].entryOld === "function") {
+          this.modules[moduleName].entryOld.call(this);
+        }
+      },
+
+      getModuleFamily: function(moduleName) {
+        var moduleFamilyMatch = moduleName.match(/^(\w+)--/);
+        if (moduleFamilyMatch === null) {
+          return moduleName;
+        } else {
+          return moduleFamilyMatch[1];
+        }
       },
 
       loadAllModules: function() {
@@ -140,12 +155,32 @@ var stories = (function() {
         }
       },
 
-      moduleStart: {
-        // generic entry
-        entry: function(moduleName, module) {
-          if (typeof module.entry === 'function') {
-            module.entry.call(this);
+      // initialize the tools requested by the module
+      generateModuleTools: function(moduleName, toolList) {
+        if (!Array.isArray(toolList)) {
+          return {};
+        }
+
+        var outputTools = {};
+        for (var i = 0; i < toolList.length; i++) {
+          var reqTool = toolList[i];
+          if (reqTool in this.moduleTools) {
+            outputTools[reqTool] = this.moduleTools[reqTool].call(this, moduleName);
           }
+        }
+        return outputTools;
+      },
+
+      // the actual tools definitions
+      moduleTools: {
+        "this": function() {
+          return this;
+        },
+        "events": function(moduleName) {
+          return this.events;
+        },
+        "uiLayer": function(moduleName) {
+          return $('<div class="ui-layer ' + this.getModuleFamily(moduleName) + ' ' + moduleName + '"></div>').prependTo(this.$ui);
         }
       },
 
@@ -208,7 +243,7 @@ var stories = (function() {
         }
 
         // Set background
-        this.trigger("slide.change", $targetSlide)
+        this.events.trigger("slide.change", $targetSlide)
       },
 
       log: function(logString) {
