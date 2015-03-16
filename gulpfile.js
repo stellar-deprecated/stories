@@ -6,9 +6,13 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var connect = require('gulp-connect');
+var gutil = require('gulp-util');
+var uglify = require('gulp-uglify');
+var bower = require('gulp-bower');
+
 var which = require('which').sync;
 var spawn = require('child_process').spawn;
-var gutil = require('gulp-util');
+
 
 var map = require('vinyl-map');
 
@@ -17,6 +21,7 @@ gulp.task('default', ['develop'], function() {});
 gulp.task('build', [
   'compile-stories',
   'story-app-sass',
+  'story-app-vendor',
   'fonts',
   'storyteller'], function() {
 });
@@ -34,7 +39,23 @@ gulp.task('watch', function() {
 gulp.task('story-app-sass', function() {
   gulp.src('./story-app/scss/*.scss')
     .pipe(sass())
-    .pipe(gulp.dest('./dist/css'));
+    .pipe(gulp.dest('./dist/css'))
+});
+
+gulp.task('bower', function() {
+  return bower()
+})
+
+gulp.task('story-app-vendor', ['bower'], function() {
+  // gulp.src('./node_modules/touchswipe/index.js')
+  //   .pipe(rename('touchswipe.js'))
+  //   .pipe(uglify())
+  //   .pipe(gulp.dest('./dist/js/vendor'))
+
+  gulp.src('./bower_components/jquery/dist/jquery.min.js')
+    .pipe(gulp.dest('./dist/js/vendor/2.1.3')) // TODO: automatically insert version number
+  gulp.src('./bower_components/jquery-touchswipe/jquery.touchSwipe.min.js')
+    .pipe(gulp.dest('./dist/js/vendor/1.6.4'))
 });
 
 // we don't watch fonts since we don't expect it to frequently change

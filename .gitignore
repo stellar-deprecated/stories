@@ -1,6 +1,7 @@
 ### Story app
 dist/
 node_modules/
+bower_components/
 
 ### Sass
 story-app/styles/.sass-cache/
