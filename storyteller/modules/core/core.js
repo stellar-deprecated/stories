@@ -20,6 +20,9 @@ storyteller.define('storyline-linear', function() {
       return;
     }
 
+    // lean on the side of accepting a wide range of inputs to support wider ranges of modules
+    targetSlideIndex = Math.round(targetSlideIndex);
+
     // Save target slide element
     var oldSlideIndex = module.currentSlideIndex;
     var $targetSlide = $(t.$slides[targetSlideIndex]);
@@ -34,6 +37,10 @@ storyteller.define('storyline-linear', function() {
     });
   };
 
+  module.percentToIndex = function(percent) {
+    return (percent/100) * (t.$slides.length - 1);
+  }
+
   return {
     tools: ['$slides', 'events', 'log'],
     entry: function(tools) {
@@ -41,9 +48,17 @@ storyteller.define('storyline-linear', function() {
       t.events.on('init', function() {
         module.totalSlides = t.$slides.length;
         module.toSlide(module.currentSlideIndex);
+        t.events.trigger("storyline:info", { // TODO: a better way of communicating state
+          // currently unused. perhaps cross module state should not even be shown?
+          totalSlides: module.totalSlides,
+        });
       });
       t.events.on('control:jump', function(e, jump) {
-        module.toSlide(jump.index);
+        if (typeof jump.index !== 'undefined') {
+          module.toSlide(jump.index);
+        } else if (typeof jump.percent !== 'undefined') {
+          module.toSlide(module.percentToIndex(jump.percent));
+        }
       });
       t.events.on('control:advance', function(e, advance) {
         module.toSlide(module.currentSlideIndex + advance.amount);
@@ -102,11 +117,19 @@ storyteller.define('control-dock', function() {
       module.progressBar.$barMin = $('<div class="bar-min"></div>').prependTo(module.progressBar.$container);
       module.progressBar.$barMax = $('<div class="bar-max"></div>').prependTo(module.progressBar.$container);
       t.events.on('storyline:change', module.progressBar.calcProgressBar);
+      module.progressBar.$container.on('click', module.progressBar.handleProgressBar);
     },
     calcProgressBar: function(e, change) {
       var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
       module.progressBar.$barMin.css('width', percentage + '%');
     },
+    // Handle event for progress bar clicks
+    handleProgressBar: function(e) {
+      console.log(e);
+      console.log('x: ',e.offsetX,'y: ', e.offsetY);
+      var targetPercent = e.offsetX/module.progressBar.$container.width() * 100;
+      t.events.trigger('control:jump', {percent: targetPercent});
+    }
   };
 
   // A submodule
@@ -129,10 +152,18 @@ storyteller.define('control-dock', function() {
     }
   };
 
+  module.saveStorylineInfo = function(e, info) {
+    // TODO: Fallback and error checking for storylineInfo
+    // TODO: better name for "module" (perhaps "self")
+    module.storylineInfo = info;
+  };
+
   return {
     tools: ['$uiOverlay', 'events'],
     entry: function(tools) {
       t = tools;
+
+      t.events.on('storyline:info', module.saveStorylineInfo);
 
       module.progressBar.init();
       module.gridView.init();
