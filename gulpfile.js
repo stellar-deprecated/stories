@@ -52,7 +52,7 @@ gulp.task('story-app-vendor', ['bower'], function() {
   //   .pipe(uglify())
   //   .pipe(gulp.dest('./dist/js/vendor'))
 
-  gulp.src('./bower_components/jquery/dist/jquery.min.js')
+  gulp.src(['./bower_components/jquery/dist/jquery.min.js', './bower_components/jquery/dist/jquery.min.map'])
     .pipe(gulp.dest('./dist/js/vendor/2.1.3')) // TODO: automatically insert version number
   gulp.src('./bower_components/jquery-touchswipe/jquery.touchSwipe.min.js')
     .pipe(gulp.dest('./dist/js/vendor/1.6.4'))
