@@ -99,6 +99,55 @@
   margin: 0;
 }
 
+.stories .ui-layer.control-dock {
+  height: 32px;
+  width: 100%;
+  background: #eee;
+  position: absolute;
+  left: 0; bottom: 0; right: 0;
+
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+}
+
+.stories .control-dock-progressBar {
+  height: 32px;
+  -webkit-flex: 1;
+  flex: 1;
+  background: #80bfff;
+  position: relative;
+
+  .bar-min {
+    height: 100%;
+    width: 0%;
+    background: #3399ff;
+    position: absolute;
+  }
+  .bar-max {
+    height: 100%;
+    width: 0%;
+    background: #0080ff;
+    position: absolute;
+  }
+}
+.stories .control-dock-gridView {
+  height: 32px;
+  width: 48px;
+  -webkit-flex: 0 0 auto;
+  flex: 0 0 auto;
+  background: #99ff33;
+  cursor: pointer;
+}
+.stories .control-dock-fullScreen {
+  height: 32px;
+  width: 48px;
+  -webkit-flex: 0 0 auto;
+  flex: 0 0 auto;
+  background: #ff3399;
+  cursor: pointer;
+}
+
 .stories .ui-layer.display-background-slide {
   // Stretch to whole viewport
   position: absolute;

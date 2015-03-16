@@ -6,8 +6,8 @@
       ,"viewport-fixed"
       ,"slide-cards"
       ,"display-background-slide"
+      ,"control-dock"
       ,"control-navButtons"
-      ,"control-progressBar-thin"
       ,"control-simpleSwipe"
       ,"control-keyboardNavigation"
     ],

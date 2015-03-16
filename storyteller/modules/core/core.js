@@ -86,6 +86,61 @@ storyteller.define('slide-cards', function() {
   }
 });
 
+
+// Modular ui bar for others to register on to
+storyteller.define('control-dock', function() {
+  var module = this;
+  var t;
+
+  // A submodule
+  module.progressBar = {
+    container: {},
+    barMin: {},
+    barMax: {},
+    init: function() {
+      module.progressBar.container = $('<div class="control-dock-progressBar"></div>').prependTo(t.uiOverlay);
+      module.progressBar.barMin = $('<div class="bar-min"></div>').prependTo(module.progressBar.container);
+      module.progressBar.barMax = $('<div class="bar-max"></div>').prependTo(module.progressBar.container);
+      t.events.on('storyline:change', module.progressBar.calcProgressBar);
+    },
+    calcProgressBar: function(e, change) {
+      var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
+      module.progressBar.barMin.css('width', percentage + '%');
+    },
+  };
+
+  // A submodule
+  module.gridView = {
+    init: function() {
+      module.gridViewButton = $('<div class="control-dock-gridView"></div>').appendTo(t.uiOverlay);
+      module.gridViewButton.on('click', function() {
+        t.events.trigger('gridView:enter');
+      });
+    }
+  };
+
+  // A submodule
+  module.fullScreen = {
+    init: function() {
+      module.fullScreenButton = $('<div class="control-dock-fullScreen"></div>').appendTo(t.uiOverlay);
+      module.fullScreenButton.on('click', function() {
+        t.events.trigger('fullScreen:enter');
+      })
+    }
+  };
+
+  return {
+    tools: ['uiOverlay', 'events'],
+    entry: function(tools) {
+      t = tools;
+
+      module.progressBar.init();
+      module.gridView.init();
+      module.fullScreen.init();
+    }
+  }
+});
+
 // left right navigation buttons
 storyteller.define('control-navButtons', function() {
   return {
