@@ -166,6 +166,7 @@ var storyteller = (function() {
           return this;
         },
         "log": function() {
+          // TODO: personalize logger for each module (prepend string output with module name)
           return this.log;
         },
         "events": function() {

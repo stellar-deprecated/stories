@@ -4,24 +4,54 @@ storyteller.define('storyline-linear', function() {
 
   module.currentSlideIndex = 0;
   module.totalSlides = 0;
-  module.isIndexInBounds = function(targetSlideIndex) {
-    // Check bounds
-    if (targetSlideIndex < 0 || targetSlideIndex >= module.totalSlides) {
-      t.log('target slide out of bounds');
-      return false;
-    } else {
-      return true;
-    }
-  },
 
   // Attempts to go to a target slide. Handles edgecases
-  module.toSlide = function(targetSlideIndex) {
-    if (!module.isIndexInBounds(targetSlideIndex)) {
-      return;
+  module.toSlide = function(input) {
+    var targetSlideIndex;
+
+    // resolve input to a validated index
+    if (typeof input.index !== 'undefined') {
+      if (!$.isNumeric(input.index)) {
+        console.error('index must be a number. got: ' + input.index);
+        return;
+      }
+
+      var parsedInputIndex = parseInt(input.index, 10);
+      if (isNaN(parsedInputIndex) || parsedInputIndex !== input.index) {
+        console.error('index must be an integer. got: ' + input.index);
+        return
+      }
+
+      var indexOutOfBounds = parsedInputIndex < 0 || parsedInputIndex >= module.totalSlides;
+      if (indexOutOfBounds) {
+        t.log('target slide out of bounds. got: ' + input.index);
+        return;
+      }
+
+      targetSlideIndex = parsedInputIndex;
+    } else if (typeof input.percent !== 'undefined') {
+      if (!$.isNumeric(input.percent)) {
+        console.error('percent must be a number. got: ' + input.percent);
+        return;
+      }
+      if (input.percent <= 0) {
+        console.error('received input of less than 0 percent');
+        return;
+      }
+      if (input.percent >= 100) {
+        console.error('received input of greater than 0 percent');
+        return;
+      }
+      targetSlideIndex = Math.round((input.percent/100) * (module.totalSlides - 1));
+    } else {
+      // For compatibility, this is not an error
+      t.log('no input for toSlide. got: ' + JSON.stringify(input));
     }
 
-    // lean on the side of accepting a wide range of inputs to support wider ranges of modules
-    targetSlideIndex = Math.round(targetSlideIndex);
+    if (module.currentSlideIndex === targetSlideIndex && !input.force) {
+      t.log('target slide is same as current slide');
+      return;
+    }
 
     // Save target slide element
     var oldSlideIndex = module.currentSlideIndex;
@@ -37,37 +67,38 @@ storyteller.define('storyline-linear', function() {
     });
   };
 
-  module.percentToIndex = function(percent) {
-    return (percent/100) * (t.$slides.length - 1);
-  }
-
   return {
     tools: ['$slides', 'events', 'log'],
     entry: function(tools) {
       t = tools;
       t.events.on('init', function() {
         module.totalSlides = t.$slides.length;
-        module.toSlide(module.currentSlideIndex);
-        t.events.trigger("storyline:info", { // TODO: a better way of communicating state
-          // currently unused. perhaps cross module state should not even be shown?
-          totalSlides: module.totalSlides,
+        module.toSlide({
+          index: module.currentSlideIndex,
+          force: true
         });
+        // t.events.trigger("storyline:info", { // TODO: a better way of communicating state
+        //   // currently unused. perhaps cross module state should not even be shown?
+        //   totalSlides: module.totalSlides,
+        // });
       });
       t.events.on('control:jump', function(e, jump) {
-        if (typeof jump.index !== 'undefined') {
-          module.toSlide(jump.index);
-        } else if (typeof jump.percent !== 'undefined') {
-          module.toSlide(module.percentToIndex(jump.percent));
-        }
+        module.toSlide(jump);
       });
       t.events.on('control:advance', function(e, advance) {
-        module.toSlide(module.currentSlideIndex + advance.amount);
+        module.toSlide({
+          index: module.currentSlideIndex + advance.amount
+        });
       });
       t.events.on('control:next', function() {
-        module.toSlide(module.currentSlideIndex + 1);
+        module.toSlide({
+          index: module.currentSlideIndex + 1
+        });
       });
       t.events.on('control:prev', function() {
-        module.toSlide(module.currentSlideIndex - 1);
+        module.toSlide({
+          index: module.currentSlideIndex - 1
+        });
       });
     }
   }
@@ -104,7 +135,7 @@ storyteller.define('slide-cards', function() {
 
 // Modular ui bar for others to register on to
 storyteller.define('control-dock', function() {
-  var module = this;
+  var module = this; // TODO: better name for "module" (perhaps "self")
   var t;
 
   // A submodule
@@ -152,18 +183,10 @@ storyteller.define('control-dock', function() {
     }
   };
 
-  module.saveStorylineInfo = function(e, info) {
-    // TODO: Fallback and error checking for storylineInfo
-    // TODO: better name for "module" (perhaps "self")
-    module.storylineInfo = info;
-  };
-
   return {
     tools: ['$uiOverlay', 'events'],
     entry: function(tools) {
       t = tools;
-
-      t.events.on('storyline:info', module.saveStorylineInfo);
 
       module.progressBar.init();
       module.gridView.init();
