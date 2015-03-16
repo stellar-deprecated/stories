@@ -177,10 +177,10 @@ var storyteller = (function() {
         "$slidesContainer": function() {
           return this.$slidesContainer;
         },
-        "uiOverlay": function(moduleName) {
+        "$uiOverlay": function(moduleName) {
           return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$uiOverlay);
         },
-        "uiUnderlay": function(moduleName) {
+        "$uiUnderlay": function(moduleName) {
           return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$uiUnderlay);
         },
       },

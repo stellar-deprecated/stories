@@ -98,22 +98,22 @@ storyteller.define('control-dock', function() {
     barMin: {},
     barMax: {},
     init: function() {
-      module.progressBar.container = $('<div class="control-dock-progressBar"></div>').prependTo(t.uiOverlay);
-      module.progressBar.barMin = $('<div class="bar-min"></div>').prependTo(module.progressBar.container);
-      module.progressBar.barMax = $('<div class="bar-max"></div>').prependTo(module.progressBar.container);
+      module.progressBar.$container = $('<div class="control-dock-progressBar"></div>').prependTo(t.$uiOverlay);
+      module.progressBar.$barMin = $('<div class="bar-min"></div>').prependTo(module.progressBar.$container);
+      module.progressBar.$barMax = $('<div class="bar-max"></div>').prependTo(module.progressBar.$container);
       t.events.on('storyline:change', module.progressBar.calcProgressBar);
     },
     calcProgressBar: function(e, change) {
       var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
-      module.progressBar.barMin.css('width', percentage + '%');
+      module.progressBar.$barMin.css('width', percentage + '%');
     },
   };
 
   // A submodule
   module.gridView = {
     init: function() {
-      module.gridViewButton = $('<div class="control-dock-gridView"></div>').appendTo(t.uiOverlay);
-      module.gridViewButton.on('click', function() {
+      module.$gridViewButton = $('<div class="control-dock-gridView"></div>').appendTo(t.$uiOverlay);
+      module.$gridViewButton.on('click', function() {
         t.events.trigger('gridView:enter');
       });
     }
@@ -122,15 +122,15 @@ storyteller.define('control-dock', function() {
   // A submodule
   module.fullScreen = {
     init: function() {
-      module.fullScreenButton = $('<div class="control-dock-fullScreen"></div>').appendTo(t.uiOverlay);
-      module.fullScreenButton.on('click', function() {
+      module.$fullScreenButton = $('<div class="control-dock-fullScreen"></div>').appendTo(t.$uiOverlay);
+      module.$fullScreenButton.on('click', function() {
         t.events.trigger('fullScreen:enter');
       })
     }
   };
 
   return {
-    tools: ['uiOverlay', 'events'],
+    tools: ['$uiOverlay', 'events'],
     entry: function(tools) {
       t = tools;
 
@@ -144,26 +144,26 @@ storyteller.define('control-dock', function() {
 // left right navigation buttons
 storyteller.define('control-navButtons', function() {
   return {
-    tools: ['uiOverlay', 'events'],
+    tools: ['$uiOverlay', 'events'],
     entry: function(t) {
-      var navPrev = $('<div class="nav-prev"></div>').prependTo(t.uiOverlay);
-      var navNext = $('<div class="nav-next"></div>').prependTo(t.uiOverlay);
+      var $navPrev = $('<div class="nav-prev"></div>').prependTo(t.$uiOverlay);
+      var $navNext = $('<div class="nav-next"></div>').prependTo(t.$uiOverlay);
 
-      navPrev.click(function() {
+      $navPrev.click(function() {
         t.events.trigger('control:prev');
       });
-      navNext.click(function() {
+      $navNext.click(function() {
         t.events.trigger('control:next');
       });
 
       t.events.on("storyline:change", function(e, change) {
         if (change.toIndex === 0) {
-          t.uiOverlay.addClass('first-slide');
+          t.$uiOverlay.addClass('first-slide');
         } else if (change.toIndex === change.totalSlides - 1) {
-          t.uiOverlay.addClass('last-slide');
+          t.$uiOverlay.addClass('last-slide');
         } else {
-          t.uiOverlay.removeClass('first-slide');
-          t.uiOverlay.removeClass('last-slide');
+          t.$uiOverlay.removeClass('first-slide');
+          t.$uiOverlay.removeClass('last-slide');
         }
       });
     },
@@ -175,11 +175,11 @@ storyteller.define('display-background-slide', function() {
   var module = this;
   var t;
   module.updateBackground = function(e, change) {
-    t.uiUnderlay.attr({'template': change.$targetSlide.attr('template')});
+    t.$uiUnderlay.attr({'template': change.$targetSlide.attr('template')});
   };
 
   return {
-    tools: ['events', 'uiUnderlay'],
+    tools: ['events', '$uiUnderlay'],
     entry: function(tools) {
       t = tools;
       t.events.on("storyline:change", module.updateBackground);
@@ -193,11 +193,11 @@ storyteller.define('control-progressBar-thin', function() {
   var t;
   module.calcProgressBar = function(e, change) {
     var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
-    t.uiOverlay.css('width', percentage + '%');
+    t.$uiOverlay.css('width', percentage + '%');
   };
 
   return {
-    tools: ['uiOverlay', 'events'],
+    tools: ['$uiOverlay', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.on("storyline:change", module.calcProgressBar);
