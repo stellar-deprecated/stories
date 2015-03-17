@@ -126,8 +126,18 @@ storyteller.define('slide-full', function() {
 
 // Card shaped slides
 storyteller.define('slide-cards', function() {
+  var t;
+
   return {
-    entry: function() {
+    tools: ['events'],
+    entry: function(tools) {
+      t = tools;
+      t.events.trigger('viewport:register-options', {
+        'caller': 'slide-cards', // TODO: personalized events to automatically include caller
+        'options': {
+          'paddingBottom': 32
+        }
+      });
     }
   }
 });
@@ -156,8 +166,6 @@ storyteller.define('control-dock', function() {
     },
     // Handle event for progress bar clicks
     handleProgressBar: function(e) {
-      console.log(e);
-      console.log('x: ',e.offsetX,'y: ', e.offsetY);
       var targetPercent = e.offsetX/module.progressBar.$container.width() * 100;
       t.events.trigger('control:jump', {percent: targetPercent});
     }
@@ -369,12 +377,67 @@ storyteller.define('viewport-fluid', function() {
   var self = this;
   var t;
 
+  self.defaultOptions = function() {
+    return {
+      paddingTop: 0,
+      paddingRight: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+    }
+  };
+  self.options = self.defaultOptions();
+
+  // store the options that will be summed and set as options
+  self.registeredOptions = {};
+
+  self.calcOptions = function() {
+    var newOptions = self.defaultOptions();
+    for (optionName in self.registeredOptions) {
+      var registeredOption = self.registeredOptions[optionName];
+      self.addOptionValue(newOptions, registeredOption, 'paddingTop');
+      self.addOptionValue(newOptions, registeredOption, 'paddingRight');
+      self.addOptionValue(newOptions, registeredOption, 'paddingBottom');
+      self.addOptionValue(newOptions, registeredOption, 'paddingLeft');
+    }
+    self.options = newOptions;
+  };
+
+  // handles anything and tries to add numbers
+  self.addOptionValue = function(receiver, registered, key) {
+    var newValue = registered[key];
+    if (!isNaN(newValue) &&
+        typeof receiver[key] !== 'undefined' &&
+        typeof newValue !== 'undefined') {
+      receiver[key] = receiver[key] + parseFloat(newValue, 10);
+    }
+  };
+
+  self.renderOptions = function() {
+    t.$slidesContainer.css({
+      'top': self.options.paddingTop + 'px',
+      'right': self.options.paddingRight + 'px',
+      'bottom': self.options.paddingBottom + 'px',
+      'left': self.options.paddingLeft + 'px',
+    });
+  };
+
+  // TODO: Events should be multiple arguments, not a map of them
+  self.handleRegisterOptions = function(e, registration) {
+    self.registeredOptions[registration.caller] = registration.options;
+    self.calcOptions();
+    self.renderOptions();
+  };
+
   return {
     tools: ['$slidesContainer', 'events'],
     entry: function(tools) {
       t = tools;
 
+      self.calcOptions();
+      self.renderOptions();
 
+      t.events.on('viewport:register-options', self.handleRegisterOptions);
+      // TODO: deregister/unregister options
     }
   }
 });
