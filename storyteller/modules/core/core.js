@@ -106,10 +106,12 @@ storyteller.define('storyline-linear', function() {
 
 storyteller.define('transition-fade', function() {
   return {
-    tools: ['events', '$slides'],
+    tools: ['events', 'slides'],
     entry: function(t) {
       t.events.on("storyline:change", function(e, change) {
-        t.$slides.removeClass('visible'); // TODO: see if performance is an issue; if so, improve
+        // TODO: slides vs $slides
+        // TODO: see if performance is an issue; if so, improve
+        t.slides.removeClass('visible');
         change.$targetSlide.addClass('visible');
       });
     }
