@@ -88,6 +88,8 @@
 }
 
 .stories--slide-cards > .slides > section {
+  position: absolute;
+  
   // Stretch the slides
   width: 360px;
   height: 640px;

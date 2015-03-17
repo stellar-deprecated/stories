@@ -50,9 +50,9 @@ section[template="fullscreen-caption"] {
 }
 
 section[template="card-image"] {
-  img {
+  img.cover {
     width: 100%;
-    height: auto;
+    height: 100%;
   }
   img, div {
     position: absolute;
