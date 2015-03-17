@@ -87,17 +87,24 @@
   height: 100%;
 }
 
-.stories--slide-cards > .slides > section {
-  position: absolute;
-  
-  // Stretch the slides
-  width: 360px;
-  height: 640px;
-  outline: 2px solid green;
+.stories--slide-cards {
+  > .slides > section {
+    display: none; // not until ready
+    position: absolute;
 
-  display: block;
-  margin: 0 auto;
+    // Stretch the slides
+    width: 720px;
+    height: 1280px;
+    outline: 2px solid green;
 
+    margin: 0 auto;
+  }
+
+  > .slides.ready > section {
+    display: block;
+    -webkit-transition: -webkit-transform 0.3s;
+            transition: transform 0.3s;
+  }
 }
 
 .stories .ui-layer.control-dock {

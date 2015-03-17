@@ -126,10 +126,103 @@ storyteller.define('slide-full', function() {
 
 // Card shaped slides
 storyteller.define('slide-cards', function() {
+  var self = this;
   var t;
 
+  // TODO: configurable options
+  // hardcoded for now
+  self.options = {
+
+  };
+
+  // save the state of the storyline
+  self.storyline = {
+    curSlideIndex: 0,
+    totalSlides: 0,
+  };
+
+  /*
+    Calculations are required to correct position and size the cards. Here is a
+    overview of how the calculations flow:
+      - `calcSlideLayout`: calculate layout
+        - if card is bounded by container
+          - result: only 1 card
+          - calculate: card size (fitting into the container)
+        - if card is bounded by height
+          - calculate: number of cards
+          - calculate: card size
+      - `calcSlidePositions`: calculate slide positions based on results of calcSlideLayout
+        - calculate: x and y position of each card
+  */
+
+  /*
+    calcSlideLayout calculates the number of cards and scale of each card. Then,
+    it will save these calculations. Then, it will invoke calcSlidePositions()
+    since previous calculations have been invalidated by these new layouts.
+  */
+  self.calcSlideLayout = function() {
+
+    self.calcSlidePositions();
+  }
+
+  /*
+    results of `calcSlideLayout()` saved here
+    slideLayout data structure:
+    ```
+      {
+        numCards: int,
+        scale: int,
+
+        // numbers used for internal calculations
+      }
+    ```
+  */
+  self.slideLayout = {};
+
+  /*
+    calcSlidePositions calculates the x and y position of each card based on the
+    layout as calculated by calcSlideLayout().
+  */
+  self.calcSlidePositions = function() {
+    self.slidePositions = []; // reset the slide positions
+    var shift = (self.storyline.curSlideIndex) * 600
+    for (var i = 0; i < self.storyline.totalSlides; i++) {
+
+      self.slidePositions[i] = {
+        x: i*600 - shift + 200,
+        y: 10
+      };
+    }
+  };
+
+  /*
+    results of `calcSlidePositions()` saved here
+    slideLayout data structure:
+    ```
+      {
+        x: int,
+        y: int,
+      }
+    ```
+  */
+  self.slidePositions = [];
+
+  // Aassumes that the array is the same length as the number of slides
+  self.applySlideTransforms = function() {
+    // TODO: optimize performance here
+    var numSlides = t.$slides.length;
+    for (var i = 0; i < numSlides; i++) {
+      var curPositions = self.slidePositions[i];
+      var transformProp = 'translate(' + curPositions.x + 'px ,' + curPositions.y + 'px)';
+      t.$slides[i].css({
+        '-webkit-transform': transformProp,
+                'transform': transformProp
+      });
+    }
+  }
+
   return {
-    tools: ['events'],
+    tools: ['$slidesContainer', '$slides', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.trigger('viewport:register-options', {
@@ -138,6 +231,20 @@ storyteller.define('slide-cards', function() {
           'paddingBottom': 32
         }
       });
+
+      // TODO: better story around communiating with storyline
+      self.storyline.totalSlides = t.$slides.length;
+      t.events.on('storyline:change', function(e, change) {
+        self.storyline.curSlideIndex = change.toIndex;
+        self.storyline.totalSlides = change.totalSlides;
+
+        self.calcSlidePositions();
+        self.applySlideTransforms();
+      });
+
+      t.$slidesContainer.addClass('ready');
+      self.calcSlideLayout();
+      self.applySlideTransforms();
     }
   }
 });

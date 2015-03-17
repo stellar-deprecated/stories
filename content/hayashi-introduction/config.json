@@ -2,7 +2,6 @@
   "storyteller": {
     "modules": [
       "storyline-linear"
-      ,"transition-fade"
       ,"viewport-fluid"
       ,"slide-cards"
       ,"display-background-slide"

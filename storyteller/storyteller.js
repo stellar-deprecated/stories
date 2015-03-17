@@ -172,11 +172,20 @@ var storyteller = (function() {
         "events": function() {
           return this.events;
         },
-        "$slides": function() {
-          return this.$slides;
-        },
         "$slidesContainer": function() {
           return this.$slidesContainer;
+        },
+        "slides": function() {
+          // TODO: make a copy so it's not mutable between modules
+          return this.$slides;
+        },
+        "$slides": function() {
+          // TODO: better looking way of distinguishing between elements and jQuery wrapped
+          var $slides = []; // http://jsperf.com/eq-vs-vs-vanilla
+          for (var i = 0; i < this.$slides.length; i++) {
+            $slides[i] = $(this.$slides[i]);
+          }
+          return $slides
         },
         "$uiOverlay": function(moduleName) {
           return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$uiOverlay);
