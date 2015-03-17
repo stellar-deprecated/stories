@@ -45,6 +45,12 @@
   }
 }
 
+.stories--viewport-fluid {
+  > .slides > section {
+
+  }
+}
+
 .stories--transition-fade {
   > .slides > section {
     // Enabling graphics acceleration causes iOs to crash every time
@@ -75,28 +81,21 @@
   }
 }
 
-.stories--slide-full > .slides > section{
+.stories--slide-full > .slides > section {
   // Stretch the slides
   width: 100%;
   height: 100%;
 }
 
-.stories--slide-cards > .slides > section{
+.stories--slide-cards > .slides > section {
   // Stretch the slides
   width: 360px;
   height: 640px;
   outline: 2px solid green;
 
   display: block;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  margin: auto;
+  margin: 0 auto;
 
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-          transform: translateX(-50%) translateY(-50%);
-  margin: 0;
 }
 
 .stories .ui-layer.control-dock {
@@ -117,6 +116,7 @@
   flex: 1;
   background: #80bfff;
   position: relative;
+  cursor: pointer;
 
   .bar-min {
     height: 100%;

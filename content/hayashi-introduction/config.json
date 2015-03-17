@@ -3,7 +3,7 @@
     "modules": [
       "storyline-linear"
       ,"transition-fade"
-      ,"viewport-fixed"
+      ,"viewport-fluid"
       ,"slide-cards"
       ,"display-background-slide"
       ,"control-dock"

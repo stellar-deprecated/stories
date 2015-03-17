@@ -259,7 +259,7 @@ storyteller.define('control-progressBar-thin', function() {
   };
 });
 
-// Zooming of the slideshow
+// zoomable fixed viewport
 storyteller.define('viewport-fixed', function() {
   var module = this;
   var t;
@@ -350,7 +350,7 @@ storyteller.define('viewport-fixed', function() {
   };
 
   return {
-    tools: ['$slidesContainer' ,'events'],
+    tools: ['$slidesContainer', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.on('init', function() {
@@ -362,6 +362,21 @@ storyteller.define('viewport-fixed', function() {
       module.bindResizeZoom();
     },
   };
+});
+
+// non zooming fluid viewport
+storyteller.define('viewport-fluid', function() {
+  var self = this;
+  var t;
+
+  return {
+    tools: ['$slidesContainer', 'events'],
+    entry: function(tools) {
+      t = tools;
+
+
+    }
+  }
 });
 
 // Single page advancement swipe
