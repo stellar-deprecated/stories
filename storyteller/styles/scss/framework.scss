@@ -5,6 +5,8 @@
   box-sizing: inherit;
 }
 
+$ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
 /**
     Overall structure of the slideshow
 **/
@@ -105,8 +107,8 @@
 
   > .slides.ready > section {
     display: block;
-    -webkit-transition: -webkit-transform ease-out 0.25s;
-            transition: transform ease-out 0.25s;
+    -webkit-transition: -webkit-transform $ease-out-quad 0.5s;
+            transition: transform $ease-out-quad 0.5s;
   }
 }
 
@@ -135,8 +137,8 @@
     width: 0%;
     background: #3399ff;
     position: absolute;
-    -webkit-transition: width ease-out 0.25s;
-            transition: width ease-out 0.25s;
+    -webkit-transition: width $ease-out-quad 0.5s;
+            transition: width $ease-out-quad 0.5s;
   }
   .bar-max {
     height: 100%;
@@ -177,7 +179,7 @@
   height: 4px;
   width: 0%;
   background: black;
-  transition: width 0.3s ease-out;
+  transition: width $ease-out-quad 0.5s;
 }
 
 .stories .ui-layer.control-navButtons {
@@ -191,7 +193,7 @@
     line-height: 0;
 
     opacity: 0.5;
-    transition: opacity 0.3s ease-out;
+    transition: opacity $ease-out-quad 0.5s;
 
     &:before {
       content: '';
