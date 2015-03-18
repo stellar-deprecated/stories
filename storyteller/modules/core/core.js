@@ -315,9 +315,16 @@ storyteller.define('slide-cards', function() {
         self.applySlideTransforms();
       });
 
+      $(window).on('resize orientationChanged', function() {
+        self.calcSlideLayout();
+        self.applySlideTransforms();
+      });
+
       t.$slidesContainer.addClass('ready');
-      self.calcSlideLayout();
-      self.applySlideTransforms();
+      t.events.on('init', function() {
+        self.calcSlideLayout();
+        self.applySlideTransforms();
+      });
     }
   }
 });
