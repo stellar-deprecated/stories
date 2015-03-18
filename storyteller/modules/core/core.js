@@ -315,15 +315,15 @@ storyteller.define('slide-cards', function() {
         self.applySlideTransforms();
       });
 
-      $(window).on('resize orientationChanged', function() {
-        self.calcSlideLayout();
-        self.applySlideTransforms();
-      });
-
-      t.$slidesContainer.addClass('ready');
       t.events.on('init', function() {
         self.calcSlideLayout();
         self.applySlideTransforms();
+        t.$slidesContainer.addClass('ready');
+
+        $(window).on('resize orientationChanged', function() {
+          self.calcSlideLayout();
+          self.applySlideTransforms();
+        });
       });
     }
   }
