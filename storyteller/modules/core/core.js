@@ -134,7 +134,13 @@ storyteller.define('slide-cards', function() {
   // TODO: configurable options
   // hardcoded for now
   self.options = {
-
+    slideMarginHorizontal: 20,
+    slideMarginVertical: 20,
+    // registeredPadding: { // TODO: ui padding registration tool
+    //   'bottom': 16 //px
+    // },
+    virtualWidth: 720,
+    virtualHeight: 1280
   };
 
   // save the state of the storyline
@@ -163,19 +169,67 @@ storyteller.define('slide-cards', function() {
     since previous calculations have been invalidated by these new layouts.
   */
   self.calcSlideLayout = function() {
+    self.slideLayout = {};
+    // alias to reduce code verbosity
+    var layout = self.slideLayout;
+    var opts = self.options;
+
+    // extrapolate givens
+    layout.aspectRatio = opts.virtualWidth / opts.virtualHeight;
+
+    // calculate container size
+    layout.viewportWidth = t.$slidesContainer.width();
+    layout.viewportHeight = t.$slidesContainer.height(); // - self.options.registeredPadding.bottom;
+
+    // calculate if we are bounded by container width or height
+    // here, we take a guess that it is bounded by width
+    var slideWidthGuess = layout.viewportWidth - 2 * opts.slideMarginHorizontal;
+    var slideHeightGuess = slideWidthGuess / layout.aspectRatio;
+    var slideOuterHeightGuess = slideHeightGuess + 2 * opts.slideMarginVertical;
+
+    // if height is less than the viewport, then our guess was correct
+    layout.boundByWidth = (slideOuterHeightGuess < layout.viewportHeight);
+
+    // Calculate the sizes of each card
+    if (layout.boundByWidth) {
+      layout.slideWidth = layout.viewportWidth - 2 * opts.slideMarginHorizontal;
+      layout.slideHeight = layout.slideWidth / layout.aspectRatio;
+      layout.scale = layout.slideWidth / opts.virtualWidth;
+    } else {
+      layout.slideHeight = layout.viewportHeight - 2 * opts.slideMarginVertical;
+      layout.slideWidth = layout.slideHeight * layout.aspectRatio;
+      layout.scale = layout.slideHeight / opts.virtualHeight; // less precision loss
+    }
+
+    if (layout.boundByWidth) {
+      // bounded by width automatically means only 1 card at a time
+      layout.numCards = 1;
+    } else {
+      // we could fit one or more cards per page
+      // solve for n: layout.viewportWidth = n*layout.slideWidth + (n+1) * self.options.slideMarginHorizontal
+      layout.numCards = Math.floor(
+        (layout.viewportWidth - opts.slideMarginHorizontal)
+        /
+        (layout.slideWidth + opts.slideMarginHorizontal)
+      );
+    }
 
     self.calcSlidePositions();
   }
 
   /*
     results of `calcSlideLayout()` saved here
-    slideLayout data structure:
+    example slideLayout data:
     ```
       {
-        numCards: int,
-        scale: int,
-
-        // numbers used for internal calculations
+        aspectRatio: 0.5625
+        boundByWidth: false
+        numCards: 2
+        scale: 0.68203125
+        slideHeight: 873
+        slideWidth: 491.0625
+        viewportHeight: 913
+        viewportWidth: 1491
       }
     ```
   */
@@ -215,7 +269,7 @@ storyteller.define('slide-cards', function() {
     var numSlides = t.$slides.length;
     for (var i = 0; i < numSlides; i++) {
       var curPositions = self.slidePositions[i];
-      var transformProp = 'translate(' + curPositions.x + 'px ,' + curPositions.y + 'px)';
+      var transformProp = 'translate(' + curPositions.x + 'px ,' + curPositions.y + 'px) scale(' + self.slideLayout.scale + ')';
       t.$slides[i].css({
         '-webkit-transform': transformProp,
                 'transform': transformProp

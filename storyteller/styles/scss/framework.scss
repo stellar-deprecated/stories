@@ -98,6 +98,9 @@
     outline: 2px solid green;
 
     margin: 0 auto;
+
+    -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
   }
 
   > .slides.ready > section {
