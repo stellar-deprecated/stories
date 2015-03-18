@@ -241,12 +241,30 @@ storyteller.define('slide-cards', function() {
   */
   self.calcSlidePositions = function() {
     self.slidePositions = []; // reset the slide positions
-    var shift = (self.storyline.curSlideIndex) * 600
+    // alias to reduce code verbosity
+    var layout = self.slideLayout;
+    var opts = self.options;
+
+
+    // calculate offsets relevant to all slides
+    // innerContentWidth is the total size of all the slides on screen and margins between these slides
+    var innerContentWidth =
+      layout.numCards * layout.slideWidth + // slide sizes
+      (layout.numCards-1) * opts.slideMarginHorizontal; // slide margins
+
+    // slideXOffset is the horizontal distance between the viewport and the left slide on the screen
+    var slideXOffset = (layout.viewportWidth - innerContentWidth) / 2;
+
+    // navigatedSlideOffset is the offset caused by the current card we have navigated to
+    var navigatedSlideOffset = self.storyline.curIndex * (layout.slideWidth + opts.slideMarginHorizontal);
+
+    // calculate offsets relevant to individual slides
     for (var i = 0; i < self.storyline.totalSlides; i++) {
+      var thisSlideOffset = (i) * (layout.slideWidth + opts.slideMarginHorizontal);
 
       self.slidePositions[i] = {
-        x: i*600 - shift + 200,
-        y: 10
+        x: slideXOffset - navigatedSlideOffset + thisSlideOffset,
+        y: (layout.viewportHeight - layout.slideHeight) / 2
       };
     }
   };
@@ -266,8 +284,7 @@ storyteller.define('slide-cards', function() {
   // Aassumes that the array is the same length as the number of slides
   self.applySlideTransforms = function() {
     // TODO: optimize performance here
-    var numSlides = t.$slides.length;
-    for (var i = 0; i < numSlides; i++) {
+    for (var i = 0; i < self.storyline.totalSlides; i++) {
       var curPositions = self.slidePositions[i];
       var transformProp = 'translate(' + curPositions.x + 'px ,' + curPositions.y + 'px) scale(' + self.slideLayout.scale + ')';
       t.$slides[i].css({
@@ -291,7 +308,7 @@ storyteller.define('slide-cards', function() {
       // TODO: better story around communiating with storyline
       self.storyline.totalSlides = t.$slides.length;
       t.events.on('storyline:change', function(e, change) {
-        self.storyline.curSlideIndex = change.toIndex;
+        self.storyline.curIndex = change.toIndex;
         self.storyline.totalSlides = change.totalSlides;
 
         self.calcSlidePositions();
