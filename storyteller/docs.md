@@ -4,8 +4,8 @@
 - [Events](#events)
 - [Tools](#tools)
 
-## Writing modules
-
+## Introduction
+_Note: storyteller.js is new software still undergoing major changes and may break in between minor or even patches. These docs are not guaranteed to be up to date._
 
 ## Events
 The main way modules talk to each other is through `events` `tool` provided by the storyteller. Messages passed through events are expected to be objects so to provide extensibility in the specified arguments.
