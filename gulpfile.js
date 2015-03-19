@@ -20,6 +20,7 @@ gulp.task('default', ['develop'], function() {});
 
 gulp.task('build', [
   'compile-stories',
+  'story-app-overview',
   'story-app-sass',
   'story-app-vendor',
   'fonts',
@@ -30,7 +31,8 @@ gulp.task('develop', ['build', 'dev-server', 'watch']);
 gulp.task('production', ['build']);
 
 gulp.task('watch', function() {
-  gulp.watch(['./story-app/index.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories']);
+  gulp.watch(['./story-app/story.html', './story-app/story.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories']);
+  gulp.watch(['./story-app/overview.html'], ['story-app-overview']);
   gulp.watch(['./story-app/scss/*.scss'], ['story-app-sass']);
   gulp.watch(['./storyteller/styles/scss/*.scss'], ['storyteller-css']);
   gulp.watch(['./storyteller/*.js', './storyteller/modules/**/*.js'], ['storyteller-js']);
@@ -66,7 +68,7 @@ gulp.task('fonts', function() {
 
 gulp.task('compile-stories', function() {
   // TODO: promisify the file reads in here for performance?
-  var indexTemplate = fs.readFileSync('./story-app/index.html').toString();
+  var storyIndexTemplate = fs.readFileSync('./story-app/story.html').toString();
   var defaultMeta = JSON.parse(fs.readFileSync('./story-app/default-meta.json').toString());
   var content = gulp.src('./content/**/config.json');
 
@@ -81,7 +83,7 @@ gulp.task('compile-stories', function() {
 
     // Missing fields will default to those in story-app/default-meta.json
     var finalMeta = _.assign(_.clone(defaultMeta), storyMeta);
-    var newIndex = indexTemplate;
+    var newIndex = storyIndexTemplate;
     newIndex = newIndex.replace('<!-- config inserted here -->', content);
     // TODO: Replace things the "correct" way (instead of copy and paste)
     newIndex = newIndex.replace(/<!-- story-meta:title -->/g, finalMeta.title);
@@ -109,6 +111,13 @@ gulp.task('compile-stories', function() {
     .pipe(gulp.dest('./dist'));
 
   gulp.src('./content/**/assets/*')
+    .pipe(gulp.dest('./dist/'))
+});
+
+
+gulp.task('story-app-overview', function() {
+  gulp.src('./story-app/overview.html')
+    .pipe(rename('index.html'))
     .pipe(gulp.dest('./dist/'))
 });
 
