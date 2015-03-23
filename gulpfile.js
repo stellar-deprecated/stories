@@ -69,13 +69,25 @@ gulp.task('fonts', function() {
 gulp.task('compile-stories', function() {
   // TODO: promisify the file reads in here for performance?
   var storyIndexTemplate = fs.readFileSync('./story-app/story.html').toString();
-  var defaultMeta = JSON.parse(fs.readFileSync('./story-app/default-meta.json').toString());
+
+  try {
+    var defaultMeta = JSON.parse(fs.readFileSync('./story-app/default-meta.json').toString());
+  } catch (e) {
+    gutil.log("ERROR! Unable to parse JSON file './story-app/default-meta.json'");
+    return;
+  }
   var content = gulp.src('./content/**/config.json');
 
   // Inlines the config file as a js declaration.
   // Also inserts meta information
-  var inlineConfig = map(function(content) {
-    var contentJSON = JSON.parse(content.toString());
+  var inlineConfig = map(function(content, filename) {
+    try {
+      // TODO: Better handling of errors
+      var contentJSON = JSON.parse(content.toString());
+    } catch (e) {
+      gutil.log("ERROR! Unable to parse JSON file: " + filename);
+      return;
+    }
 
     content = content.toString();
     content = "<script>window.storyConfig = " + content + ";</script>";
