@@ -58,6 +58,8 @@ gulp.task('story-app-vendor', ['bower'], function() {
     .pipe(gulp.dest('./dist/js/vendor/2.1.3')) // TODO: automatically insert version number
   gulp.src('./bower_components/jquery-touchswipe/jquery.touchSwipe.min.js')
     .pipe(gulp.dest('./dist/js/vendor/1.6.4'))
+  gulp.src(['./bower_components/hammerjs/hammer.min.js', './bower_components/hammerjs/hammer.min.map'])
+    .pipe(gulp.dest('./dist/js/vendor/2.0.4'))
 });
 
 // we don't watch fonts since we don't expect it to frequently change
