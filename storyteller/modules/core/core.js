@@ -292,6 +292,12 @@ storyteller.define('slide-cards', function() {
     // TODO: optimize performance here
     for (var i = 0; i < self.storyline.totalSlides; i++) {
       var curPositions = self.slidePositions[i];
+
+      // Chrome renders things blurry if it is translated by half a pixel.
+      // Round so that things will render more clearly
+      curPositions.x = Math.round(curPositions.x);
+      curPositions.y = Math.round(curPositions.y);
+
       var transformProp = 'translate(' + curPositions.x + 'px ,' + curPositions.y + 'px) scale(' + self.slideLayout.scale + ')';
       t.$slides[i].css({
         '-webkit-transform': transformProp,
