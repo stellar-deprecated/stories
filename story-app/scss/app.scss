@@ -9,6 +9,19 @@ html {
 
 
 /**
+  Important for storyteller.js functionality
+**/
+body {
+  // iOs doesn't play well with transform translate
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+
+/**
     Variables
 **/
 $primary: #08b5e5; // Blue
