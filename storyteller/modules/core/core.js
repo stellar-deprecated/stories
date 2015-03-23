@@ -445,7 +445,6 @@ storyteller.define('display-background', function() {
     "color": "#000",
   };
   self.updateBackground = function(e, change) {
-    console.log(change.$targetSlide.attr('template'));
     t.$uiUnderlay.attr({'template': change.$targetSlide.attr('template')});
   };
 
@@ -454,7 +453,6 @@ storyteller.define('display-background', function() {
     entry: function(tools) {
       t = tools;
       $.extend(self.options, t.options.background);
-      console.log(self.options);
 
       if (self.options.type === "contextual") {
         t.events.on("storyline:change", self.updateBackground);
@@ -464,7 +462,6 @@ storyteller.define('display-background', function() {
       } else {
         console.error('Invalid background type specified. Got: ' + self.options.type);
       }
-      console.log(t.options);
     },
   };
 });
