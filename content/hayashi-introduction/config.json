@@ -4,14 +4,18 @@
       "storyline-linear"
       ,"viewport-fluid"
       ,"slide-cards"
-      ,"display-background-slide"
       ,"control-dock"
       ,"control-navButtons"
+      ,"display-background"
       ,"control-simpleSwipe"
       ,"control-keyboardNavigation"
     ],
     "options": {
-      "debug": true
+      "debug": true,
+      "background": {
+        "type": "static",
+        "color": "#22282b"
+      }
     }
   },
   "meta": {

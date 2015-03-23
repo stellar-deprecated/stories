@@ -172,6 +172,9 @@ var storyteller = (function() {
         "events": function() {
           return this.events;
         },
+        "options": function() {
+          return this.options;
+        },
         "$slidesContainer": function() {
           return this.$slidesContainer;
         },

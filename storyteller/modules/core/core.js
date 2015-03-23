@@ -420,18 +420,39 @@ storyteller.define('control-navButtons', function() {
 });
 
 // Background based on the current slide
-storyteller.define('display-background-slide', function() {
-  var module = this;
+storyteller.define('display-background', function() {
+  var self = this;
   var t;
-  module.updateBackground = function(e, change) {
+
+  // TODO: better way of handling options in storyteller.js (built in)
+  self.options = {
+    "type": "contextual",
+      // static: based on a setting in the config
+      // contextual: based on what the current slide specifies
+      // TODO: improve how contextual backgrounds are handled
+    "color": "#000",
+  };
+  self.updateBackground = function(e, change) {
+    console.log(change.$targetSlide.attr('template'));
     t.$uiUnderlay.attr({'template': change.$targetSlide.attr('template')});
   };
 
   return {
-    tools: ['events', '$uiUnderlay'],
+    tools: ['options', 'events', '$uiUnderlay'],
     entry: function(tools) {
       t = tools;
-      t.events.on("storyline:change", module.updateBackground);
+      $.extend(self.options, t.options.background);
+      console.log(self.options);
+
+      if (self.options.type === "contextual") {
+        t.events.on("storyline:change", self.updateBackground);
+      } else if (self.options.type === "static") {
+        t.$uiUnderlay.css({'background': self.options.color});
+        // TODO: Sanitize input? For untrusted slideshow makers
+      } else {
+        console.error('Invalid background type specified. Got: ' + self.options.type);
+      }
+      console.log(t.options);
     },
   };
 });

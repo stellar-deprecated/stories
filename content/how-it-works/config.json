@@ -5,12 +5,14 @@
       ,"transition-fade"
       ,"viewport-fixed"
       ,"slide-full"
-      ,"display-background-slide"
+      ,"display-background"
       ,"control-navButtons"
       ,"control-progressBar-thin"
       ,"control-simpleSwipe"
       ,"control-keyboardNavigation"
-    ]
+    ],
+    "options": {
+    }
   },
   "meta": {
     "title": "How Stellar Works",
