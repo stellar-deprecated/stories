@@ -134,13 +134,13 @@ storyteller.define('slide-cards', function() {
   // TODO: configurable options
   // hardcoded for now
   self.options = {
-    slideMarginHorizontal: 20,
-    slideMarginVertical: 20,
+    slideMarginHorizontal: 8,
+    slideMarginVertical: 8,
     // registeredPadding: { // TODO: ui padding registration tool
     //   'bottom': 16 //px
     // },
-    virtualWidth: 720,
-    virtualHeight: 1280
+    virtualWidth: 360,
+    virtualHeight: 640
   };
 
   // save the state of the storyline
@@ -253,7 +253,13 @@ storyteller.define('slide-cards', function() {
       (layout.numCards-1) * opts.slideMarginHorizontal; // slide margins
 
     // slideXOffset is the horizontal distance between the viewport and the left slide on the screen
-    var slideXOffset = (layout.viewportWidth - innerContentWidth) / 2;
+    if (layout.numCards == 1) {
+      var slideXOffset = (layout.viewportWidth - innerContentWidth) / 2;
+    } else {
+      // First slide starts on the left
+      var slideXOffset = opts.slideMarginHorizontal;
+      // For centered slides: // (layout.viewportWidth - innerContentWidth) / 2;
+    }
 
     // navigatedSlideOffset is the offset caused by the current card we have navigated to
     var navigatedSlideOffset = self.storyline.curIndex * (layout.slideWidth + opts.slideMarginHorizontal);
