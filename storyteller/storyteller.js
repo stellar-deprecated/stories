@@ -21,6 +21,11 @@ var storyteller = (function() {
           debug: false
         }, config.options);
 
+        // Enable debug mode
+        if (this.options.debug) {
+          console.clear();
+        }
+
         this.moduleList = config.modules;
 
         // Create the event handling system
@@ -35,16 +40,16 @@ var storyteller = (function() {
         this.$slides = this.$container.find('> .slides > section');
         this.initUILayers();
 
+        // Enable debug mode
+        if (this.options.debug) {
+          this.$container.addClass('debug');
+        }
+
         // load all dependencies from the slideshow config.json
         this.loadAllModules();
 
         // Let modules know that they are ready
         this.events.trigger('init');
-
-        // Enable debug mode
-        if (this.options.debug) {
-          this.$container.addClass('debug');
-        }
       },
 
       initUILayers: function() {
