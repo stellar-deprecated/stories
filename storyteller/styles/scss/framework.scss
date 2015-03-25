@@ -11,16 +11,24 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     Overall structure of the slideshow
 **/
 .stories {
-  > .slides {
+  .slides {
     position: absolute;
     -webkit-transform-origin: 0 0;
             transform-origin: 0 0;
     -webkit-font-smoothing: antialiased;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  .viewport {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 
     overflow: hidden;
-    > section {
-      display: none; // Prevent FOUC
-    }
   }
 
   &.debug:before {
@@ -33,26 +41,26 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: block;
     z-index: 1000;
   }
-  &.debug > .slides {
+  &.debug .slides {
     outline: 2px solid red;
     overflow: visible;
   }
 }
 
 .stories--viewport-fixed {
-  > .slides > section {
+  .slides > section {
 
   }
 }
 
 .stories--viewport-fluid {
-  > .slides > section {
+  .slides > section {
 
   }
 }
 
 .stories--transition-fade {
-  > .slides > section {
+  .slides > section {
     // Enabling graphics acceleration causes iOs to crash every time
     // Disabling graphics acceleration causes Desktop Safari to be unusably slow
     // Disabling slide fade opacity solves all our problems for now
@@ -81,15 +89,14 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 }
 
-.stories--slide-full > .slides > section {
+.stories--slide-full .slides > section {
   // Stretch the slides
   width: 100%;
   height: 100%;
 }
 
 .stories--slide-cards {
-  > .slides > section {
-    display: none; // not until ready
+  .slides > section {
     position: absolute;
 
     // Stretch the slides
@@ -103,11 +110,25 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform-origin: 0 0;
   }
 
-  > .slides.ready > section {
+  .viewport .slides {
+    display: none; // Prevent flash of unpositioned content
+  }
+  .viewport.ready .slides {
     display: block;
     -webkit-transition: -webkit-transform $ease-out-quad 0.5s;
             transition: transform $ease-out-quad 0.5s;
   }
+  .viewport.ready .slides > section {
+    -webkit-transition: -webkit-transform $ease-out-quad 0.5s;
+            transition: transform $ease-out-quad 0.5s;
+  }
+}
+
+.stories .ui-layer.cards-touch {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(128,128,255,0.25);
+  pointer-events:none;
 }
 
 .stories .ui-layer.control-dock {

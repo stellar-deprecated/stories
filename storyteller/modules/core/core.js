@@ -178,8 +178,8 @@ storyteller.define('slide-cards', function() {
     layout.aspectRatio = opts.virtualWidth / opts.virtualHeight;
 
     // calculate container size
-    layout.viewportWidth = t.$slidesContainer.width();
-    layout.viewportHeight = t.$slidesContainer.height(); // - self.options.registeredPadding.bottom;
+    layout.viewportWidth = t.$viewport.width();
+    layout.viewportHeight = t.$viewport.height(); // - self.options.registeredPadding.bottom;
 
     // calculate if we are bounded by container width or height
     // here, we take a guess that it is bounded by width
@@ -307,7 +307,7 @@ storyteller.define('slide-cards', function() {
   }
 
   return {
-    tools: ['$slidesContainer', '$slides', 'events'],
+    tools: ['$viewport', '$slides', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.trigger('viewport:register-options', {
@@ -330,7 +330,7 @@ storyteller.define('slide-cards', function() {
       t.events.on('init', function() {
         self.calcSlideLayout();
         self.applySlideTransforms();
-        t.$slidesContainer.addClass('ready');
+        t.$viewport.addClass('ready');
 
         $(window).on('resize orientationChanged', function() {
           self.calcSlideLayout();
@@ -509,7 +509,7 @@ storyteller.define('viewport-fixed', function() {
           var marginTop = 0;
           var marginLeft = ((viewportWPadded - viewportHPadded*slidesAspectRatio)) / 2 + 'px';
         }
-        t.$slidesContainer.css({
+        t.$viewport.css({
           'zoom': zoom,
           'margin-top': marginTop,
           'margin-left': marginLeft
@@ -531,7 +531,7 @@ storyteller.define('viewport-fixed', function() {
             0 +
           ')';
         }
-        t.$slidesContainer.css({
+        t.$viewport.css({
           '-webkit-transform': resizeTransform + ' ' + resizeTranslate,
           'transform': resizeTransform + ' ' + resizeTranslate
         });
@@ -575,11 +575,11 @@ storyteller.define('viewport-fixed', function() {
   };
 
   return {
-    tools: ['$slidesContainer', 'events'],
+    tools: ['$viewport', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.on('init', function() {
-        t.$slidesContainer.css({width: module.width + 'px', height: module.height + 'px'});
+        t.$viewport.css({width: module.width + 'px', height: module.height + 'px'});
       });
 
       module.resizeZoom = module.resizeZoomFactory();
@@ -630,7 +630,7 @@ storyteller.define('viewport-fluid', function() {
   };
 
   self.renderOptions = function() {
-    t.$slidesContainer.css({
+    t.$viewport.css({
       'top': self.options.paddingTop + 'px',
       'right': self.options.paddingRight + 'px',
       'bottom': self.options.paddingBottom + 'px',
@@ -646,7 +646,7 @@ storyteller.define('viewport-fluid', function() {
   };
 
   return {
-    tools: ['$slidesContainer', 'events'],
+    tools: ['$viewport', 'events'],
     entry: function(tools) {
       t = tools;
 
@@ -662,7 +662,7 @@ storyteller.define('viewport-fluid', function() {
 // Single page advancement swipe
 storyteller.define('control-simpleSwipe', function() {
   return {
-    tools: ['events', '$slidesContainer'],
+    tools: ['events', '$viewport'],
     entry: function(tools) {
       var t = tools;
       if (typeof $.fn.swipe === 'undefined') { // TODO: dependency injection (jspm?)
@@ -670,7 +670,7 @@ storyteller.define('control-simpleSwipe', function() {
         return;
       }
 
-      t.$slidesContainer.swipe({
+      t.$viewport.swipe({
         swipe: function(event, direction, distance, duration, fingerCount) {
           if (direction === "right") {
             t.events.trigger('control:prev');

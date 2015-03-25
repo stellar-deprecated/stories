@@ -38,6 +38,8 @@ var storyteller = (function() {
         this.$container = $(elem);
         this.$slidesContainer = this.$container.find('> .slides');
         this.$slides = this.$container.find('> .slides > section');
+        this.$slidesContainer.wrap('<div class="viewport"></div>');
+        this.$viewport = this.$container.find('> .viewport');
         this.initUILayers();
 
         // Enable debug mode
@@ -201,6 +203,9 @@ var storyteller = (function() {
         "$uiUnderlay": function(moduleName) {
           return $('<div class="ui-layer ' + moduleName + '"></div>').prependTo(this.$uiUnderlay);
         },
+        "$viewport": function() {
+          return this.$viewport;
+        }
       },
 
       createLogger: function() {
