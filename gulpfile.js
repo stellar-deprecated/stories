@@ -5,10 +5,12 @@ var _ = require('lodash');
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
-var connect = require('gulp-connect');
+// var connect = require('gulp-connect');
+var browserSync = require('browser-sync');
 var gutil = require('gulp-util');
 var uglify = require('gulp-uglify');
 var bower = require('gulp-bower');
+var reload = browserSync.reload;
 
 var which = require('which').sync;
 var spawn = require('child_process').spawn;
@@ -31,11 +33,11 @@ gulp.task('develop', ['build', 'dev-server', 'watch']);
 gulp.task('production', ['build']);
 
 gulp.task('watch', function() {
-  gulp.watch(['./story-app/story.html', './story-app/story.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories']);
-  gulp.watch(['./story-app/overview.html'], ['story-app-overview']);
-  gulp.watch(['./story-app/scss/*.scss'], ['story-app-sass']);
-  gulp.watch(['./storyteller/styles/scss/*.scss'], ['storyteller-css']);
-  gulp.watch(['./storyteller/*.js', './storyteller/modules/**/*.js'], ['storyteller-js']);
+  gulp.watch(['./story-app/story.html', './story-app/story.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories', browserSync.reload]);
+  gulp.watch(['./story-app/overview.html'], ['story-app-overview', browserSync.reload]);
+  gulp.watch(['./story-app/scss/*.scss'], ['story-app-sass', browserSync.reload]);
+  gulp.watch(['./storyteller/styles/scss/*.scss'], ['storyteller-css', browserSync.reload]);
+  gulp.watch(['./storyteller/*.js', './storyteller/modules/**/*.js'], ['storyteller-js', browserSync.reload]);
 });
 
 gulp.task('story-app-sass', function() {
@@ -160,9 +162,14 @@ gulp.task('storyteller', ['storyteller-js', 'storyteller-css'], function() {
 
 
 gulp.task('dev-server', function() {
-  connect.server({
-    root: 'dist',
-    livereload: true,
-    port: 8000
-  })
+  // connect.server({
+  //   root: 'dist',
+  //   livereload: true,
+  //   port: 8000
+  // });
+  browserSync({
+    server: {
+      baseDir: "./dist/"
+    }
+   });
 });

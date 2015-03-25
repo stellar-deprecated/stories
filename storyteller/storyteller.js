@@ -23,7 +23,7 @@ var storyteller = (function() {
 
         // Enable debug mode
         if (this.options.debug) {
-          console.clear();
+          // console.clear();
         }
 
         this.moduleList = config.modules;
