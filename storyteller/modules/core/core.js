@@ -260,6 +260,9 @@ storyteller.define('slide-cards', function() {
     var layout = self.slideLayout;
     var opts = self.options;
 
+    // calculating innerContentWidth and slideXOffset belongs in calcContainerOffset
+    // but is here for optimization reasons
+
     // calculate offsets relevant to all slides
     // innerContentWidth is the total size of all the slides on screen and margins between these slides
     var innerContentWidth =
@@ -280,7 +283,7 @@ storyteller.define('slide-cards', function() {
       var thisSlideOffset = (i) * (layout.slideWidth + opts.slideMarginHorizontal);
 
       self.slidePositions[i] = {
-        x: slideXOffset - thisSlideOffset,
+        x: slideXOffset + thisSlideOffset,
         y: (layout.viewportHeight - layout.slideHeight) / 2
       };
     }
@@ -295,8 +298,8 @@ storyteller.define('slide-cards', function() {
     var layout = self.slideLayout;
     var opts = self.options;
 
-    var navigatedSlideOffset = (self.storyline.totalSlides - 1 - self.storyline.curSlideIndex) * (layout.slideWidth + opts.slideMarginHorizontal);
-    self.containerOffset = navigatedSlideOffset;
+    var navigatedSlideOffset = (self.storyline.curSlideIndex) * (layout.slideWidth + opts.slideMarginHorizontal);
+    self.containerOffset = (-1) * navigatedSlideOffset;
   }
 
   // Aassumes that the array is the same length as the number of slides
@@ -342,6 +345,8 @@ storyteller.define('slide-cards', function() {
     self.applyOffsetTransform();
   };
 
+  // watchViewport watches only the $viewport as opposed to using $(window).resize()
+  // which may not be accurate
   self.watchViewport = function() {
     var callbacks = [];
     var started = false;

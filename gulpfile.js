@@ -170,6 +170,7 @@ gulp.task('dev-server', function() {
   browserSync({
     server: {
       baseDir: "./dist/"
-    }
+    },
+    notify: false
    });
 });
