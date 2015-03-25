@@ -2,6 +2,10 @@ storyteller.define('storyline-linear', function() {
   var module = this;
   var t;
 
+  module.config = {
+    nextSize: 0
+  };
+
   module.currentSlideIndex = 0;
   module.totalSlides = 0;
 
@@ -67,6 +71,16 @@ storyteller.define('storyline-linear', function() {
     });
   };
 
+  module.rectifyBounds = function(index) {
+    if (index < 0) {
+      return 0;
+    } else if (index >= module.totalSlides) {
+      return module.totalSlides - 1;
+    } else {
+      return index;
+    }
+  };
+
   return {
     tools: ['$slides', 'events', 'log'],
     entry: function(tools) {
@@ -92,13 +106,18 @@ storyteller.define('storyline-linear', function() {
       });
       t.events.on('control:next', function() {
         module.toSlide({
-          index: module.currentSlideIndex + 1
+          index: module.rectifyBounds(module.currentSlideIndex + module.config.nextSize)
         });
       });
       t.events.on('control:prev', function() {
         module.toSlide({
-          index: module.currentSlideIndex - 1
+          index: module.rectifyBounds(module.currentSlideIndex - module.config.nextSize)
         });
+      });
+      t.events.on('storyline:setConfig', function(e, setConfig) {
+        if ($.isNumeric(setConfig.nextSize)) {
+          module.config.nextSize = parseInt(setConfig.nextSize, 10);
+        }
       });
     }
   }
@@ -246,6 +265,8 @@ storyteller.define('slide-cards', function() {
         (layout.slideWidth + opts.slideMarginHorizontal)
       );
     }
+
+    t.events.trigger('storyline:setConfig', {nextSize: layout.numCards});
 
     self.calcSlidePositions();
   }
