@@ -12,6 +12,9 @@
       ,"control-keyboardNavigation"
     ],
     "options": {
+      "navButtons": {
+        "extendedHitarea": true
+      }
     }
   },
   "meta": {
