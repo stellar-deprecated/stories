@@ -13,8 +13,6 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 .stories {
   .slides {
     position: absolute;
-    -webkit-transform-origin: 0 0;
-            transform-origin: 0 0;
     -webkit-font-smoothing: antialiased;
     top: 0;
     right: 0;
@@ -27,7 +25,8 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     right: 0;
     bottom: 0;
     left: 0;
-
+    -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
     overflow: hidden;
   }
 
