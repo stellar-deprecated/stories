@@ -150,6 +150,39 @@ storyteller.define('slide-cards', function() {
   };
 
   /*
+    results of `calcSlideLayout()` saved here
+    example slideLayout data:
+    ```
+      {
+        aspectRatio: 0.5625
+        boundByWidth: false
+        numCards: 2
+        scale: 0.68203125
+        slideHeight: 873
+        slideWidth: 491.0625
+        viewportHeight: 913
+        viewportWidth: 1491
+      }
+    ```
+  */
+  self.slideLayout = {};
+  /*
+    results of `calcSlidePositions()` saved here
+    slideLayout data structure:
+    ```
+      {
+        x: int,
+        y: int,
+      }
+    ```
+  */
+  self.slidePositions = [];
+
+  // A number specifying how much to translate the slides container to account
+  // for the current slide
+  self.containerOffet;
+
+  /*
     Calculations are required to correct position and size the cards. Here is a
     overview of how the calculations flow:
       - `calcSlideLayout`: calculate layout
@@ -218,24 +251,6 @@ storyteller.define('slide-cards', function() {
   }
 
   /*
-    results of `calcSlideLayout()` saved here
-    example slideLayout data:
-    ```
-      {
-        aspectRatio: 0.5625
-        boundByWidth: false
-        numCards: 2
-        scale: 0.68203125
-        slideHeight: 873
-        slideWidth: 491.0625
-        viewportHeight: 913
-        viewportWidth: 1491
-      }
-    ```
-  */
-  self.slideLayout = {};
-
-  /*
     calcSlidePositions calculates the x and y position of each card based on the
     layout as calculated by calcSlideLayout().
   */
@@ -244,7 +259,6 @@ storyteller.define('slide-cards', function() {
     // alias to reduce code verbosity
     var layout = self.slideLayout;
     var opts = self.options;
-
 
     // calculate offsets relevant to all slides
     // innerContentWidth is the total size of all the slides on screen and margins between these slides
@@ -261,53 +275,114 @@ storyteller.define('slide-cards', function() {
       // For centered slides: // (layout.viewportWidth - innerContentWidth) / 2;
     }
 
-    // navigatedSlideOffset is the offset caused by the current card we have navigated to
-    var navigatedSlideOffset = self.storyline.curIndex * (layout.slideWidth + opts.slideMarginHorizontal);
-
     // calculate offsets relevant to individual slides
     for (var i = 0; i < self.storyline.totalSlides; i++) {
       var thisSlideOffset = (i) * (layout.slideWidth + opts.slideMarginHorizontal);
 
       self.slidePositions[i] = {
-        x: slideXOffset - navigatedSlideOffset + thisSlideOffset,
+        x: slideXOffset - thisSlideOffset,
         y: (layout.viewportHeight - layout.slideHeight) / 2
       };
     }
+
+    self.calcContainerOffset();
   };
 
   /*
-    results of `calcSlidePositions()` saved here
-    slideLayout data structure:
-    ```
-      {
-        x: int,
-        y: int,
-      }
-    ```
+    calcSlideOffsets moves the slidesContainer to account for the current slide.
   */
-  self.slidePositions = [];
+  self.calcContainerOffset = function() {
+    var layout = self.slideLayout;
+    var opts = self.options;
+
+    var navigatedSlideOffset = (self.storyline.totalSlides - 1 - self.storyline.curSlideIndex) * (layout.slideWidth + opts.slideMarginHorizontal);
+    self.containerOffset = navigatedSlideOffset;
+  }
 
   // Aassumes that the array is the same length as the number of slides
+  // Applies the calculations for individual slides
   self.applySlideTransforms = function() {
     // TODO: optimize performance here
     for (var i = 0; i < self.storyline.totalSlides; i++) {
-      var curPositions = self.slidePositions[i];
+      var curPosition = self.slidePositions[i];
 
       // Chrome renders things blurry if it is translated by half a pixel.
       // Round so that things will render more clearly
-      curPositions.x = Math.round(curPositions.x);
-      curPositions.y = Math.round(curPositions.y);
+      curPosition.x = Math.round(curPosition.x);
+      curPosition.y = Math.round(curPosition.y);
 
-      var transformProp = 'translate(' + curPositions.x + 'px ,' + curPositions.y + 'px) scale(' + self.slideLayout.scale + ')';
+      var transformProp = 'scale(' + self.slideLayout.scale + ')';
       t.$slides[i].css({
+        'top': curPosition.y + 'px',
+        'left': curPosition.x + 'px',
         '-webkit-transform': transformProp,
                 'transform': transformProp
       });
     }
   }
 
+  self.applyOffsetTransform = function() {
+    var transformProp = 'translateX(' + self.containerOffset + 'px' + ')';
+    t.$slidesContainer.css({
+      '-webkit-transform': transformProp,
+              'transform': transformProp
+    });
+  };
+
+  // reLayout calculates the sizing, position, and math. To be run on load and
+  // when viewport size changes. Will also do all the steps in self.rePosition
+  self.reLayout = function() {
+    self.calcSlideLayout();
+    self.applySlideTransforms();
+    self.applyOffsetTransform();
+  };
+
+  self.rePosition = function() {
+    self.calcContainerOffset();
+    self.applyOffsetTransform();
+  };
+
+  self.watchViewport = function() {
+    var callbacks = [];
+    var started = false;
+    var prevViewportSize;
+
+
+    var addCallback = function(callback) {
+      callbacks.push(callback);
+      startWatcher();
+    };
+    var startWatcher = function() {
+      if (started) {
+        return;
+      }
+      started = true;
+
+      prevViewportSize = getViewportSize();
+      setInterval(changeDetector, 200);
+    };
+    var getViewportSize = function() {
+      return {
+        width: t.$viewport.outerWidth(),
+        height: t.$viewport.outerHeight()
+      };
+    }
+    var changeDetector = function() {
+      var newViewportSize = getViewportSize();
+      if (prevViewportSize.width !== newViewportSize.width ||
+          prevViewportSize.height !== newViewportSize.height) {
+        prevViewportSize = newViewportSize;
+        for (var i = 0; i < callbacks.length; i++) {
+          callbacks[i].call();
+        }
+      }
+    }
+
+    return addCallback;
+  }();
+
   return {
-    tools: ['$viewport', '$slides', 'events'],
+    tools: ['$viewport', '$slides', '$slidesContainer', 'events'],
     entry: function(tools) {
       t = tools;
       t.events.trigger('viewport:register-options', {
@@ -319,23 +394,20 @@ storyteller.define('slide-cards', function() {
 
       // TODO: better story around communiating with storyline
       self.storyline.totalSlides = t.$slides.length;
-      t.events.on('storyline:change', function(e, change) {
-        self.storyline.curIndex = change.toIndex;
-        self.storyline.totalSlides = change.totalSlides;
-
-        self.calcSlidePositions();
-        self.applySlideTransforms();
-      });
 
       t.events.on('init', function() {
-        self.calcSlideLayout();
-        self.applySlideTransforms();
+        t.events.on('storyline:change', function(e, change) {
+          self.storyline.curSlideIndex = change.toIndex;
+          self.storyline.totalSlides = change.totalSlides;
+
+          self.rePosition();
+        });
+        self.reLayout();
         t.$viewport.addClass('ready');
 
-        $(window).on('resize orientationChanged', function() {
-          self.calcSlideLayout();
-          self.applySlideTransforms();
-        });
+        self.watchViewport(function() {
+          self.reLayout();
+        })
       });
     }
   }
