@@ -281,22 +281,23 @@ storyteller.define('slide-cards', function() {
     var layout = self.slideLayout;
     var opts = self.options;
 
-    // calculating innerContentWidth and slideXOffset belongs in calcContainerOffset
+    // calculating contentInnerWidth and slideXOffset belongs in calcContainerOffset
     // but is here for optimization reasons
 
     // calculate offsets relevant to all slides
-    // innerContentWidth is the total size of all the slides on screen and margins between these slides
-    var innerContentWidth =
+    // contentInnerWidth is the total size of all the slides on screen and margins between these slides
+    layout.contentInnerWidth =
       layout.numCards * layout.slideWidth + // slide sizes
-      (layout.numCards-1) * opts.slideMarginHorizontal; // slide margins
+      (layout.numCards-1) * opts.slideMarginHorizontal; // inner slide margins
+
+    layout.contentOuterWidth = layout.contentInnerWidth + 2 * opts.slideMarginHorizontal;
 
     // slideXOffset is the horizontal distance between the viewport and the left slide on the screen
     if (layout.numCards == 1) {
-      var slideXOffset = (layout.viewportWidth - innerContentWidth) / 2;
+      var slideXOffset = (layout.viewportWidth - layout.contentInnerWidth) / 2;
     } else {
       // First slide starts on the left
       var slideXOffset = opts.slideMarginHorizontal;
-      // For centered slides: // (layout.viewportWidth - innerContentWidth) / 2;
     }
 
     // calculate offsets relevant to individual slides
@@ -308,6 +309,9 @@ storyteller.define('slide-cards', function() {
         y: (layout.viewportHeight - layout.slideHeight) / 2
       };
     }
+
+    // TODO: this is hacky. make a defined public interface
+    t.events.trigger('slide-cards:reLayout', layout);
 
     self.calcContainerOffset();
   };
@@ -321,6 +325,8 @@ storyteller.define('slide-cards', function() {
 
     var navigatedSlideOffset = (self.storyline.curSlideIndex) * (layout.slideWidth + opts.slideMarginHorizontal);
     self.containerOffset = (-1) * navigatedSlideOffset;
+
+    t.events.trigger('slide-cards:reOffset', self.containerOffset);
   }
 
   // Aassumes that the array is the same length as the number of slides
@@ -445,6 +451,9 @@ storyteller.define('cards-touch', function() {
   var self = this;
   var t;
 
+  self.slideCardsLayout = {};
+  self.storyLineState = {};
+
   if (typeof Hammer === "undefined") {
     console.error("HammerJS is not defined");
     return {};
@@ -453,39 +462,115 @@ storyteller.define('cards-touch', function() {
   self.handleTouches = function() {
     var touch = new Hammer(t.$viewport[0]);
     var state = {
-      startingLeft: 0
+      startingLeft: 0, // the translateX value before any panning started
+      latestDeltaX: 0, // Since there may be multiple panstarts, keep track of previous session
+      panStarted: false
     };
 
     // Use DIRECTION_ALL to prevent vertical scrolling
     touch.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-    // touch.add(new Hammer.Pan({
-    //   event: 'doublepan',
-    //   pointers: 2,
-    //   direction: Hammer.DIRECTION_HORIZONTAL,
-    //   threshold: 0
-    // }));
+    touch.add(new Hammer.Pan({
+      event: 'doublepan',
+      pointers: 2,
+      direction: Hammer.DIRECTION_HORIZONTAL,
+      threshold: 0
+    }));
 
-    touch.on("panstart pan panend", function(e) {
-      if (e.type === "panstart") {
-        // extract the translateX from the transform matrix()
-        state.startingLeft = parseInt(t.$slidesContainer.css('transform').split(',')[4]);
-        console.log(state.startingLeft);
-      }
-      console.log(e.type);
-
-      var transformProp = 'translateX(' + (state.startingLeft + e.deltaX) + 'px' + ') translateZ(0)';
-      console.log(transformProp);
-      t.$slidesContainer.css({
+    var createTransformCss = function(x) {
+      var transformProp = 'translateX(' + x + 'px' + ') translateZ(0)';
+      return {
         '-webkit-transform': transformProp,
                 'transform': transformProp
-      });
+      };
+    };
+
+    var panStart = function(e) {
+      if (!state.panStarted) {
+        state.startingLeft = self.slideCardsOffset;
+        state.panStarted = true;
+      }
+    };
+
+    var panning = function(e) {
+      // console.log(e.deltaX)
+      // state.latestDeltaX = e.deltaX;
+      t.$slidesContainer.addClass('notransition');
+      t.$slidesContainer.css(createTransformCss(state.startingLeft + e.deltaX));
+      t.$slidesContainer[0].offsetHeight; // reflow CSS
+      t.$slidesContainer.removeClass('notransition');
+    };
+
+    // Not always called from a Hammer callback. Also triggered when non-touch
+    // events interfere and finish the panning.
+    var panFinish = function(e) {
+      // console.log(currentDeltaX);
+      // state.startingLeft = 0;
+      // console.log(e.deltaX);
+      // console.log(self.slideCardsLayout.contentOuterWidth);
+      var targetIndex;
+      state.panStarted = false;
+      state.latestDeltaX = 0;
+
+      if (e.deltaX > self.slideCardsLayout.contentOuterWidth * 0.5) {
+        // positive deltaX means swiping towards the left and advancing forward (in LTR)
+        targetIndex = self.storylineState.currentIndex - self.slideCardsLayout.numCards;
+      } else if (e.deltaX < self.slideCardsLayout.contentOuterWidth * -0.5) {
+        // negative deltaX means swiping towards the right and advancing backwards (in LTR)
+        targetIndex = self.storylineState.currentIndex + self.slideCardsLayout.numCards;
+      } else {
+        revertPan();
+        return;
+      }
+
+      var targetIndexOutOfBounds = targetIndex < 0 || targetIndex >= self.storylineState.totalSlides;
+      var targetIndexIsSame = targetIndex === self.storylineState.currentIndex;
+      if (targetIndexOutOfBounds || targetIndexIsSame) {
+        revertPan();
+      } else {
+        t.events.trigger('control:jump', {
+          index: targetIndex
+        });
+      }
+    };
+
+    var revertPan = function() {
+      t.$slidesContainer.css(createTransformCss(state.startingLeft));
+    };
+
+    touch.on("panstart pan panend", function(e) {
+      console.log(e.type)
+      if (e.type === "panstart") {
+        panStart(e);
+        panning(e);
+      } else if (e.type === "panend") {
+        console.log('\n\n');
+        panFinish(e);
+      } else {
+        panning(e);
+      }
     });
   }
 
   return {
-    tools: ["$uiOverlay", "$viewport", "$slidesContainer"],
+    tools: ["$uiOverlay", "events", "$viewport", "$slidesContainer"],
     entry: function(tools) {
       t = tools;
+
+      t.events.on('slide-cards:reLayout', function(e, reLayout) {
+        self.slideCardsLayout = reLayout;
+      });
+      t.events.on('slide-cards:reOffset', function(e, reOffset) {
+        console.log(reOffset);
+        self.slideCardsOffset = reOffset;
+      });
+
+      t.events.on("storyline:change", function(e, change) {
+        console.log(change);
+        self.storylineState = {
+          currentIndex: change.toIndex,
+          totalSlides: change.totalSldies
+        };
+      });
 
       self.handleTouches();
     }

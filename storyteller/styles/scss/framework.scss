@@ -114,13 +114,17 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .viewport.ready .slides {
     display: block;
-    // -webkit-transition: -webkit-transform $ease-out-quad 0.5s;
-    //         transition: transform $ease-out-quad 0.5s;
+    -webkit-transition: -webkit-transform $ease-out-quad 0.4s;
+            transition: transform $ease-out-quad 0.4s;
 
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-perspective: 1000;
     perspective: 1000;
+  }
+  .viewport.ready .slides.notransition {
+    -webkit-transition: none !important;
+            transition: none !important;
   }
 }
 
