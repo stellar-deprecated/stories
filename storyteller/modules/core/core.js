@@ -522,9 +522,12 @@ storyteller.define('cards-touch', function() {
         return;
       }
 
-      var targetIndexOutOfBounds = targetIndex < 0 || targetIndex >= self.storylineState.totalSlides;
+      if (targetIndex < 0) {
+        targetIndex = 0;
+      }
+      var targetPastLast = targetIndex >= self.storylineState.totalSlides;
       var targetIndexIsSame = targetIndex === self.storylineState.currentIndex;
-      if (targetIndexOutOfBounds || targetIndexIsSame) {
+      if (targetPastLast || targetIndexIsSame) {
         revertPan();
       } else {
         t.events.trigger('control:jump', {
@@ -568,7 +571,7 @@ storyteller.define('cards-touch', function() {
         console.log(change);
         self.storylineState = {
           currentIndex: change.toIndex,
-          totalSlides: change.totalSldies
+          totalSlides: change.totalSlides
         };
       });
 
