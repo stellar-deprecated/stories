@@ -335,7 +335,7 @@ storyteller.define('slide-cards', function() {
       curPosition.x = Math.round(curPosition.x);
       curPosition.y = Math.round(curPosition.y);
 
-      var transformProp = 'scale(' + self.slideLayout.scale + ')';
+      var transformProp = 'scale(' + self.slideLayout.scale + ') translateZ(0)';
       t.$slides[i].css({
         'top': curPosition.y + 'px',
         'left': curPosition.x + 'px',
@@ -346,7 +346,7 @@ storyteller.define('slide-cards', function() {
   }
 
   self.applyOffsetTransform = function() {
-    var transformProp = 'translateX(' + self.containerOffset + 'px' + ')';
+    var transformProp = 'translateX(' + self.containerOffset + 'px' + ') translateZ(0)';
     t.$slidesContainer.css({
       '-webkit-transform': transformProp,
               'transform': transformProp
@@ -435,6 +435,59 @@ storyteller.define('slide-cards', function() {
           self.reLayout();
         })
       });
+    }
+  }
+});
+
+// Draggable card navigation
+// TODO: Make this more generic
+storyteller.define('cards-touch', function() {
+  var self = this;
+  var t;
+
+  if (typeof Hammer === "undefined") {
+    console.error("HammerJS is not defined");
+    return {};
+  }
+
+  self.handleTouches = function() {
+    var touch = new Hammer(t.$viewport[0]);
+    var state = {
+      startingLeft: 0
+    };
+
+    // Use DIRECTION_ALL to prevent vertical scrolling
+    touch.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+    // touch.add(new Hammer.Pan({
+    //   event: 'doublepan',
+    //   pointers: 2,
+    //   direction: Hammer.DIRECTION_HORIZONTAL,
+    //   threshold: 0
+    // }));
+
+    touch.on("panstart pan panend", function(e) {
+      if (e.type === "panstart") {
+        // extract the translateX from the transform matrix()
+        state.startingLeft = parseInt(t.$slidesContainer.css('transform').split(',')[4]);
+        console.log(state.startingLeft);
+      }
+      console.log(e.type);
+
+      var transformProp = 'translateX(' + (state.startingLeft + e.deltaX) + 'px' + ') translateZ(0)';
+      console.log(transformProp);
+      t.$slidesContainer.css({
+        '-webkit-transform': transformProp,
+                'transform': transformProp
+      });
+    });
+  }
+
+  return {
+    tools: ["$uiOverlay", "$viewport", "$slidesContainer"],
+    entry: function(tools) {
+      t = tools;
+
+      self.handleTouches();
     }
   }
 });
