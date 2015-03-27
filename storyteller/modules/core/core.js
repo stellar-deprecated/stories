@@ -852,6 +852,10 @@ storyteller.define('viewport-fluid', function() {
     var prevViewportSize = getViewportSize();
     setInterval(changeDetector, 200);
 
+    $(window).on('resize orientationchange', function() {
+      changeDetector();
+    });
+
     function getViewportSize() {
       return {
         width: t.$viewport.outerWidth(),
