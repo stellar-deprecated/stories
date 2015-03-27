@@ -121,6 +121,11 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     backface-visibility: hidden;
     -webkit-perspective: 1000;
     perspective: 1000;
+
+    > section img {
+      -webkit-user-drag: none;
+      user-drag: none;
+    }
   }
   .viewport.ready .slides.notransition {
     -webkit-transition: none !important;
