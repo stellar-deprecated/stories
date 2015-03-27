@@ -123,6 +123,70 @@ storyteller.define('storyline-linear', function() {
   }
 });
 
+storyteller.define('url-hash', function() {
+  var self = this;
+  var t;
+
+  // TODO: configurable options
+  self.options = {
+    disableFirstSlide: true
+  };
+
+  self.firstTime = true;
+
+  self.setHash = function(toSlideNum) {
+    var hashIsNumeric = window.location.hash.replace('#','').match(/^[0-9]*$/) !== null;
+    if (window.location.hash !== "" && !hashIsNumeric) {
+      // Don't conflict with other possibly custom hash handling schemes
+      return;
+    }
+
+    if (self.options.disableFirstSlide && toSlideNum == 1) {
+      // remove the hash
+      history.replaceState("", document.title, window.location.pathname + window.location.search + '');
+      return;
+    }
+
+    // Add something to the history if this is the first one we are coming from
+    // Prevents polluting of the history
+    if (self.firstTime) {
+      self.firstTime = false;
+      window.location.hash = toSlideNum;
+    } else {
+      history.replaceState("", document.title, window.location.pathname + window.location.search + '#' + toSlideNum);
+    }
+  };
+
+  self.hashHandler = function() {
+    var checkHash = window.location.hash.replace('#','').match(/^[0-9]*$/);
+    if (checkHash === null) {
+      return;
+    }
+
+    if (checkHash.input.length === 0) {
+      t.events.trigger('control:jump', {index: 0});
+    } else {
+      t.events.trigger('control:jump', {index: parseInt(checkHash.input, 10) - 1});
+    }
+  };
+
+  return {
+    tools: ['events'],
+    entry: function(tools) {
+      t = tools;
+      $(window).on('hashchange', self.hashHandler);
+      t.events.on('init', function() {
+        self.hashHandler();
+
+        t.events.on('storyline:change', function(e, change) {
+          self.setHash(change.toIndex + 1);
+        });
+      });
+    }
+  }
+});
+
+
 storyteller.define('transition-fade', function() {
   return {
     tools: ['events', 'slides'],

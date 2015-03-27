@@ -2,6 +2,7 @@
   "storyteller": {
     "modules": [
       "storyline-linear"
+      ,"url-hash"
       ,"viewport-fluid"
       ,"slide-cards"
       ,"cards-touch"
