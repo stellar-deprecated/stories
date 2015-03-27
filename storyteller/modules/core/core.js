@@ -372,47 +372,6 @@ storyteller.define('slide-cards', function() {
     self.applyOffsetTransform();
   };
 
-  // watchViewport watches only the $viewport as opposed to using $(window).resize()
-  // which may not be accurate
-  self.watchViewport = function() {
-    var callbacks = [];
-    var started = false;
-    var prevViewportSize;
-
-
-    var addCallback = function(callback) {
-      callbacks.push(callback);
-      startWatcher();
-    };
-    var startWatcher = function() {
-      if (started) {
-        return;
-      }
-      started = true;
-
-      prevViewportSize = getViewportSize();
-      setInterval(changeDetector, 200);
-    };
-    var getViewportSize = function() {
-      return {
-        width: t.$viewport.outerWidth(),
-        height: t.$viewport.outerHeight()
-      };
-    }
-    var changeDetector = function() {
-      var newViewportSize = getViewportSize();
-      if (prevViewportSize.width !== newViewportSize.width ||
-          prevViewportSize.height !== newViewportSize.height) {
-        prevViewportSize = newViewportSize;
-        for (var i = 0; i < callbacks.length; i++) {
-          callbacks[i].call();
-        }
-      }
-    }
-
-    return addCallback;
-  }();
-
   return {
     tools: ['$viewport', '$slides', '$slidesContainer', 'events'],
     entry: function(tools) {
@@ -437,9 +396,9 @@ storyteller.define('slide-cards', function() {
         self.reLayout();
         t.$viewport.addClass('ready');
 
-        self.watchViewport(function() {
+        t.events.on('viewport:resize', function() {
           self.reLayout();
-        })
+        });
       });
     }
   }
@@ -867,6 +826,28 @@ storyteller.define('viewport-fluid', function() {
     self.renderOptions();
   };
 
+  // watchViewport watches only the $viewport as opposed to using $(window).resize()
+  // which may not be accurate
+  self.startWatchingViewport = function() {
+    var prevViewportSize = getViewportSize();
+    setInterval(changeDetector, 200);
+
+    function getViewportSize() {
+      return {
+        width: t.$viewport.outerWidth(),
+        height: t.$viewport.outerHeight()
+      };
+    }
+    function changeDetector() {
+      var newViewportSize = getViewportSize();
+      if (prevViewportSize.width !== newViewportSize.width ||
+          prevViewportSize.height !== newViewportSize.height) {
+        prevViewportSize = newViewportSize;
+        t.events.trigger('viewport:resize');
+      }
+    }
+  };
+
   return {
     tools: ['$viewport', 'events'],
     entry: function(tools) {
@@ -877,6 +858,10 @@ storyteller.define('viewport-fluid', function() {
 
       t.events.on('viewport:register-options', self.handleRegisterOptions);
       // TODO: deregister/unregister options
+
+      t.events.on('init', function() {
+        self.startWatchingViewport();
+      });
     }
   }
 });
