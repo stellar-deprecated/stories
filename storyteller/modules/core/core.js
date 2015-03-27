@@ -3,7 +3,7 @@ storyteller.define('storyline-linear', function() {
   var t;
 
   module.config = {
-    nextSize: 0
+    nextSize: 1
   };
 
   module.currentSlideIndex = 0;
