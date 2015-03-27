@@ -159,7 +159,9 @@ storyteller.define('slide-cards', function() {
     //   'bottom': 16 //px
     // },
     virtualWidth: 360,
-    virtualHeight: 640
+    virtualHeight: 640,
+    multiCardsThreshold: 2, // decimal amount of cards at which multiCards takes effect
+    multiCardsMin: 3 // number of cards to letterbox to if reached the multiCardsThreshold
   };
 
   // save the state of the storyline
@@ -229,6 +231,10 @@ storyteller.define('slide-cards', function() {
     // extrapolate givens
     layout.aspectRatio = opts.virtualWidth / opts.virtualHeight;
 
+    // save options
+    layout.verticalMargin = opts.slideMarginVertical;
+    layout.horizontalMargin = opts.slideMarginHorizontal;
+
     // calculate container size
     layout.viewportWidth = t.$viewport.width();
     layout.viewportHeight = t.$viewport.height(); // - self.options.registeredPadding.bottom;
@@ -242,32 +248,47 @@ storyteller.define('slide-cards', function() {
     // if height is less than the viewport, then our guess was correct
     layout.boundByWidth = (slideOuterHeightGuess < layout.viewportHeight);
 
-    // Calculate the sizes of each card
+    // Calculate the sizes of each card and the number of cards
     if (layout.boundByWidth) {
       layout.slideWidth = layout.viewportWidth - 2 * opts.slideMarginHorizontal;
       layout.slideHeight = layout.slideWidth / layout.aspectRatio;
       layout.scale = layout.slideWidth / opts.virtualWidth;
+
+      // bounded by width automatically means only 1 card at a time
+      layout.numCards = 1;
     } else {
       layout.slideHeight = layout.viewportHeight - 2 * opts.slideMarginVertical;
       layout.slideWidth = layout.slideHeight * layout.aspectRatio;
       layout.scale = layout.slideHeight / opts.virtualHeight; // less precision loss
-    }
 
-    if (layout.boundByWidth) {
-      // bounded by width automatically means only 1 card at a time
-      layout.numCards = 1;
-    } else {
-      // we could fit one or more cards per page
       // solve for n: layout.viewportWidth = n*layout.slideWidth + (n+1) * self.options.slideMarginHorizontal
-      layout.numCards = Math.floor(
+      decimalNumCards =
         (layout.viewportWidth - opts.slideMarginHorizontal)
         /
-        (layout.slideWidth + opts.slideMarginHorizontal)
-      );
+        (layout.slideWidth + opts.slideMarginHorizontal);
+
+      if (decimalNumCards > opts.multiCardsThreshold && decimalNumCards < opts.multiCardsMin) {
+        layout.numCards = opts.multiCardsMin;
+        var letterboxVertical = 100;
+        // calculate the letterbox size required to fit the minimum cards
+        // constraint:
+        //   layout.viewportWidth = opts.multiCardsMin*newSlideWidth + (opts.minMultiCards+1) * self.options.slideMarginHorizontal
+        // solve for newSlideWidth:
+        //   v = m*n + (m+1)*s
+        //   n = (v-s)/m - s
+        var newSlideWidth = (layout.viewportWidth - self.options.slideMarginHorizontal)/opts.multiCardsMin - self.options.slideMarginHorizontal
+
+        layout.slideWidth = newSlideWidth;
+        layout.slideHeight = layout.slideWidth / layout.aspectRatio;
+        layout.scale = layout.slideWidth / opts.virtualWidth;
+
+        layout.verticalMargin = (layout.viewportHeight - layout.slideHeight) / 2;
+      } else {
+        layout.numCards = Math.floor(decimalNumCards);
+      }
     }
 
     t.events.trigger('storyline:setConfig', {nextSize: layout.numCards});
-
     self.calcSlidePositions();
   }
 
@@ -288,21 +309,21 @@ storyteller.define('slide-cards', function() {
     // contentInnerWidth is the total size of all the slides on screen and margins between these slides
     layout.contentInnerWidth =
       layout.numCards * layout.slideWidth + // slide sizes
-      (layout.numCards-1) * opts.slideMarginHorizontal; // inner slide margins
+      (layout.numCards-1) * layout.horizontalMargin; // inner slide margins
 
-    layout.contentOuterWidth = layout.contentInnerWidth + 2 * opts.slideMarginHorizontal;
+    layout.contentOuterWidth = layout.contentInnerWidth + 2 * layout.horizontalMargin;
 
     // slideXOffset is the horizontal distance between the viewport and the left slide on the screen
     if (layout.numCards == 1) {
       var slideXOffset = (layout.viewportWidth - layout.contentInnerWidth) / 2;
     } else {
       // First slide starts on the left
-      var slideXOffset = opts.slideMarginHorizontal;
+      var slideXOffset = layout.horizontalMargin;
     }
 
     // calculate offsets relevant to individual slides
     for (var i = 0; i < self.storyline.totalSlides; i++) {
-      var thisSlideOffset = (i) * (layout.slideWidth + opts.slideMarginHorizontal);
+      var thisSlideOffset = (i) * (layout.slideWidth + layout.horizontalMargin);
 
       self.slidePositions[i] = {
         x: slideXOffset + thisSlideOffset,
@@ -521,7 +542,6 @@ storyteller.define('cards-touch', function() {
     }
   }
 });
-
 
 // Modular ui bar for others to register on to
 storyteller.define('control-dock', function() {
