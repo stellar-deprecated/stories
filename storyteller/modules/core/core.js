@@ -451,6 +451,12 @@ storyteller.define('cards-touch', function() {
   var self = this;
   var t;
 
+  // TODO: configurable options
+  var options = {
+    momentumMultiplier: 750,
+    travelThreshold: 0.5, // requires that a use go past the halfway point to snap to the next one
+  }
+
   self.slideCardsLayout = {};
   self.storyLineState = {};
 
@@ -459,22 +465,12 @@ storyteller.define('cards-touch', function() {
     return {};
   }
 
+  // TODO: edgecase: user goes to a next slide and starts dragging again before old transition finishes
   self.handleTouches = function() {
     var touch = new Hammer(t.$viewport[0]);
-    var state = {
-      startingLeft: 0, // the translateX value before any panning started
-      latestDeltaX: 0, // Since there may be multiple panstarts, keep track of previous session
-      panStarted: false
-    };
 
     // Use DIRECTION_ALL to prevent vertical scrolling
     touch.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-    touch.add(new Hammer.Pan({
-      event: 'doublepan',
-      pointers: 2,
-      direction: Hammer.DIRECTION_HORIZONTAL,
-      threshold: 0
-    }));
 
     var createTransformCss = function(x) {
       var transformProp = 'translateX(' + x + 'px' + ') translateZ(0)';
@@ -484,43 +480,36 @@ storyteller.define('cards-touch', function() {
       };
     };
 
-    var panStart = function(e) {
-      if (!state.panStarted) {
-        state.startingLeft = self.slideCardsOffset;
-        state.panStarted = true;
-      }
-    };
-
     var panning = function(e) {
-      // console.log(e.deltaX)
-      // state.latestDeltaX = e.deltaX;
       t.$slidesContainer.addClass('notransition');
-      t.$slidesContainer.css(createTransformCss(state.startingLeft + e.deltaX));
-      t.$slidesContainer[0].offsetHeight; // reflow CSS
-      t.$slidesContainer.removeClass('notransition');
+      t.$slidesContainer.css(createTransformCss(self.slideCardsOffset + e.deltaX));
     };
 
-    // Not always called from a Hammer callback. Also triggered when non-touch
-    // events interfere and finish the panning.
+    // TODO: Not always called from a Hammer callback. Also trigger when
+    // non-touch events interfere and finish the panning.
     var panFinish = function(e) {
-      // console.log(currentDeltaX);
-      // state.startingLeft = 0;
-      // console.log(e.deltaX);
-      // console.log(self.slideCardsLayout.contentOuterWidth);
       var targetIndex;
-      state.panStarted = false;
-      state.latestDeltaX = 0;
 
-      if (e.deltaX > self.slideCardsLayout.contentOuterWidth * 0.5) {
-        // positive deltaX means swiping towards the left and advancing forward (in LTR)
+      // momentumX is the final instantaneous velocity (px/ms) multiplied
+      var momentumX = (-1) * e.velocityX * options.momentumMultiplier;
+
+      // travelX is the amount moved with a bonus added coming from momentumX
+      // This enables slow flicks when the user is already close to the threshold
+      var travelX = e.deltaX + momentumX;
+
+      // negative deltaX means swiping towards the left and advancing forward (in LTR)
+      var swipedLeft = travelX > self.slideCardsLayout.contentOuterWidth * 0.5;
+      var swipedRight = travelX < self.slideCardsLayout.contentOuterWidth * -0.5;
+
+      if (swipedLeft) {
         targetIndex = self.storylineState.currentIndex - self.slideCardsLayout.numCards;
-      } else if (e.deltaX < self.slideCardsLayout.contentOuterWidth * -0.5) {
-        // negative deltaX means swiping towards the right and advancing backwards (in LTR)
+      } else if (swipedRight) {
         targetIndex = self.storylineState.currentIndex + self.slideCardsLayout.numCards;
       } else {
-        revertPan();
-        return;
+        targetIndex = self.storylineState.currentIndex;
       }
+
+      t.$slidesContainer.removeClass('notransition');
 
       if (targetIndex < 0) {
         targetIndex = 0;
@@ -537,16 +526,13 @@ storyteller.define('cards-touch', function() {
     };
 
     var revertPan = function() {
-      t.$slidesContainer.css(createTransformCss(state.startingLeft));
+      t.$slidesContainer.css(createTransformCss(self.slideCardsOffset));
     };
 
     touch.on("panstart pan panend", function(e) {
-      console.log(e.type)
       if (e.type === "panstart") {
-        panStart(e);
         panning(e);
       } else if (e.type === "panend") {
-        console.log('\n\n');
         panFinish(e);
       } else {
         panning(e);
@@ -563,12 +549,9 @@ storyteller.define('cards-touch', function() {
         self.slideCardsLayout = reLayout;
       });
       t.events.on('slide-cards:reOffset', function(e, reOffset) {
-        console.log(reOffset);
         self.slideCardsOffset = reOffset;
       });
-
       t.events.on("storyline:change", function(e, change) {
-        console.log(change);
         self.storylineState = {
           currentIndex: change.toIndex,
           totalSlides: change.totalSlides
