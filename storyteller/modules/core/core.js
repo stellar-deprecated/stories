@@ -609,47 +609,54 @@ storyteller.define('cards-touch', function() {
 
 // Modular ui bar for others to register on to
 storyteller.define('control-dock', function() {
-  var module = this; // TODO: better name for "module" (perhaps "self")
+  var self = this; // TODO: better name for "self" (perhaps "self")
   var t;
 
   // A submodule
-  module.progressBar = {
+  self.progressBar = {
+    // TODO: configurable options
+    options: {
+      "theme": "tube", // tube or default (or custom name)
+      "classes": "", // used for theming
+    },
     container: {},
     barMin: {},
     barMax: {},
     init: function() {
-      module.progressBar.$container = $('<div class="control-dock-progressBar"></div>').prependTo(t.$uiOverlay);
-      module.progressBar.$barMin = $('<div class="bar-min"></div>').prependTo(module.progressBar.$container);
-      module.progressBar.$barMax = $('<div class="bar-max"></div>').prependTo(module.progressBar.$container);
-      t.events.on('storyline:change', module.progressBar.calcProgressBar);
-      module.progressBar.$container.on('click', module.progressBar.handleProgressBar);
+      self.progressBar.$module = $('<div class="control-dock-progressBar"></div>').prependTo(t.$uiOverlay);
+      self.progressBar.$barContainer = $('<div class="bar-container"></div>').prependTo(self.progressBar.$module);
+      self.progressBar.$module.addClass('theme-' + self.progressBar.options.theme + ' ' + self.progressBar.options.classes);
+      self.progressBar.$barMin = $('<div class="bar-min"></div>').prependTo(self.progressBar.$barContainer);
+      self.progressBar.$barMax = $('<div class="bar-max"></div>').prependTo(self.progressBar.$barContainer);
+      t.events.on('storyline:change', self.progressBar.calcProgressBar);
+      self.progressBar.$barContainer.on('click', self.progressBar.handleProgressBar);
     },
     calcProgressBar: function(e, change) {
       var percentage = (change.toIndex) / (change.totalSlides - 1) * 100;
-      module.progressBar.$barMin.css('width', percentage + '%');
+      self.progressBar.$barMin.css('width', percentage + '%');
     },
     // Handle event for progress bar clicks
     handleProgressBar: function(e) {
-      var targetPercent = e.offsetX/module.progressBar.$container.width() * 100;
+      var targetPercent = e.offsetX/self.progressBar.$module.width() * 100;
       t.events.trigger('control:jump', {percent: targetPercent});
     }
   };
 
   // A submodule
-  module.gridView = {
+  self.gridView = {
     init: function() {
-      module.$gridViewButton = $('<div class="control-dock-gridView"></div>').appendTo(t.$uiOverlay);
-      module.$gridViewButton.on('click', function() {
+      self.$gridViewButton = $('<div class="control-dock-gridView"></div>').appendTo(t.$uiOverlay);
+      self.$gridViewButton.on('click', function() {
         t.events.trigger('gridView:enter');
       });
     }
   };
 
   // A submodule
-  module.fullScreen = {
+  self.fullScreen = {
     init: function() {
-      module.$fullScreenButton = $('<div class="control-dock-fullScreen"></div>').appendTo(t.$uiOverlay);
-      module.$fullScreenButton.on('click', function() {
+      self.$fullScreenButton = $('<div class="control-dock-fullScreen"></div>').appendTo(t.$uiOverlay);
+      self.$fullScreenButton.on('click', function() {
         t.events.trigger('fullScreen:enter');
       })
     }
@@ -660,9 +667,9 @@ storyteller.define('control-dock', function() {
     entry: function(tools) {
       t = tools;
 
-      module.progressBar.init();
-      module.gridView.init();
-      module.fullScreen.init();
+      self.progressBar.init();
+      self.gridView.init();
+      self.fullScreen.init();
     }
   }
 });

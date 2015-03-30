@@ -150,29 +150,46 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: -webkit-flex;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .stories .control-dock-progressBar {
-  height: 32px;
   -webkit-flex: 1;
   flex: 1;
-  background: #80bfff;
+  background: #eee; // TODO: better default styles?
   position: relative;
   cursor: pointer;
 
   .bar-min {
-    height: 100%;
-    width: 0%;
-    background: #3399ff;
     position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    width: 0%;
+    background: #333;
     -webkit-transition: width $ease-out-quad 0.5s;
             transition: width $ease-out-quad 0.5s;
   }
   .bar-max {
-    height: 100%;
-    width: 0%;
-    background: #0080ff;
     position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    width: 0%;
+    background: #888;
+
+    display: none;
+  }
+
+  &.theme-tube {
+    // TODO: Bigger hitspace while still being accurate
+    // Right now, the padding is unclickable so that the clicks are accurate
+    .bar-container {
+      position: absolute;
+      top: 25%; bottom: 25%;
+      left: 10px; right: 10px;
+      border-radius: 32px;
+    }
+    .bar-min {
+      min-width: 16px; // same as computed height
+      border-radius: 32px;
+    }
   }
 }
 .stories .control-dock-gridView {
