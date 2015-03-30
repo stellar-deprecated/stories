@@ -23,5 +23,7 @@ gulp develop
 ```
 
 ## License
-Code is released under [the ISC license](LICENSE.md). For more information, see the
+Story-app and storyteller.js is released under [the ISC license](LICENSE.md). For more information, see the
 [LICENSE.md](LICENSE.md) file.
+
+Images and text inside `content` folder are copyright © 2015 Stellar Development Foundation All Rights Reserved.
