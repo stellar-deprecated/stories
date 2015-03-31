@@ -56,6 +56,23 @@
   background: $primary;
 }
 
+.stories .control-dock-progressBar {
+  background: #000;
+  .bar-container {
+    background: #404040;
+  }
+  .bar-min {
+    background: $primary;
+  }
+}
+
+.stories .control-dock__button {
+  background-color: #000;
+  &:hover {
+    background-color: #222;
+  }
+}
+
 /**
     Specific slide templates
 **/
