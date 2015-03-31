@@ -66,6 +66,13 @@
   }
 }
 
+.stories .control-dock__button {
+  background-color: #000;
+  &:hover {
+    background-color: #222;
+  }
+}
+
 /**
     Specific slide templates
 **/

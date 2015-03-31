@@ -645,7 +645,7 @@ storyteller.define('control-dock', function() {
   // A submodule
   self.gridView = {
     init: function() {
-      self.$gridViewButton = $('<div class="control-dock-gridView"></div>').appendTo(t.$uiOverlay);
+      self.$gridViewButton = $('<div class="control-dock-gridView control-dock__button"></div>').appendTo(t.$uiOverlay);
       self.$gridViewButton.on('click', function() {
         t.events.trigger('gridView:enter');
       });
@@ -655,7 +655,7 @@ storyteller.define('control-dock', function() {
   // A submodule
   self.fullScreen = {
     init: function() {
-      self.$fullScreenButton = $('<div class="control-dock-fullScreen"></div>').appendTo(t.$uiOverlay);
+      self.$fullScreenButton = $('<div class="control-dock-fullScreen control-dock__button"></div>').appendTo(t.$uiOverlay);
       self.$fullScreenButton.on('click', function() {
         t.events.trigger('fullScreen:enter');
       })
