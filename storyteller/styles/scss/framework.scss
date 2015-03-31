@@ -158,8 +158,10 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   flex: 1;
   background: #222; // TODO: better default styles?
   position: relative;
-  cursor: pointer;
 
+  .bar-container {
+    cursor: pointer;
+  }
   .bar-min {
     position: absolute;
     top: 0; right: 0; bottom: 0; left: 0;
