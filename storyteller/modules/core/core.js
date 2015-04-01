@@ -1042,31 +1042,50 @@ storyteller.define('analytics', function() {
 
   self.options = {
   };
+  self.eventPrefix = '';
 
+  self.trackEnd = function() {
+    var totalSlides;
+    var ended = false; // only end once
+    t.events.on('storyline:change', function(e, change) {
+      totalSlides = change.totalSlides;
+    });
+    t.events.on('slides:info', function(e, info) {
+      if (!ended) {
+        info.visible.forEach(function(slideNum) {
+          if (slideNum == totalSlides) {
+            t.events.trigger('analytics:event', {
+              name: self.eventPrefix + self.options.eventEndFragment
+            });
+            ended = true;
+          }
+        });
+      }
+    });
+  };
   self.trackLoad = function() {
     t.events.on('init', function() {
       var event = {
-        name: self.options.eventPrefixFragment + self.options.eventLoadFragment
+        name: self.eventPrefix + self.options.eventLoadFragment
       };
       t.events.trigger('analytics:event', event);
     });
   };
   self.trackPage = function() {
-    var eventPrefix = self.options.eventPrefixFragment + self.options.eventPageFragment;
     t.events.on('slides:info', function(e, info) {
       info.visible.forEach(function(slideNum) {
         var event = {
-          name: eventPrefix + slideNum
+          name: self.eventPrefix + slideNum
         };
         t.events.trigger('analytics:event', event);
       });
-
     });
   };
 
   self.trackers = {
     'page': self.trackPage,
     'load': self.trackLoad,
+    'end': self.trackEnd
   };
 
   return {
@@ -1085,9 +1104,10 @@ storyteller.define('analytics', function() {
         t.log('Analytics enabled');
       }
 
-
-
-
+      // save event prefix
+      if (typeof self.options.eventPrefixFragment !== 'undefined') {
+        self.eventPrefix = self.options.eventPrefixFragment;
+      };
 
       // initialize trackers from list in config
       if (self.options.hasOwnProperty('trackers') && Array.isArray(self.options.trackers)) {
@@ -1098,8 +1118,8 @@ storyteller.define('analytics', function() {
         });
       };
 
-      t.events.on('init', function() {
-        // t.events.trigger('analytics:event', '');
+      t.events.on('analytics:event', function(e, event) {
+        console.log(event);
       })
     },
   };
@@ -1127,10 +1147,6 @@ storyteller.define('analytics-segment', function() {
       analytics.load(self.options.writeKey);
       analytics.page()
       }}();
-
-      t.events.on('analytics:event', function(e, event) {
-        analytics.track(event.name, properties);
-      });
     },
   };
 });

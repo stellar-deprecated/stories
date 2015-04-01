@@ -20,8 +20,9 @@
         "color": "#000"
       },
       "analytics": {
-        "trackers": ["load", "page"],
+        "trackers": ["end", "load", "page"],
         "eventPrefixFragment": "iris-test1-",
+        "eventEndFragment": "end",
         "eventPageFragment": "page-",
         "eventLoadFragment": "load",
         "disableIfElementExists": "#__bs_script__"
