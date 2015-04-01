@@ -1075,7 +1075,7 @@ storyteller.define('analytics', function() {
     t.events.on('slides:info', function(e, info) {
       info.visible.forEach(function(slideNum) {
         var event = {
-          name: self.eventPrefix + slideNum
+          name: self.eventPrefix + self.options.eventPageFragment + slideNum
         };
         t.events.trigger('analytics:event', event);
       });
