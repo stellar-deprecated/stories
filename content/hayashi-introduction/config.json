@@ -10,12 +10,18 @@
       ,"control-navButtons"
       ,"display-background"
       ,"control-keyboardNavigation"
+      ,"analytics"
+      ,"analytics-segment"
     ],
     "options": {
       "debug": true,
       "background": {
         "type": "static",
         "color": "#000"
+      },
+      "analyticsSegment": {
+        "writeKey": "U8cLXTFMPm",
+        "trackPagePrefix": "iris-test-"
       }
     }
   },
