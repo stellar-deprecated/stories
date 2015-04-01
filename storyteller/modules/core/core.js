@@ -1147,6 +1147,10 @@ storyteller.define('analytics-segment', function() {
       analytics.load(self.options.writeKey);
       analytics.page()
       }}();
+
+      t.events.on('analytics:event', function(e, event) {
+        analytics.track(event.name, properties);
+      });
     },
   };
 });
