@@ -1078,9 +1078,16 @@ storyteller.define('analytics', function() {
       if (typeof self.options.disableIfWindowVarSet !== 'undefined' &&
         self.options.disableIfWindowVarSet in window) {
         t.log('Analytics disabled');
+      } else if (typeof self.options.disableIfElementExists !== 'undefined' &&
+        $(self.options.disableIfElementExists).length > 0) {
+        t.log('Analytics disabled');
       } else {
         t.log('Analytics enabled');
       }
+
+
+
+
 
       // initialize trackers from list in config
       if (self.options.hasOwnProperty('trackers') && Array.isArray(self.options.trackers)) {

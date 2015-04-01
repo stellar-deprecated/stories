@@ -24,7 +24,7 @@
         "eventPrefixFragment": "iris-test1-",
         "eventPageFragment": "page-",
         "eventLoadFragment": "load",
-        "disableIfWindowVarSet": "top"
+        "disableIfElementExists": "#__bs_script__"
       },
       "analyticsSegment": {
         "writeKey": "U8cLXTFMPm",
