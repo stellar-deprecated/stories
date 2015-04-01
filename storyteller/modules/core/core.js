@@ -450,12 +450,34 @@ storyteller.define('slide-cards', function() {
     self.calcSlideLayout();
     self.applySlideTransforms();
     self.applyOffsetTransform();
+
+    self.publishSlideInfo();
   };
 
   self.rePosition = function() {
     self.calcContainerOffset();
     self.applyOffsetTransform();
+
+    self.publishSlideInfo();
   };
+
+  // publishes and event containing useful info (for analytics)
+  self.publishSlideInfo = function() {
+    // contains slide numbers (not indexes) that are currently shown
+    visible = [];
+
+    // add all visible slides to the visible array
+    var firstSlide = self.storyline.curSlideIndex + 1;
+    var lastSlide = Math.min(firstSlide + self.slideLayout.numCards - 1, self.storyline.totalSlides);
+    var numVisible = lastSlide - firstSlide + 1;
+    for (var i = 0; i < numVisible; i++) {
+      visible[i] = firstSlide + i;
+    }
+
+    t.events.trigger('slides:info', {
+      visible: visible
+    });
+  }
 
   return {
     tools: ['$viewport', '$slides', '$slidesContainer', 'events'],
