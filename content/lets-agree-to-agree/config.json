@@ -14,14 +14,19 @@
       ,"analytics-segment"
     ],
     "options": {
-      "debug": true,
       "background": {
         "type": "static",
         "color": "#000"
       },
+      "analytics": {
+        "trackers": ["load", "page"],
+        "eventPrefixFragment": "iris-test1-",
+        "eventPageFragment": "page-",
+        "eventLoadFragment": "load"
+      },
       "analyticsSegment": {
         "writeKey": "U8cLXTFMPm",
-        "trackPagePrefix": "iris-test-"
+        "category": "graphic-novel"
       }
     }
   },

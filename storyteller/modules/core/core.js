@@ -1039,7 +1039,34 @@ storyteller.define('analytics', function() {
   var self = this;
   var t;
 
+
   self.options = {
+  };
+
+  self.trackLoad = function() {
+    t.events.on('init', function() {
+      var event = {
+        name: self.options.eventPrefixFragment + self.options.eventLoadFragment
+      };
+      t.events.trigger('analytics:event', event);
+    });
+  };
+  self.trackPage = function() {
+    var eventPrefix = self.options.eventPrefixFragment + self.options.eventPageFragment;
+    t.events.on('slides:info', function(e, info) {
+      info.visible.forEach(function(slideNum) {
+        var event = {
+          name: eventPrefix + slideNum
+        };
+        t.events.trigger('analytics:event', event);
+      });
+
+    });
+  };
+
+  self.trackers = {
+    'page': self.trackPage,
+    'load': self.trackLoad,
   };
 
   return {
@@ -1048,7 +1075,18 @@ storyteller.define('analytics', function() {
       t = tools;
       $.extend(self.options, t.options.analytics);
 
+      // initialize trackers from list in config
+      if (self.options.hasOwnProperty('trackers') && Array.isArray(self.options.trackers)) {
+        self.options.trackers.forEach(function(tracker) {
+          if (tracker in self.trackers) {
+            self.trackers[tracker]();
+          }
+        });
+      };
 
+      t.events.on('init', function() {
+        // t.events.trigger('analytics:event', '');
+      })
     },
   };
 });
@@ -1064,8 +1102,11 @@ storyteller.define('analytics-segment', function() {
     entry: function(tools) {
       t = tools;
       $.extend(self.options, t.options.analyticsSegment);
+      var properties = {};
 
-      console.log(self.options);
+      if (self.options.hasOwnProperty('category')) {
+        properties.category = self.options.category;
+      }
 
       // taken from segment
       !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.0.1";
@@ -1073,7 +1114,9 @@ storyteller.define('analytics-segment', function() {
       analytics.page()
       }}();
 
-      analytics.track('iris-test');
+      t.events.on('analytics:event', function(e, event) {
+        analytics.track(event.name, properties);
+      });
     },
   };
 });
