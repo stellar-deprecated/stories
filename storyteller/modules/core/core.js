@@ -1097,9 +1097,11 @@ storyteller.define('analytics', function() {
       if (typeof self.options.disableIfWindowVarSet !== 'undefined' &&
         self.options.disableIfWindowVarSet in window) {
         t.log('Analytics disabled');
+        return;
       } else if (typeof self.options.disableIfElementExists !== 'undefined' &&
         $(self.options.disableIfElementExists).length > 0) {
         t.log('Analytics disabled');
+        return;
       } else {
         t.log('Analytics enabled');
       }
