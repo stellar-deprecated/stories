@@ -1117,10 +1117,6 @@ storyteller.define('analytics', function() {
           }
         });
       };
-
-      t.events.on('analytics:event', function(e, event) {
-        console.log(event);
-      })
     },
   };
 });
@@ -1138,6 +1134,7 @@ storyteller.define('analytics-segment', function() {
       $.extend(self.options, t.options.analyticsSegment);
       var properties = {};
 
+      // TODO: more configurable properties
       if (self.options.hasOwnProperty('category')) {
         properties.category = self.options.category;
       }
