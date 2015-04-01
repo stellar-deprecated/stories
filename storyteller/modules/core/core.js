@@ -1070,10 +1070,17 @@ storyteller.define('analytics', function() {
   };
 
   return {
-    tools: ['events', 'options'],
+    tools: ['events', 'log', 'options'],
     entry: function(tools) {
       t = tools;
       $.extend(self.options, t.options.analytics);
+
+      if (typeof self.options.disableIfWindowVarSet !== 'undefined' &&
+        self.options.disableIfWindowVarSet in window) {
+        t.log('Analytics disabled');
+      } else {
+        t.log('Analytics enabled');
+      }
 
       // initialize trackers from list in config
       if (self.options.hasOwnProperty('trackers') && Array.isArray(self.options.trackers)) {

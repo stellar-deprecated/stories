@@ -14,6 +14,7 @@
       ,"analytics-segment"
     ],
     "options": {
+      "debug": true,
       "background": {
         "type": "static",
         "color": "#000"
@@ -22,7 +23,8 @@
         "trackers": ["load", "page"],
         "eventPrefixFragment": "iris-test1-",
         "eventPageFragment": "page-",
-        "eventLoadFragment": "load"
+        "eventLoadFragment": "load",
+        "disableIfWindowVarSet": "top"
       },
       "analyticsSegment": {
         "writeKey": "U8cLXTFMPm",
