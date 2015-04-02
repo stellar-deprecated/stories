@@ -8,7 +8,6 @@ var rename = require('gulp-rename');
 // var connect = require('gulp-connect');
 var browserSync = require('browser-sync');
 var gutil = require('gulp-util');
-var uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
 var runSequence = require('run-sequence');
 var del = require('del');
@@ -58,11 +57,6 @@ gulp.task('bower', function() {
 })
 
 gulp.task('story-app-vendor', ['bower'], function() {
-  // gulp.src('./node_modules/touchswipe/index.js')
-  //   .pipe(rename('touchswipe.js'))
-  //   .pipe(uglify())
-  //   .pipe(gulp.dest('./dist/js/vendor'))
-
   gulp.src(['./bower_components/jquery/dist/jquery.min.js', './bower_components/jquery/dist/jquery.min.map'])
     .pipe(gulp.dest('./dist/js/vendor/2.1.3')) // TODO: automatically insert version number
   gulp.src('./bower_components/jquery-touchswipe/jquery.touchSwipe.min.js')
