@@ -56,7 +56,7 @@
   background: $primary;
 }
 
-.stories .control-dock-progressBar {
+.stories .control-dock-button-progressBar {
   background: #000;
   .bar-container {
     background: #404040;
@@ -70,6 +70,24 @@
   background-color: #000;
   &:hover {
     background-color: #222;
+  }
+}
+
+.stories .control-dock-button-share {
+  position: relative;
+  -webkit-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: 32px;
+
+  width: 48px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center center;
+  &:hover {
+    background-color: #333;
+  }
+  &:hover, &.is-active {
+    background-image: url('data:image/svg+xml;utf8,<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><defs></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-heart-svg" sketch:type="MSArtboardGroup" transform="translate(-1343.000000, -772.000000)" fill="#08B5E5"><path d="M1354.79266,772 L1351,774.419477 L1347.20734,772 L1343,774.96812 L1343,780.923327 L1351,788 L1359,780.923327 L1359,774.96812 L1354.79266,772 Z" id="favorite-5-icon" sketch:type="MSShapeGroup"></path></g></g></svg>');
   }
 }
 

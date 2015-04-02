@@ -631,7 +631,7 @@ storyteller.define('cards-touch', function() {
 
 // Modular ui bar for others to register on to
 storyteller.define('control-dock', function() {
-  var self = this; // TODO: better name for "self" (perhaps "self")
+  var self = this;
   var t;
 
   // A submodule
@@ -645,7 +645,7 @@ storyteller.define('control-dock', function() {
     barMin: {},
     barMax: {},
     init: function() {
-      self.progressBar.$module = $('<div class="control-dock-progressBar"></div>').prependTo(t.$uiOverlay);
+      self.progressBar.$module = $('<div class="control-dock-button-progressBar"></div>').prependTo(t.$uiOverlay);
       self.progressBar.$barContainer = $('<div class="bar-container"></div>').prependTo(self.progressBar.$module);
       self.progressBar.$module.addClass('theme-' + self.progressBar.options.theme + ' ' + self.progressBar.options.classes);
       self.progressBar.$barMin = $('<div class="bar-min"></div>').prependTo(self.progressBar.$barContainer);
@@ -667,7 +667,7 @@ storyteller.define('control-dock', function() {
   // A submodule
   self.gridView = {
     init: function() {
-      self.$gridViewButton = $('<div class="control-dock-gridView control-dock__button"></div>').appendTo(t.$uiOverlay);
+      self.$gridViewButton = $('<div class="control-dock-button-gridView control-dock__button"></div>').appendTo(t.$uiOverlay);
       self.$gridViewButton.on('click', function() {
         t.events.trigger('gridView:enter');
       });
@@ -677,11 +677,19 @@ storyteller.define('control-dock', function() {
   // A submodule
   self.fullScreen = {
     init: function() {
-      self.$fullScreenButton = $('<div class="control-dock-fullScreen control-dock__button"></div>').appendTo(t.$uiOverlay);
+      self.$fullScreenButton = $('<div class="control-dock-button-fullScreen control-dock__button"></div>').appendTo(t.$uiOverlay);
       self.$fullScreenButton.on('click', function() {
         t.events.trigger('fullScreen:enter');
       })
     }
+  };
+
+  // TODO: better name for elementReceivier
+  self.elementReceiverCreator = function(name) {
+    return function(element) {
+      var $element = $(element).addClass('control-dock-button-' + name + ' control-dock__button');
+      $element.appendTo(t.$uiOverlay);
+    };
   };
 
   return {
@@ -690,10 +698,55 @@ storyteller.define('control-dock', function() {
       t = tools;
 
       self.progressBar.init();
-      self.gridView.init();
-      self.fullScreen.init();
+      t.events.on('control-dock:register', function(e, register) {
+        register.factory(self.elementReceiverCreator(register.name));
+      });
+      // TODO: Figure out better way to order things
+      t.events.on('init', function() {
+        self.gridView.init();
+        self.fullScreen.init();
+      });
     }
   }
+});
+
+storyteller.define('share', function() {
+  var self = this;
+  var t;
+
+  // UI module to be registered with other ui managers
+  self.uiModuleFactory = function(elementReceiver) {
+    self.$uiModule = $('<div></div>');
+    elementReceiver(self.$uiModule);
+    self.$uiModule.on('click', function() {
+
+
+      t.events.trigger('share:enter');
+    });
+  };
+
+  return {
+    tools: ['$uiOverlay', 'events'],
+    entry: function(tools) {
+      t = tools;
+
+      // TODO: module registration ordering (assistance from tools?)
+      t.events.trigger('control-dock:register', {
+        name: 'share',
+        factory: self.uiModuleFactory
+      });
+
+      t.events.on('share:enter', function() {
+        self.$uiModule.addClass('is-active');
+        console.log("yayyy share!!")
+      });
+
+      t.events.on('share:exit', function() {
+        self.$uiModule.removeClass('is-active');
+        console.log("yayyy share!!")
+      });
+    }
+  };
 });
 
 // left right navigation buttons

@@ -154,7 +154,7 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   flex-wrap: wrap;
 }
 
-.stories .control-dock-progressBar {
+.stories .control-dock-button-progressBar {
   -webkit-flex: 1;
   flex: 1;
   background: #222; // TODO: better default styles?
@@ -196,12 +196,12 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
   }
 }
-.stories .control-dock-gridView {
+.stories .control-dock-button-gridView {
   height: 32px;
   width: 48px;
   -webkit-flex: 0 0 auto;
   flex: 0 0 auto;
-  background: #222;
+  background-color: #222;
   cursor: pointer;
   background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><title>grid-view-icon</title><desc>Stellar Storyteller</desc><path d="M10 10h-4v-4h4v4zm-4-6h4v-4h-4v4zm-6 6h4v-4h-4v4zm12-6h4v-4h-4v4zm-2 12v-4h-4v4h4zm-6-4h-4v4h4v-4zm12-6h-4v4h4v-4zm-4 6v4h4v-4h-4zm-8-8v-4h-4v4h4z" sketch:type="MSShapeGroup" fill="#818181"/></svg>');
   background-repeat: no-repeat;
@@ -210,14 +210,31 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     background-color: #333;
   }
 }
-.stories .control-dock-fullScreen {
+.stories .control-dock-button-fullScreen {
 -webkit-flex: 0 0 auto;
 flex: 0 0 auto;
   height: 32px;
   width: 48px;
-  background: #222;
+  background-color: #222;
   cursor: pointer;
   background-image: url('data:image/svg+xml;utf8,<svg width="22" height="16" viewBox="0 0 22 16" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><title>fullscreen-icon</title><desc>Stellar Storyteller</desc><path d="M4 4v8h13v-8h-13zm1.025-1.976h-2.984v2.977h-2.042v-5.001h5.025v2.024zm-.005 11.952h-2.979v-2.977h-2.042v5.001h5.02v-2.024zm10.967-11.952h2.984v2.977h2.042v-5.001h-5.025v2.024zm0 11.952h2.979v-2.977h2.042v5.001h-5.02v-2.024z" sketch:type="MSShapeGroup" fill="#818181"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center center;
+  &:hover {
+    background-color: #333;
+  }
+}
+
+.stories .control-dock-button-share {
+  position: relative;
+  -webkit-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: 32px;
+
+  width: 48px;
+  background-color: #222;
+  cursor: pointer;
+  background-image: url('data:image/svg+xml;utf8,<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><defs></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-heart-svg" sketch:type="MSArtboardGroup" transform="translate(-1343.000000, -772.000000)" fill="#818181"><path d="M1354.79266,772 L1351,774.419477 L1347.20734,772 L1343,774.96812 L1343,780.923327 L1351,788 L1359,780.923327 L1359,774.96812 L1354.79266,772 Z" id="favorite-5-icon" sketch:type="MSShapeGroup"></path></g></g></svg>');
   background-repeat: no-repeat;
   background-position: center center;
   &:hover {
