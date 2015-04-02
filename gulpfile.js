@@ -9,6 +9,8 @@ var rename = require('gulp-rename');
 var browserSync = require('browser-sync');
 var gutil = require('gulp-util');
 var uglify = require('gulp-uglify');
+var rev = require('gulp-rev');
+var runSequence = require('run-sequence');
 var bower = require('gulp-bower');
 var reload = browserSync.reload;
 
@@ -30,7 +32,7 @@ gulp.task('build', [
 });
 
 gulp.task('develop', ['build', 'dev-server', 'watch']);
-gulp.task('production', ['build']);
+gulp.task('production', ['build', 'production-optimize']);
 
 gulp.task('watch', function() {
   gulp.watch(['./story-app/story.html', './story-app/story.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories', browserSync.reload]);
@@ -160,6 +162,46 @@ gulp.task('storyteller-js', function() {
 gulp.task('storyteller', ['storyteller-js', 'storyteller-css'], function() {
 });
 
+// cachebuster. used for production
+var jsManifest = {};
+var cssManifest = {};
+gulp.task('rev-js', function() {
+  return gulp.src('./dist/**/*.js')
+    .pipe(rev())
+    .pipe(gulp.dest('./dist/'))
+    .pipe(rev.manifest())
+    .pipe(map(function(manifest) {
+      jsManifest = _.extend(jsManifest, JSON.parse(String(manifest.toString())));
+    }));
+});
+gulp.task('rev-css', function() {
+  return gulp.src('./dist/**/*.css')
+    .pipe(rev())
+    .pipe(gulp.dest('./dist/'))
+    .pipe(rev.manifest())
+    .pipe(map(function(manifest) {
+      cssManifest = _.extend(cssManifest, JSON.parse(String(manifest.toString())));
+    }));
+});
+
+gulp.task('relinkAssets', function() {
+  return gulp.src('./dist/**/index.html')
+    .pipe(map(function(content) {
+      content = content.toString();
+      for (filename in jsManifest) {
+        content = content.replace(filename + '"></script>', jsManifest[filename] + '"></script>');
+      }
+      for (filename in cssManifest) {
+        content = content.replace(filename, cssManifest[filename]);
+      }
+      return content;
+    }))
+    .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('production-optimize', function(cb) {
+  runSequence(['rev-js', 'rev-css'], 'relinkAssets', cb)
+});
 
 gulp.task('dev-server', function() {
   // connect.server({
