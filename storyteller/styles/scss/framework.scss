@@ -116,6 +116,7 @@ $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: block;
     -webkit-transition: -webkit-transform $ease-out-quad 0.4s;
             transition: transform $ease-out-quad 0.4s;
+    will-change: transform;
 
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
