@@ -11,6 +11,7 @@ var gutil = require('gulp-util');
 var uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
 var runSequence = require('run-sequence');
+var del = require('del');
 var bower = require('gulp-bower');
 var reload = browserSync.reload;
 
@@ -31,8 +32,12 @@ gulp.task('build', [
   'storyteller'], function() {
 });
 
-gulp.task('develop', ['build', 'dev-server', 'watch']);
-gulp.task('production', ['build', 'production-optimize']);
+gulp.task('develop', function(cb) {
+  runSequence('clean', 'build', 'dev-server', 'watch', cb)
+});
+gulp.task('production', function(cb) {
+  runSequence('clean', 'build', 'production-optimize', cb)
+});
 
 gulp.task('watch', function() {
   gulp.watch(['./story-app/story.html', './story-app/story.html', './content/**/slides.html', './content/**/config.json', './content/**/assets/*'], ['compile-stories', browserSync.reload]);
@@ -201,6 +206,12 @@ gulp.task('relinkAssets', function() {
 
 gulp.task('production-optimize', function(cb) {
   runSequence(['rev-js', 'rev-css'], 'relinkAssets', cb)
+});
+
+gulp.task('clean', function(cb) {
+  del([
+    './dist/'
+  ], cb);
 });
 
 gulp.task('dev-server', function() {
