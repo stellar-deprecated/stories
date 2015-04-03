@@ -753,7 +753,7 @@ storyteller.define('share', function() {
           break;
         case 'embed':
           $shareContent.append('<textarea spellcheck="false">' +
-            '<iframe width="' + self.options.embedWidth + '" height="' + self.options.embedHeight +
+            '<iframe width="' + self.options.embedWidth + '" height="' + self.options.embedHeight + '"' +
             ' src="'+ encodeURI(self.options.embedUrl) + '" frameborder="0" allowfullscreen></iframe>' +
             '</textarea>');
           break;
