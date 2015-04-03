@@ -105,9 +105,12 @@ html, body {
 body {
     font-family: 'Clear Sans', sans-serif;
     font-weight: 400;
-    font-size: 36px;
+    font-size: 16px;
     line-height: 1.65;
     color: $dark;
+}
+.stories .slides {
+  font-size: 36px;
 }
 
 h1, h2, h3, h4, h5, h6 {

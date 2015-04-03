@@ -631,7 +631,7 @@ storyteller.define('cards-touch', function() {
 
 // Modular ui bar for others to register on to
 storyteller.define('control-dock', function() {
-  var self = this; // TODO: better name for "self" (perhaps "self")
+  var self = this;
   var t;
 
   // A submodule
@@ -645,7 +645,7 @@ storyteller.define('control-dock', function() {
     barMin: {},
     barMax: {},
     init: function() {
-      self.progressBar.$module = $('<div class="control-dock-progressBar"></div>').prependTo(t.$uiOverlay);
+      self.progressBar.$module = $('<div class="control-dock-button-progressBar"></div>').prependTo(t.$uiOverlay);
       self.progressBar.$barContainer = $('<div class="bar-container"></div>').prependTo(self.progressBar.$module);
       self.progressBar.$module.addClass('theme-' + self.progressBar.options.theme + ' ' + self.progressBar.options.classes);
       self.progressBar.$barMin = $('<div class="bar-min"></div>').prependTo(self.progressBar.$barContainer);
@@ -667,7 +667,7 @@ storyteller.define('control-dock', function() {
   // A submodule
   self.gridView = {
     init: function() {
-      self.$gridViewButton = $('<div class="control-dock-gridView control-dock__button"></div>').appendTo(t.$uiOverlay);
+      self.$gridViewButton = $('<div class="control-dock-button-gridView control-dock__button"></div>').appendTo(t.$uiOverlay);
       self.$gridViewButton.on('click', function() {
         t.events.trigger('gridView:enter');
       });
@@ -677,11 +677,19 @@ storyteller.define('control-dock', function() {
   // A submodule
   self.fullScreen = {
     init: function() {
-      self.$fullScreenButton = $('<div class="control-dock-fullScreen control-dock__button"></div>').appendTo(t.$uiOverlay);
+      self.$fullScreenButton = $('<div class="control-dock-button-fullScreen control-dock__button"></div>').appendTo(t.$uiOverlay);
       self.$fullScreenButton.on('click', function() {
         t.events.trigger('fullScreen:enter');
       })
     }
+  };
+
+  // TODO: better name for elementReceivier
+  self.elementReceiverCreator = function(name) {
+    return function(element) {
+      var $element = $(element).addClass('control-dock-button-' + name + ' control-dock__button');
+      $element.appendTo(t.$uiOverlay);
+    };
   };
 
   return {
@@ -690,10 +698,88 @@ storyteller.define('control-dock', function() {
       t = tools;
 
       self.progressBar.init();
-      self.gridView.init();
-      self.fullScreen.init();
+      t.events.on('control-dock:register', function(e, register) {
+        register.factory(self.elementReceiverCreator(register.name));
+      });
+      // TODO: Figure out better way to order things
+      t.events.on('init', function() {
+        self.gridView.init();
+        self.fullScreen.init();
+      });
     }
   }
+});
+
+storyteller.define('share', function() {
+  var self = this;
+  var t;
+
+  self.options = {};
+
+  // UI module to be registered with other ui managers
+  self.uiModuleFactory = function(elementReceiver) {
+    self.$uiModule = $('<div></div>');
+    elementReceiver(self.$uiModule);
+    self.$uiModule.on('click', function() {
+      t.events.trigger('share:enter');
+    });
+  };
+
+  return {
+    tools: ['$uiOverlay', 'events', 'options'],
+    entry: function(tools) {
+      t = tools;
+      $.extend(self.options, t.options.share);
+
+      // TODO: a way for some things to always be at the top (uiLayer vs uiOverlay?)
+      t.$uiOverlay.css('z-index', 5);
+      t.$uiOverlay.append('<div class="share-exitLayer"></div>')
+      t.$uiOverlay.find('.share-exitLayer').on('click', function() {
+        t.events.trigger('share:exit');
+      });
+
+      // TODO: configurable shareContent
+      var $shareContent = $('<div class="share-content"></div>').prependTo(t.$uiOverlay);
+      self.options.contentWidgets.forEach(function(widget) {
+        switch (widget.type) {
+        case 'title':
+          $shareContent.append('<div class="share-content-title">' + widget.text + '</div>');
+          break;
+        case 'label':
+          $shareContent.append('<div class="share-content-label">' + widget.text + '</div>');
+          break;
+        case 'link':
+          $shareContent.append('<input type="text" value="' + encodeURI(self.options.linkUrl) + '" />');
+          break;
+        case 'embed':
+          $shareContent.append('<textarea spellcheck="false">' +
+            '<iframe width="' + self.options.embedWidth + '" height="' + self.options.embedHeight +
+            ' src="'+ encodeURI(self.options.embedUrl) + '" frameborder="0" allowfullscreen></iframe>' +
+            '</textarea>');
+          break;
+        }
+      });
+
+      // TODO: module registration ordering (assistance from storyteller tools?)
+      t.events.trigger('control-dock:register', {
+        name: 'share',
+        factory: self.uiModuleFactory
+      });
+
+      t.events.on('share:enter', function() {
+        self.$uiModule.addClass('is-active');
+        t.$uiOverlay.addClass('is-active');
+      });
+      t.events.on('init', function() {
+        t.events.trigger('share:enter');
+      })
+
+      t.events.on('share:exit', function() {
+        self.$uiModule.removeClass('is-active');
+        t.$uiOverlay.removeClass('is-active');
+      });
+    }
+  };
 });
 
 // left right navigation buttons
@@ -1104,6 +1190,9 @@ storyteller.define('analytics', function() {
         return;
       } else {
         t.log('Analytics enabled');
+        t.events.on('init', function() {
+          t.events.trigger('analytics:enabled');
+        });
       }
 
       // save event prefix
@@ -1133,22 +1222,23 @@ storyteller.define('analytics-segment', function() {
     tools: ['events', 'options'],
     entry: function(tools) {
       t = tools;
-      $.extend(self.options, t.options.analyticsSegment);
-      var properties = {};
+      t.events.on('analytics:enabled', function() {
+        $.extend(self.options, t.options.analyticsSegment);
+        var properties = {};
+        // TODO: more configurable properties
+        if (self.options.hasOwnProperty('category')) {
+          properties.category = self.options.category;
+        }
 
-      // TODO: more configurable properties
-      if (self.options.hasOwnProperty('category')) {
-        properties.category = self.options.category;
-      }
+        // taken from segment
+        !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.0.1";
+        analytics.load(self.options.writeKey);
+        analytics.page()
+        }}();
 
-      // taken from segment
-      !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.0.1";
-      analytics.load(self.options.writeKey);
-      analytics.page()
-      }}();
-
-      t.events.on('analytics:event', function(e, event) {
-        analytics.track(event.name, properties);
+        t.events.on('analytics:event', function(e, event) {
+          analytics.track(event.name, properties);
+        });
       });
     },
   };
