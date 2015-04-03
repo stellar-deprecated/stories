@@ -703,8 +703,8 @@ storyteller.define('control-dock', function() {
       });
       // TODO: Figure out better way to order things
       t.events.on('init', function() {
-        self.gridView.init();
-        self.fullScreen.init();
+        // self.gridView.init();
+        // self.fullScreen.init();
       });
     }
   }
