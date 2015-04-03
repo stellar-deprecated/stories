@@ -770,9 +770,6 @@ storyteller.define('share', function() {
         self.$uiModule.addClass('is-active');
         t.$uiOverlay.addClass('is-active');
       });
-      t.events.on('init', function() {
-        t.events.trigger('share:enter');
-      })
 
       t.events.on('share:exit', function() {
         self.$uiModule.removeClass('is-active');
