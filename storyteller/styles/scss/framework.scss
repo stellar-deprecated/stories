@@ -266,6 +266,7 @@ flex: 0 0 auto;
 
 .stories .ui-layer.share {
   opacity: 0;
+  display: none;
   -webkit-transition: opacity 0.2s;
           transition: opacity 0.2s;
 }
@@ -275,6 +276,7 @@ flex: 0 0 auto;
   pointer-events: none;
 }
 .ui-layer.share.is-active {
+  display: block;
   pointer-events: auto;
   opacity: 1;
 }
