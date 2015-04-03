@@ -7,6 +7,13 @@
 
 $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
+$fontSize-smaller: 12px;
+$fontSize-small: 14px;
+$fontSize-normal: 16px;
+$fontSize-large: 21px;
+$fontSize-larger: 28px;
+
+
 /**
     Overall structure of the slideshow
 **/
@@ -240,6 +247,110 @@ flex: 0 0 auto;
   &:hover {
     background-color: #333;
   }
+}
+.stories .control-dock-button-share {
+  position: relative;
+  -webkit-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: 32px;
+
+  width: 48px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center center;
+  &:hover, &.is-active {
+    background-color: #333;
+    background-image: url('data:image/svg+xml;utf8,<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><defs></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-heart-svg" sketch:type="MSArtboardGroup" transform="translate(-1343.000000, -772.000000)" fill="#08B5E5"><path d="M1354.79266,772 L1351,774.419477 L1347.20734,772 L1343,774.96812 L1343,780.923327 L1351,788 L1359,780.923327 L1359,774.96812 L1354.79266,772 Z" id="favorite-5-icon" sketch:type="MSShapeGroup"></path></g></g></svg>');
+  }
+}
+
+.stories .ui-layer.share {
+  opacity: 0;
+  -webkit-transition: opacity 0.2s;
+          transition: opacity 0.2s;
+}
+.stories .ui-layer.share, .share-exitLayer {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+}
+.ui-layer.share.is-active {
+  pointer-events: auto;
+  opacity: 1;
+}
+.ui-layer.share.is-active .share-exitLayer {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.share-exitLayer {
+  z-index: 0;
+  background: rgba(0,0,0,0.5);
+
+  &:before {
+    // exit button
+    content: '';
+    display: inline-block;
+    position: absolute;
+    background: #fff;
+    width: 32px;
+    height: 32px;
+    top: 2em;
+    right: 2em;
+  }
+}
+.share-content-title {
+  z-index: 1;
+  font-size: $fontSize-larger;
+  color: #fff;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0.5em;
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url('data:image/svg+xml;utf8,<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><defs></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-heart-svg" sketch:type="MSArtboardGroup" transform="translate(-1343.000000, -772.000000)" fill="#08B5E5"><path d="M1354.79266,772 L1351,774.419477 L1347.20734,772 L1343,774.96812 L1343,780.923327 L1351,788 L1359,780.923327 L1359,774.96812 L1354.79266,772 Z" id="favorite-5-icon" sketch:type="MSShapeGroup"></path></g></g></svg>');
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    margin-right: 12px;
+  }
+}
+.share-content {
+  position: absolute;
+  z-index: 1;
+  top: 20%;
+  bottom: 20%;
+  width: calc(100% - 36px);
+  max-width: 700px;
+  max-height: 400px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: column;
+
+}
+.share-content-label {
+  text-transform: uppercase;
+  font-size: $fontSize-small;
+  color: #fff;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.1em;
+}
+.share-content input, .share-content textarea {
+  border: 0;
+  color: #08b5e5;
+  font-size: $fontSize-large;
+  resize: none;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
+}
+.share-content textarea {
+  flex: 1;
 }
 
 .stories .ui-layer.display-background {

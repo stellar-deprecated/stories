@@ -714,23 +714,53 @@ storyteller.define('share', function() {
   var self = this;
   var t;
 
+  self.options = {};
+
   // UI module to be registered with other ui managers
   self.uiModuleFactory = function(elementReceiver) {
     self.$uiModule = $('<div></div>');
     elementReceiver(self.$uiModule);
     self.$uiModule.on('click', function() {
-
-
       t.events.trigger('share:enter');
     });
   };
 
   return {
-    tools: ['$uiOverlay', 'events'],
+    tools: ['$uiOverlay', 'events', 'options'],
     entry: function(tools) {
       t = tools;
+      $.extend(self.options, t.options.share);
 
-      // TODO: module registration ordering (assistance from tools?)
+      // TODO: a way for some things to always be at the top (uiLayer vs uiOverlay?)
+      t.$uiOverlay.css('z-index', 5);
+      t.$uiOverlay.append('<div class="share-exitLayer"></div>')
+      t.$uiOverlay.find('.share-exitLayer').on('click', function() {
+        t.events.trigger('share:exit');
+      });
+
+      // TODO: configurable shareContent
+      var $shareContent = $('<div class="share-content"></div>').prependTo(t.$uiOverlay);
+      self.options.contentWidgets.forEach(function(widget) {
+        switch (widget.type) {
+        case 'title':
+          $shareContent.append('<div class="share-content-title">' + widget.text + '</div>');
+          break;
+        case 'label':
+          $shareContent.append('<div class="share-content-label">' + widget.text + '</div>');
+          break;
+        case 'link':
+          $shareContent.append('<input type="text" value="' + encodeURI(self.options.linkUrl) + '" />');
+          break;
+        case 'embed':
+          $shareContent.append('<textarea spellcheck="false">' +
+            '<iframe width="' + self.options.embedWidth + '" height="' + self.options.embedHeight +
+            ' src="'+ encodeURI(self.options.embedUrl) + '" frameborder="0" allowfullscreen></iframe>' +
+            '</textarea>');
+          break;
+        }
+      });
+
+      // TODO: module registration ordering (assistance from storyteller tools?)
       t.events.trigger('control-dock:register', {
         name: 'share',
         factory: self.uiModuleFactory
@@ -738,12 +768,15 @@ storyteller.define('share', function() {
 
       t.events.on('share:enter', function() {
         self.$uiModule.addClass('is-active');
-        console.log("yayyy share!!")
+        t.$uiOverlay.addClass('is-active');
       });
+      t.events.on('init', function() {
+        t.events.trigger('share:enter');
+      })
 
       t.events.on('share:exit', function() {
         self.$uiModule.removeClass('is-active');
-        console.log("yayyy share!!")
+        t.$uiOverlay.removeClass('is-active');
       });
     }
   };
