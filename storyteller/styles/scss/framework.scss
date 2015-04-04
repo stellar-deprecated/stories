@@ -290,12 +290,12 @@ flex: 0 0 auto;
 
   &:before {
     // exit button
-    content: '';
+    content: '×';
     display: inline-block;
     position: absolute;
-    background: #fff;
-    width: 32px;
-    height: 32px;
+    color: #fff;
+    font-size: 32px;
+    line-height: 0.75;
     top: 16px;
     right: 16px;
   }
