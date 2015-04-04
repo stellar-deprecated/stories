@@ -225,7 +225,8 @@ storyteller.define('slide-cards', function() {
     virtualWidth: 360,
     virtualHeight: 640,
     multiCardsThreshold: 2, // decimal amount of cards at which multiCards takes effect
-    multiCardsMin: 3 // number of cards to letterbox to if reached the multiCardsThreshold
+    multiCardsMin: 3, // number of cards to letterbox to if reached the multiCardsThreshold
+    defaultScalingMode: "box" // box or transform. can also be set using html scaling-mode="scale"
   };
 
   // save the state of the storyline
@@ -352,6 +353,16 @@ storyteller.define('slide-cards', function() {
       }
     }
 
+    layout.slideScalingMode = [];
+    t.$slides.forEach(function($slide, k) {
+      var customScalingMode = $slide.attr('scaling-mode');
+      if (customScalingMode === undefined) {
+        layout.slideScalingMode[k] = self.options.defaultScalingMode;
+      } else {
+        layout.slideScalingMode[k] = customScalingMode;
+      }
+    });
+
     t.events.trigger('storyline:setConfig', {nextSize: layout.numCards});
     self.calcSlidePositions();
   }
@@ -426,13 +437,25 @@ storyteller.define('slide-cards', function() {
       curPosition.x = Math.round(curPosition.x);
       curPosition.y = Math.round(curPosition.y);
 
-      var transformProp = 'scale(' + self.slideLayout.scale + ') translateZ(0)';
-      t.$slides[i].css({
-        'top': curPosition.y + 'px',
-        'left': curPosition.x + 'px',
-        '-webkit-transform': transformProp,
-                'transform': transformProp
-      });
+      if (self.slideLayout.slideScalingMode[i] === 'box') {
+        t.$slides[i].css({
+          'top': curPosition.y + 'px',
+          'left': curPosition.x + 'px',
+          'width': self.slideLayout.slideWidth,
+          'height': self.slideLayout.slideHeight,
+          '-webkit-transform': '',
+                  'transform': ''
+        });
+      } else if (self.slideLayout.slideScalingMode[i] === 'transform') {
+        var transformProp = 'scale(' + self.slideLayout.scale + ') translateZ(0)';
+        t.$slides[i].css({
+          'top': curPosition.y + 'px',
+          'left': curPosition.x + 'px',
+          '-webkit-transform': transformProp,
+                  'transform': transformProp
+        });
+      }
+
     }
   }
 
