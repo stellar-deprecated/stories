@@ -218,7 +218,8 @@ storyteller.define('slide-cards', function() {
   // hardcoded for now
   self.options = {
     slideMarginHorizontal: 8,
-    slideMarginVertical: 8,
+    slideMarginTop: 8,
+    slideMarginBottom: 0,
     // registeredPadding: { // TODO: ui padding registration tool
     //   'bottom': 16 //px
     // },
@@ -297,7 +298,7 @@ storyteller.define('slide-cards', function() {
     layout.aspectRatio = opts.virtualWidth / opts.virtualHeight;
 
     // save options
-    layout.verticalMargin = opts.slideMarginVertical;
+    layout.verticalMargin = opts.slideMarginTop + opts.slideMarginBottom;
     layout.horizontalMargin = opts.slideMarginHorizontal;
 
     // calculate container size
@@ -308,7 +309,7 @@ storyteller.define('slide-cards', function() {
     // here, we take a guess that it is bounded by width
     var slideWidthGuess = layout.viewportWidth - 2 * opts.slideMarginHorizontal;
     var slideHeightGuess = slideWidthGuess / layout.aspectRatio;
-    var slideOuterHeightGuess = slideHeightGuess + 2 * opts.slideMarginVertical;
+    var slideOuterHeightGuess = slideHeightGuess + layout.verticalMargin;
 
     // if height is less than the viewport, then our guess was correct
     layout.boundByWidth = (slideOuterHeightGuess < layout.viewportHeight);
@@ -322,7 +323,7 @@ storyteller.define('slide-cards', function() {
       // bounded by width automatically means only 1 card at a time
       layout.numCards = 1;
     } else {
-      layout.slideHeight = layout.viewportHeight - 2 * opts.slideMarginVertical;
+      layout.slideHeight = layout.viewportHeight - layout.verticalMargin;
       layout.slideWidth = layout.slideHeight * layout.aspectRatio;
       layout.scale = layout.slideHeight / opts.virtualHeight; // less precision loss
 
@@ -334,7 +335,6 @@ storyteller.define('slide-cards', function() {
 
       if (decimalNumCards > opts.multiCardsThreshold && decimalNumCards < opts.multiCardsMin) {
         layout.numCards = opts.multiCardsMin;
-        var letterboxVertical = 100;
         // calculate the letterbox size required to fit the minimum cards
         // constraint:
         //   layout.viewportWidth = opts.multiCardsMin*newSlideWidth + (opts.minMultiCards+1) * self.options.slideMarginHorizontal
@@ -402,7 +402,7 @@ storyteller.define('slide-cards', function() {
 
       self.slidePositions[i] = {
         x: slideXOffset + thisSlideOffset,
-        y: (layout.viewportHeight - layout.slideHeight) / 2
+        y: opts.slideMarginTop
       };
     }
 
