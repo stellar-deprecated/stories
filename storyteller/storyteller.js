@@ -1,5 +1,6 @@
 /*
  * storyteller.js
+ * https://github.com/stellar/stories
  *
  * Copyright (c) 2014-2015 Stellar Development Foundation
  *
