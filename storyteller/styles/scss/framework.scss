@@ -316,8 +316,9 @@ flex: 0 0 auto;
 .share-content {
   position: absolute;
   z-index: 1;
-  top: 16px;
-  bottom: 16px;
+  top: 48px;
+  bottom: 48px;
+  width: 95%;
   width: calc(100% - 36px);
   max-width: 800px;
   left: 50%;
@@ -358,6 +359,7 @@ flex: 0 0 auto;
   padding: 0.25em 0.5em;
   border-radius: 3px;
   min-height: 32px;
+  width: 100%;
 }
 .share-content textarea {
   flex: 1;
