@@ -110,8 +110,8 @@ gulp.task('compile-stories', function() {
 
     // TODO: Make story url configurable
     var storyUrl = "https://www.stellar.org/stories/" + path.basename(path.dirname(filename)) + "/";
-    var thumbnailUrl = path.normalize(storyUrl + finalMeta.image)
-    newIndex = newIndex.replace(/<!-- story-meta:image -->/g, thumbnailUrl);
+    // var thumbnailUrl = path.normalize(storyUrl + finalMeta.image)
+    newIndex = newIndex.replace(/<!-- story-meta:image -->/g, storyUrl);
     newIndex = newIndex.replace(/<!-- story-meta:author -->/g, finalMeta.author);
 
     return newIndex;
