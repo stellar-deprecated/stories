@@ -503,3 +503,11 @@ flex: 0 0 auto;
 .stories.is-init .slides {
   visibility: visible
 }
+
+.stories .ui-layer.titleBar {
+  position: absolute;
+  width: 100%;
+  height: 32px;
+  background: red;
+  border-bottom: 1px solid #333;
+}

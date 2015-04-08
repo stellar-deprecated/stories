@@ -181,6 +181,8 @@ storyteller.define('url-hash', function() {
         t.events.on('storyline:change', function(e, change) {
           self.setHash(change.toIndex + 1);
         });
+
+        // t.events.on('control:jump', function(e, ju))
       });
     }
   }
@@ -514,7 +516,7 @@ storyteller.define('slide-cards', function() {
       t.events.trigger('viewport:register-options', {
         'caller': 'slide-cards', // TODO: personalized events to automatically include caller
         'options': {
-          'paddingBottom': 32
+          'paddingBottom': 32,
         }
       });
 
