@@ -687,7 +687,8 @@ storyteller.define('control-dock', function() {
     },
     // Handle event for progress bar clicks
     handleProgressBar: function(e) {
-      var targetPercent = e.offsetX/self.progressBar.$module.width() * 100;
+      var x  = (e.offsetX || e.clientX - $(e.target).offset().left); // firefox compatibility
+      var targetPercent = x/self.progressBar.$module.width() * 100;
       t.events.trigger('control:jump', {percent: targetPercent});
     }
   };
