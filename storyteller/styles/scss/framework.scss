@@ -472,15 +472,14 @@ flex: 0 0 auto;
     position: relative;
     // top: -10px;
     width: 300px;
-    height: 3px;
     margin: 0 auto;
     border-top: 1px solid #5b6a72;
   }
   .loadingScreen-loadingProgress {
-    height: 100%;
+    height: 3px;
     width: 0%;
     position: relative;
-    top: -1px;
+    top: -2px;
     -webkit-transition: width 0.2s;
             transition: width 0.2s;
     background: #08b5e5;
