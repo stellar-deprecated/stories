@@ -1173,7 +1173,8 @@ storyteller.define('loadingScreen', function() {
   var t;
 
   self.options = {
-    loadingText: ''
+    loadingText: '',
+    loadingNumber: false
   };
   return {
     tools: ['events', '$uiOverlay', 'slides', 'options'],
@@ -1190,7 +1191,10 @@ storyteller.define('loadingScreen', function() {
       $loadingText.text(self.options.loadingText);
       var $loadingBar = $('<div class="loadingScreen-loadingBar"></div>').appendTo($loadingContainer);
       var $loadingProgress = $('<div class="loadingScreen-loadingProgress"></div>').appendTo($loadingBar);
-      var $loadingNumber = $('<span class="loadingScreen-loadingNumber"></span>').appendTo($loadingProgress);
+      var $loadingNumber = $('<span class="loadingScreen-loadingNumber"></span>');
+      if (self.options.loadingNumber) {
+        $loadingNumber.appendTo($loadingProgress)
+      }
 
       var updateProgress = function() {
         var percentage = (loadedImages/totalImages)*100;
