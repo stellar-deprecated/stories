@@ -321,9 +321,13 @@ storyteller.define('slide-cards', function() {
 
     // Calculate the sizes of each card and the number of cards
     if (layout.boundByWidth) {
+      // slide dimensions
       layout.slideWidth = layout.viewportWidth - 2 * opts.slideMarginHorizontal;
       layout.slideHeight = layout.slideWidth / layout.aspectRatio;
       layout.scale = layout.slideWidth / opts.virtualWidth;
+
+      // positioning
+      layout.letterBoxVertical = (layout.viewportHeight - layout.slideHeight - opts.slideMarginTop - opts.slideMarginBottom)/2;
 
       // bounded by width automatically means only 1 card at a time
       layout.numCards = 1;
