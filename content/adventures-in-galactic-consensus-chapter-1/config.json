@@ -17,6 +17,9 @@
       ,"analytics-segment"
     ],
     "options": {
+      "loadingScreen": {
+        "loadingText": "Loading Adventures in Galactic Consensus"
+      },
       "background": {
         "type": "static",
         "color": "#000"

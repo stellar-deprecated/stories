@@ -434,3 +434,56 @@ flex: 0 0 auto;
     }
   }
 }
+
+.stories .ui-layer.loadingScreen {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: #000;
+  -webkit-transition: visibility 0.4s, opacity 0.4s;
+          transition: visibility 0.4s, opacity 0.4s;
+
+  &.is-loaded {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .loadingScreen-container {
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+  }
+  .loadingScreen-loadingText {
+    color: #08b5e5;
+  }
+  .loadingScreen-loadingBar {
+    width: 300px;
+    height: 12px;
+    margin: 0 auto;
+    border-bottom: 1px solid #08b5e5;
+  }
+  .loadingScreen-loadingProgress {
+    height: 100%;
+    width: 0%;
+    -webkit-transition: width 0.2s;
+            transition: width 0.2s;
+    background: #08b5e5;
+    position: relative;
+  }
+  .loadingScreen-loadingNumber {
+    position: absolute;
+    font-size: 12px;
+    line-height: 1;
+    bottom: 0;
+    left: 100%;
+    color: #08b5e5;
+  }
+}
+.stories .slides {
+  visibility: hidden;
+}
+.stories.is-init .slides {
+  visibility: visible
+}

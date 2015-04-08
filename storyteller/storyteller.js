@@ -50,6 +50,8 @@ var storyteller = (function() {
         // load all dependencies from the slideshow config.json
         this.loadAllModules();
 
+        this.$container.addClass('is-init');
+
         // Let modules know that they are ready
         this.events.trigger('init');
       },

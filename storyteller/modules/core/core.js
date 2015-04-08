@@ -1166,6 +1166,61 @@ storyteller.define('clickTrigger', function() {
   }
 });
 
+// to make the loading experience better
+storyteller.define('loadingScreen', function() {
+  var self = this;
+  var t;
+
+  self.options = {
+    loadingText: ''
+  };
+  return {
+    tools: ['events', '$uiOverlay', 'slides', 'options'],
+    entry: function(tools) {
+      t = tools;
+      $.extend(self.options, t.options.loadingScreen);
+
+      var $preloadImages = t.slides.find('img[st-src]');
+      var totalImages = $preloadImages.length;
+      var loadedImages = 0;
+
+      var $loadingContainer = $('<div class="loadingScreen-container"></div>').prependTo(t.$uiOverlay);
+      var $loadingText = $('<p class="loadingScreen-loadingText"></p>').prependTo($loadingContainer);
+      $loadingText.text(self.options.loadingText);
+      var $loadingBar = $('<div class="loadingScreen-loadingBar"></div>').appendTo($loadingContainer);
+      var $loadingProgress = $('<div class="loadingScreen-loadingProgress"></div>').appendTo($loadingBar);
+      var $loadingNumber = $('<span class="loadingScreen-loadingNumber"></span>').appendTo($loadingProgress);
+
+      var updateProgress = function() {
+        var percentage = (loadedImages/totalImages)*100;
+        $loadingProgress.css('width', percentage + '%');
+        $loadingNumber.text(Math.round(percentage) + '%');
+      };
+      var loadFinished = function() {
+        t.$uiOverlay.addClass('is-loaded');
+      };
+
+      t.events.on('init', function() {
+        $preloadImages.each(function(k, preloadImage) {
+          var $preloadImage = $(preloadImage);
+          var imgUrl = $preloadImage.attr('st-src');
+          $preloadImage.attr('src', imgUrl);
+        });
+        $preloadImages.load(function() {
+          loadedImages += 1;
+          updateProgress();
+          if (loadedImages === totalImages) {
+            loadFinished();
+          }
+        });
+        setTimeout(function() {
+          loadFinished();
+        }, 10000);
+      });
+    }
+  }
+});
+
 // integration with 3rd party services such as google analytics or segment
 storyteller.define('analytics', function() {
   var self = this;
