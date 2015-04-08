@@ -521,13 +521,13 @@ storyteller.define('slide-cards', function() {
       // TODO: better story around communiating with storyline
       self.storyline.totalSlides = t.$slides.length;
 
-      t.events.on('init', function() {
-        t.events.on('storyline:change', function(e, change) {
-          self.storyline.curSlideIndex = change.toIndex;
-          self.storyline.totalSlides = change.totalSlides;
+      t.events.on('storyline:change', function(e, change) {
+        self.storyline.curSlideIndex = change.toIndex;
+        self.storyline.totalSlides = change.totalSlides;
 
-          self.rePosition();
-        });
+        self.rePosition();
+      });
+      t.events.on('init', function() {
         self.reLayout();
         t.$viewport.addClass('ready');
 
