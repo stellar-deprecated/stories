@@ -3,6 +3,9 @@ Stellar Stories
 Stellar Stories is a collection of graphic explainers used to help people learn
 more about Stellar and what it can do.
 
+Check out the latest graphic novel: https://www.stellar.org/stories/adventures-in-galactic-consensus-chapter-1/
+
+
 ## Getting started
 ```bash
 #0. Install node.js and npm
