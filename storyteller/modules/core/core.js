@@ -1205,6 +1205,7 @@ storyteller.define('loadingScreen', function() {
       };
       var loadFinished = function() {
         t.$uiOverlay.addClass('is-loaded');
+        t.events.trigger('loading:finished');
       };
 
       t.events.on('init', function() {
@@ -1331,12 +1332,19 @@ storyteller.define('analytics-segment', function() {
   self.windowFocused = false;
   self.initHappened = false;
   self.analyticsEnabled = false;
+  self.loadingFinished = false;
 
   self.updateEventQueue = function() {
-    if (self.windowFocused && self.initHappened && self.analyticsEnabled && !self.eventQueueFulfilled) {
+    // TODO: code cleanup
+    if (self.windowFocused
+       && self.initHappened
+       && self.analyticsEnabled
+       && self.loadingFinished
+       && !self.eventQueueFulfilled) {
       self.eventQueueFulfilled = true;
       self.initSegment();
       for (var i = 0; i < self.eventQueue.length; i++) {
+        t.log('analytics: ' + self.eventQueue[i])
         analytics.track(self.eventQueue[i], self.properties);
       }
     }
@@ -1351,7 +1359,7 @@ storyteller.define('analytics-segment', function() {
   };
 
   return {
-    tools: ['events', 'options'],
+    tools: ['events', 'log', 'options'],
     entry: function(tools) {
       t = tools;
 
@@ -1385,6 +1393,11 @@ storyteller.define('analytics-segment', function() {
       });
       t.events.on('analytics:enabled', function() {
         self.analyticsEnabled = true;
+        self.updateEventQueue();
+      });
+      t.events.on('loading:finished', function() {
+        // TODO: disableable option
+        self.loadingFinished = true;
         self.updateEventQueue();
       });
     },
