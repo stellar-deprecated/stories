@@ -1142,6 +1142,27 @@ storyteller.define('control-keyboardNavigation', function() {
   };
 });
 
+// bind to items on slides to click
+storyteller.define('clickTrigger', function() {
+  var self = this;
+  var t;
+  return {
+    tools: ['events', 'slides'],
+    entry: function(tools) {
+      t = tools;
+      t.events.on('init', function() {
+        t.slides.find('[click-trigger]').each(function(k, target) {
+          var $target = $(target);
+          $target.css('cursor', 'pointer');
+          $target.on('click', function() {
+            t.events.trigger($target.attr('click-trigger'));
+          })
+        });
+      });
+    }
+  }
+});
+
 // integration with 3rd party services such as google analytics or segment
 storyteller.define('analytics', function() {
   var self = this;

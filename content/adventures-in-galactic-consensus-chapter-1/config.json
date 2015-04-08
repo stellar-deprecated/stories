@@ -11,6 +11,7 @@
       ,"control-navButtons"
       ,"display-background"
       ,"control-keyboardNavigation"
+      ,"clickTrigger"
       ,"analytics"
       ,"analytics-segment"
     ],

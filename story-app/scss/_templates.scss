@@ -131,15 +131,15 @@ section[template="card-image"] {
 }
 .btn {
   background: $primary;
-  border: 1px solid mix(#000, $primary, 15%);
-  box-shadow: 0 1px 0 mix(#000, $primary, 25%);
+  border: 1px solid mix(#000, $primary, 20%);
+  box-shadow: 0 1px 0 mix(#000, $primary, 35%);
   padding: 0.5em 2em;
   text-decoration: none;
   border-radius: 3px;
 
   &:hover {
     background: mix(#000, $primary, 10%);
-    border: 1px solid mix(#000, $primary, 25%);
+    border: 1px solid mix(#000, $primary, 30%);
   }
 }
 .btn-wide {
