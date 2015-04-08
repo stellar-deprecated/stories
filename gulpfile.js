@@ -109,7 +109,7 @@ gulp.task('compile-stories', function() {
     newIndex = newIndex.replace(/<!-- story-meta:description -->/g, finalMeta.description);
 
     // TODO: Make story url configurable
-    var storyUrl = "https://www.stellar.org/stories/" + path.basename(path.dirname(filename)) + "/";
+    var storyUrl = "https://www.stellar.org/stories/" + path.basename(path.dirname(filename)) + "/" + finalMeta.image;
     // var thumbnailUrl = path.normalize(storyUrl + finalMeta.image)
     newIndex = newIndex.replace(/<!-- story-meta:image -->/g, storyUrl);
     newIndex = newIndex.replace(/<!-- story-meta:author -->/g, finalMeta.author);
