@@ -1293,20 +1293,20 @@ storyteller.define('analytics', function() {
       t = tools;
       $.extend(self.options, t.options.analytics);
 
-      if (typeof self.options.disableIfWindowVarSet !== 'undefined' &&
-        self.options.disableIfWindowVarSet in window) {
-        t.log('Analytics disabled');
-        return;
-      } else if (typeof self.options.disableIfElementExists !== 'undefined' &&
-        $(self.options.disableIfElementExists).length > 0) {
-        t.log('Analytics disabled');
-        return;
-      } else {
-        t.log('Analytics enabled');
+      // if (typeof self.options.disableIfWindowVarSet !== 'undefined' &&
+      //   self.options.disableIfWindowVarSet in window) {
+      //   t.log('Analytics disabled');
+      //   return;
+      // } else if (typeof self.options.disableIfElementExists !== 'undefined' &&
+      //   $(self.options.disableIfElementExists).length > 0) {
+      //   t.log('Analytics disabled');
+      //   return;
+      // } else {
+      //   t.log('Analytics enabled');
         t.events.on('init', function() {
           t.events.trigger('analytics:enabled');
         });
-      }
+      // }
 
       // save event prefix
       if (typeof self.options.eventPrefixFragment !== 'undefined') {
