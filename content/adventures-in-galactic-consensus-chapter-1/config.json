@@ -4,6 +4,7 @@
       "storyline-linear"
       ,"url-hash"
       ,"viewport-fluid"
+      ,"loadingScreen"
       ,"slide-cards"
       ,"cards-touch"
       ,"control-dock"
@@ -63,6 +64,6 @@
   "meta": {
     "title": "Stellar Graphic Novel Chapter 1: Let's agree to agree",
     "description": "",
-    "image": "./assets/thumbnail-1.png"
+    "image": "./assets/thumbnail.png"
   }
 }
