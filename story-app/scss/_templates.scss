@@ -61,3 +61,113 @@ section[template="card-image"] {
     position: absolute;
   }
 }
+
+.scale-smaller {
+  font-size: 50%;
+}
+.scale-small {
+  font-size: 75%;
+}
+.graphic-heart-primary {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  background-image: url('data:image/svg+xml;utf8,<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><defs></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-heart-svg" sketch:type="MSArtboardGroup" transform="translate(-1343.000000, -772.000000)" fill="#08B5E5"><path d="M1354.79266,772 L1351,774.419477 L1347.20734,772 L1343,774.96812 L1343,780.923327 L1351,788 L1359,780.923327 L1359,774.96812 L1354.79266,772 Z" id="favorite-5-icon" sketch:type="MSShapeGroup"></path></g></g></svg>');
+  background-size: 32px;
+}
+
+.c-superWhite {
+  color: #fff !important;
+}
+.c-inherit {
+  color: inherit;
+}
+.c-dark {
+  color: $dark;
+}
+
+.pos-verticalCenter {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.pad-1 {
+  padding-top: 1em;
+}
+.pad-3 {
+  padding-top: 3em;
+}
+.u-center {
+  text-align: center;
+}
+.u-full {
+  width: 100%;
+}
+.u-baseline {
+  vertical-align: baseline;
+}
+.fontSize-small {
+  font-size: 0.75em;
+}
+.lineHeight-1 {
+  line-height: 1;
+}
+.lineHeight-tightest {
+  line-height: 1.2;
+}
+.lineHeight-tighter {
+  line-height: 1.35;
+}
+.lineHeight-tight {
+  line-height: 1.5;
+}
+.lineHeight-normal {
+  line-height: 1.65;
+}
+.lineHeight-loose {
+  line-height: 1.8;
+}
+.btn {
+  background: $primary;
+  border: 1px solid mix(#000, $primary, 15%);
+  box-shadow: 0 1px 0 mix(#000, $primary, 25%);
+  padding: 0.5em 2em;
+  text-decoration: none;
+  border-radius: 3px;
+
+  &:hover {
+    background: mix(#000, $primary, 10%);
+    border: 1px solid mix(#000, $primary, 25%);
+  }
+}
+.btn-wide {
+  padding-left: 4em;
+  padding-right: 4em;
+}
+
+.speechBox {
+  background: #fff;
+  border-radius: 1em;
+  padding: 1em;
+  text-decoration: none;
+}
+.speechBox-triangle-bottom:before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -16px;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  border-left: 16px solid transparent;
+  border-top: 16px solid #fff;
+  border-right: 16px solid transparent;
+}
+.aigc-bottomSpeechBox {
+  position: absolute;
+  bottom: 17%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}

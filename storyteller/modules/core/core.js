@@ -223,8 +223,8 @@ storyteller.define('slide-cards', function() {
     // registeredPadding: { // TODO: ui padding registration tool
     //   'bottom': 16 //px
     // },
-    virtualWidth: 360,
-    virtualHeight: 640,
+    virtualWidth: 720,
+    virtualHeight: 1280,
     multiCardsThreshold: 2, // decimal amount of cards at which multiCards takes effect
     multiCardsMin: 3, // number of cards to letterbox to if reached the multiCardsThreshold
     defaultScalingMode: "box" // box or transform. can also be set using html scaling-mode="scale"
@@ -441,8 +441,8 @@ storyteller.define('slide-cards', function() {
         t.$slides[i].css({
           'top': curPosition.y + 'px',
           'left': curPosition.x + 'px',
-          'width': self.slideLayout.slideWidth,
-          'height': self.slideLayout.slideHeight,
+          'width': self.slideLayout.slideWidth + 'px',
+          'height': self.slideLayout.slideHeight + 'px',
           '-webkit-transform': '',
                   'transform': ''
         });
@@ -451,6 +451,8 @@ storyteller.define('slide-cards', function() {
         t.$slides[i].css({
           'top': curPosition.y + 'px',
           'left': curPosition.x + 'px',
+          'width': self.options.virtualWidth + 'px',
+          'height': self.options.virtualHeight + 'px',
           '-webkit-transform': transformProp,
                   'transform': transformProp
         });

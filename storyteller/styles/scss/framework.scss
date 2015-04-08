@@ -105,13 +105,7 @@ $fontSize-larger: 28px;
   .slides > section {
     position: absolute;
 
-    // Stretch the slides
-    width: 360px;
-    height: 640px;
-    // outline: 2px solid green;
-
     margin: 0 auto;
-
     -webkit-transform-origin: 0 0;
             transform-origin: 0 0;
   }
