@@ -10,4 +10,4 @@ See [Stellar Stories](https://www.github.com/stellar/stories/) (https://www.gith
 View the [docs](docs.md) to understand more.
 
 ## License
-storyteller.js is released under the [ISC license](LICENSE.md).
+storyteller.js is released under the [Apache License 2.0](LICENSE.txt).
