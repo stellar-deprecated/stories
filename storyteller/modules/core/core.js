@@ -314,6 +314,9 @@ storyteller.define('slide-cards', function() {
     // if height is less than the viewport, then our guess was correct
     layout.boundByWidth = (slideOuterHeightGuess < layout.viewportHeight);
 
+    // default value
+    layout.letterBoxVertical = 0;
+
     // Calculate the sizes of each card and the number of cards
     if (layout.boundByWidth) {
       layout.slideWidth = layout.viewportWidth - 2 * opts.slideMarginHorizontal;
@@ -347,7 +350,7 @@ storyteller.define('slide-cards', function() {
         layout.slideHeight = layout.slideWidth / layout.aspectRatio;
         layout.scale = layout.slideWidth / opts.virtualWidth;
 
-        layout.verticalMargin = (layout.viewportHeight - layout.slideHeight) / 2;
+        layout.letterBoxVertical = (layout.viewportHeight - layout.slideHeight) / 2;
       } else {
         layout.numCards = Math.floor(decimalNumCards);
       }
@@ -402,7 +405,7 @@ storyteller.define('slide-cards', function() {
 
       self.slidePositions[i] = {
         x: slideXOffset + thisSlideOffset,
-        y: opts.slideMarginTop
+        y: opts.slideMarginTop + layout.letterBoxVertical
       };
     }
 
