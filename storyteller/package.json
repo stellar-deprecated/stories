@@ -1,6 +1,6 @@
 {
   "name": "storyteller",
-  "version": "0.2.0",
+  "version": "0.3.4",
   "description": "A JavaScript presentation framework with modular interfaces to allow for a highly customizable user experience.",
   "dependencies": {
     "gulp": "^3.8.11",
