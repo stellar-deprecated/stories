@@ -4,7 +4,7 @@
   "description": "A JavaScript presentation framework with modular interfaces to allow for a highly customizable user experience.",
   "dependencies": {
     "gulp": "^3.8.11",
-    "gulp-sass": "^1.3.3"
+    "gulp-sass": "^3.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
